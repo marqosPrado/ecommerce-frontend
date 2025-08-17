@@ -1,1 +1,52 @@
 /* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+:root {
+  /* 🎨 Fundo */
+  --color-background: #1c1b22;
+  --color-surface-dark: #121212;
+  --color-surface-darker: #0f0f0f;
+
+  --color-background-light: #ffffff;
+  --color-background-light-white-soft: #fdfdfd;
+  --color-background-light-white-warm: #fafafa;
+  --color-background-light-white-cool: #f5f5f5;
+
+  /* 📝 Texto */
+  --color-text-primary: #e0e0e0;
+  --color-text-secondary: #a0a0a0;
+  --color-text-muted: #8c8c8c;
+
+  /* 🔵 Azul (principal/accent) */
+  --color-blue-light: #3b82f6;
+  --color-blue: #2563eb;
+
+  /* 🟢 Verde (sucesso) */
+  --color-green-light: #4ade80;
+  --color-green: #22c55e;
+  --color-green-dark: #16a34a;
+
+  /* 🟣 Roxo (alternativo/acento) */
+  --color-purple-light: #a78bfa;
+  --color-purple: #8b5cf6;
+  --color-purple-dark: #7c3aed;
+
+  /* 🔴 Vermelho/Laranja (erros e alerts) */
+  --color-red-light: #f87171;
+  --color-red: #f43f5e;
+  --color-orange: #fb923c;
+
+  /* 🟡 Amarelo (avisos, notificações) */
+  --color-yellow: #facc15;
+
+  /* 🔹 Suaves e neutras (hover, bordas) */
+  --color-slate: #334155;
+  --color-gray-light: #c0c0c0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", sans-serif;
+  /*color: white;*/
+}
