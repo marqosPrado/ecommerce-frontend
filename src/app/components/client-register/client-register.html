@@ -1,0 +1,156 @@
+<app-header/>
+<main>
+  <div class="info">
+    <h2 style="font-size: 1.5rem">CRIAR CONTA</h2>
+  </div>
+
+  <form [formGroup]="clientRegisterForm" (ngSubmit)="onSubmit()">
+    <div class="form-row">
+      <div class="form-column">
+        <p-floatlabel variant="on">
+          <input
+            pInputText
+            class="register-input"
+            id="fullName"
+            autocomplete="off"
+            formControlName="fullName"
+            name="fullName"
+            aria-required="true"
+          />
+          <label for="fullName">Nome completo*</label>
+        </p-floatlabel>
+        @if (clientRegisterForm.get('fullName')?.invalid && clientRegisterForm.get('fullName')?.touched) {
+          <div class="alert alert-danger">
+            @if (clientRegisterForm.get('fullName')?.hasError('required')) {
+              <div>É necessário informar o nome completo.</div>
+            }
+            @if (clientRegisterForm.get('fullName')?.hasError('minlength')) {
+              <div>O nome precisa ter pelo menos 2 caracteres.</div>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="form-column form-column-full">
+        <p-floatlabel variant="on">
+          <input
+            pInputText
+            class="register-input"
+            id="cpf"
+            autocomplete="off"
+            formControlName="cpf"
+            name="cpf"
+            maxlength="11"
+            aria-required="true"
+          />
+          <label for="cpf">CPF*</label>
+        </p-floatlabel>
+        @if (clientRegisterForm.get('cpf')?.invalid && clientRegisterForm.get('cpf')?.touched) {
+          <div class="alert alert-danger">
+            @if (clientRegisterForm.get('cpf')?.hasError('required')) {
+              <div>É necessário informar um CPF.</div>
+            }
+            @if (clientRegisterForm.get('cpf')?.hasError('invalidCpf')) {
+              <div>O CPF informado é inválido.</div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-column">
+        <p-select
+          [options]="[
+              {name: 'Masculino', value: 'M'},
+              {name: 'Feminino', value: 'F'}
+            ]"
+          optionLabel="name"
+          placeholder="Gênero*"
+          class="w-full md:w-56"
+          size="large"
+          formControlName="gender"
+          aria-label="Selecione o gênero"
+          aria-required="true"
+        />
+        @if (clientRegisterForm.get('gender')?.invalid && clientRegisterForm.get('gender')?.touched) {
+          <div class="alert alert-danger">
+            <div>É necessário selecionar um gênero.</div>
+          </div>
+        }
+      </div>
+
+      <div class="form-column form-column-full">
+        <p-date-picker
+          formControlName="birthDate"
+          [showIcon]="true"
+          dateFormat="dd/mm/yy"
+          placeholder="Data de nascimento*"
+          size="large"
+          aria-required="true"
+        />
+        @if (clientRegisterForm.get('birthDate')?.invalid && clientRegisterForm.get('birthDate')?.touched) {
+          <div class="alert alert-danger">
+            <div>É necessário informar a data de nascimento.</div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-column">
+        <p-floatlabel variant="on">
+          <input
+            pInputText
+            class="register-input"
+            id="phone"
+            autocomplete="off"
+            formControlName="phone"
+            name="phone"
+            maxlength="11"
+            aria-required="true"
+          />
+          <label for="phone">Celular*</label>
+        </p-floatlabel>
+
+        @if (clientRegisterForm.get('phone')?.invalid && clientRegisterForm.get('phone')?.touched) {
+          <div class="alert alert-danger">
+            @if (clientRegisterForm.get('phone')?.hasError('required')) {
+              <div>É necessário preencher o telefone celular.</div>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="form-column">
+        <p-floatlabel variant="on">
+          <input
+            pInputText
+            class="register-input"
+            id="email"
+            autocomplete="true"
+            formControlName="email"
+            name="email"
+            aria-required="true"
+          />
+          <label for="email">E-mail*</label>
+        </p-floatlabel>
+
+        @if (clientRegisterForm.get('email')?.invalid && clientRegisterForm.get('email')?.touched) {
+          <div class="alert alert-danger">
+            É necessário informar um e-mail.
+          </div>
+        }
+      </div>
+    </div>
+
+    <p-toast position="bottom-right" />
+    <p-button
+      class="submit-button"
+      label="Criar conta"
+      type="submit"
+      size="large"
+      [disabled]="clientRegisterForm.invalid"
+    />
+  </form>
+</main>
