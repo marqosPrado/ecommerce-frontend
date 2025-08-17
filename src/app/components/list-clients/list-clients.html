@@ -1,0 +1,55 @@
+<app-header />
+
+<p-toast position="bottom-right"/>
+<p-confirm-dialog></p-confirm-dialog>
+<main class="main-container">
+  <div class="title-container">
+    <h2>Lista de Clientes</h2>
+  </div>
+
+  <p-table [value]="mockData" stripedRows [tableStyle]="{ 'min-width':'80rem','max-width': '80rem', 'width': '100%' }">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Nome completo</th>
+        <th>CPF</th>
+        <th>Gênero</th>
+        <th>Data de nascimento</th>
+        <th>Celular</th>
+        <th>E-mail</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-client>
+      <tr>
+        <td>{{ client.fullName }}</td>
+        <td>{{ client.cpf }}</td>
+        <td>{{ client.gender === 'M' ? 'Masculino' : client.gender === 'F' ? 'Feminino' : 'Outro' }}</td>
+        <td>{{ client.birthDate }}</td>
+        <td>{{ client.phone }}</td>
+        <td>{{ client.email }}</td>
+        <td>
+          <p-button
+            severity="danger"
+            icon="pi pi-trash"
+            (click)="deleteClient(client.id)"
+          />
+        </td>
+        <td>
+        <p-button
+            icon="pi pi-pencil"
+            severity="warn"
+          />
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="8" style="text-align: center;">
+          <i class="pi pi-user-minus" style="font-size: 1.2rem; margin-right: 0.5rem; color: #999;"></i>
+          Nenhum cliente cadastrado
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</main>
