@@ -5,7 +5,7 @@ import {InputText} from 'primeng/inputtext';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {Select} from 'primeng/select';
 import {DatePicker} from 'primeng/datepicker';
-import {Button, ButtonDirective, ButtonLabel} from 'primeng/button';
+import {Button} from 'primeng/button';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {CommonModule} from '@angular/common';
 import {ConfirmDialog} from 'primeng/confirmdialog';
@@ -27,8 +27,6 @@ import {ConfirmationService, MessageService} from 'primeng/api';
     ConfirmDialog,
     Toast,
     RouterLink,
-    ButtonDirective,
-    ButtonLabel
   ],
   providers: [ConfirmationService],
   templateUrl: './edit-client.html',
