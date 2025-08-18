@@ -8,6 +8,7 @@ import { SelectModule } from 'primeng/select';
 import {DatePicker} from 'primeng/datepicker';
 import {Toast} from 'primeng/toast';
 import {MessageService, ToastMessageOptions} from 'primeng/api';
+import {Password} from 'primeng/password';
 
 @Component({
   selector: 'app-client-register',
@@ -21,7 +22,8 @@ import {MessageService, ToastMessageOptions} from 'primeng/api';
     SelectModule,
     FormsModule,
     DatePicker,
-    Toast
+    Toast,
+    Password
   ],
   templateUrl: './client-register.html',
   styleUrl: './client-register.css'
@@ -56,7 +58,10 @@ export class ClientRegister {
       Validators.required,
       Validators.email
       ]
-    )
+    ),
+    password: new FormControl('', [
+      Validators.required,
+    ])
   });
 
   onSubmit() {
