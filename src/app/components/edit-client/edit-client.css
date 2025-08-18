@@ -1,0 +1,54 @@
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: var(--color-surface-darker);
+  padding: 30px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 50%;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+.form-field {
+  width: 100%;
+}
+
+.form-field input,
+.form-field .p-inputtext,
+.form-field .p-select,
+.form-field .p-datepicker {
+  width: 100% !important;
+}
+
+.btn-outline {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  border: 1px solid #b46a2d;
+  border-radius: 6px;
+  background: transparent;
+  color: #b46a2d;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.btn-outline:hover {
+  background: #b46a2d;
+  color: #fff;
+}

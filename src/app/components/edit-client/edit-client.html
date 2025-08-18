@@ -1,0 +1,148 @@
+<app-header/>
+
+<p-toast position="bottom-right"/>
+<p-confirm-dialog></p-confirm-dialog>
+<div style="width: 100%; display: flex; flex-direction: column; padding: 4rem; gap: 2rem">
+  <div style="display: flex; flex-direction: row; align-items: center; gap: 0.5rem">
+    <i class="pi pi-user"></i>
+    <h2>MEUS DADOS</h2>
+  </div>
+
+  <div
+    style="display: flex; flex-direction: column; justify-content: center; align-items: center;width: 100%; gap: 1rem">
+    <div style="display: flex; flex-direction: row; gap: 20px; width: 100%; justify-content: space-between">
+      <section class="form-section">
+        <div class="section-header">
+          <i class="pi pi-id-card"></i>
+          <span>DADOS BÁSICOS</span>
+        </div>
+
+        <div style="width: 100%">
+          <p-button variant="outlined" severity="warn" [style]="{'width': '100%', 'padding': '0.5rem 0.75rem'}">ALTERAR
+            E-MAIL
+          </p-button>
+        </div>
+
+        <form class="form-container" style="gap: 1rem" [formGroup]="editClientForm" >
+          <div style="display: flex;flex-direction: column; gap: 8px">
+            <p-floatlabel class="form-field" variant="on">
+              <input formControlName="fullName" pInputText id="fullName" pSize="large" name="fullName" autocomplete="off"/>
+              <label for="fullName">Nome completo*</label>
+            </p-floatlabel>
+            @if (editClientForm.get('fullName')?.invalid && editClientForm.get('fullName')?.touched) {
+              <div class="alert alert-danger">
+                @if (editClientForm.get('fullName')?.hasError('required')) {
+                  <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o nome completo.</div>
+                }
+                @if (editClientForm.get('fullName')?.hasError('minlength')) {
+                  <div style="color: #a44b4c;font-size: 0.875rem;">O nome precisa ter pelo menos 2 caracteres.</div>
+                }
+              </div>
+            }
+          </div>
+
+          <div style="display: flex;flex-direction: column; gap: 8px">
+            <p-floatlabel class="form-field" variant="on">
+              <input formControlName="phone" pInputText id="phone" pSize="large" name="phone" autocomplete="off" maxlength="11"/>
+              <label for="phone">Celular*</label>
+            </p-floatlabel>
+            @if (editClientForm.get('phone')?.invalid && editClientForm.get('phone')?.touched) {
+              <div class="alert alert-danger">
+                @if (editClientForm.get('phone')?.hasError('required')) {
+                  <div style="color: #a44b4c;font-size: 0.875rem;">É necessário preencher o telefone celular.</div>
+                }
+              </div>
+            }
+          </div>
+
+          <p-select
+            size="large"
+            class="form-field"
+            formControlName="gender"
+            [options]="[
+              {name: 'Masculino', value: 'M'},
+              {name: 'Feminino', value: 'F'}
+            ]"
+            optionValue="value"
+            optionLabel="name"
+            placeholder="Gênero*"
+          ></p-select>
+
+          <p-floatlabel class="form-field" variant="on">
+            <input pInputText formControlName="email" id="email" pSize="large" name="email"/>
+            <label for="email">E-mail</label>
+          </p-floatlabel>
+
+          <p-floatlabel class="form-field" variant="on">
+            <input pInputText formControlName="cpf" id="cpf" pSize="large" name="cpf" />
+            <label for="cpf">CPF</label>
+          </p-floatlabel>
+
+          <p-date-picker
+            class="form-field"
+            [showIcon]="true"
+            dateFormat="dd/mm/yy"
+            formControlName="birthDate"
+            size="large"
+            placeholder="Data de nascimento*"
+          ></p-date-picker>
+        </form>
+      </section>
+
+      <section class="form-section">
+        <div class="section-header">
+          <i class="pi pi-map-marker"></i>
+          <span>ENDEREÇOS</span>
+        </div>
+
+        <div style="width: 100%">
+          <p-button
+            label="Cadastrar novo endereço"
+            icon="pi pi-plus"
+            iconPos="left"
+            variant="outlined"
+            severity="warn"
+            [style]="{'width': '50%', 'padding': '0.4rem 0.35rem'}"
+          />
+        </div>
+
+        <div
+          style="width: 100%; border: 1px solid #6b280c;border-radius: 4px; padding: 0.5rem;display: flex; flex-direction: row; justify-content: space-between">
+          <div style="display: flex; flex-direction: column; gap: 0.5rem; padding: 0.5rem">
+            <div>
+              <span>Endereço principal</span>
+            </div>
+            <div>
+              <span>Rua Antônio Ruiz Veiga</span>
+            </div>
+            <div>
+              <span>Número: 100, BL 03 AP 204</span>
+            </div>
+            <div>
+              <span>CEP: 08773495 - Mogi das Cruzes</span>
+            </div>
+          </div>
+
+          <div style="height: 100%; display: flex; align-items: flex-end">
+            <p-button
+              severity="secondary"
+              icon="pi pi-pencil"
+              label="Editar"
+            />
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div style="width: 100%; display: flex; justify-content: start; align-items: center; gap: 8px">
+      <p-button severity="primary" size="large" label="SALVAR ALTERAÇÕES" (click)="editClient()" />
+      <p-button
+        label="Voltar a lista"
+        size="large"
+        severity="warn"
+        variant="outlined"
+        [routerLink]="['/client/all']">
+      </p-button>
+    </div>
+  </div>
+</div>
