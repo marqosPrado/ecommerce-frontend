@@ -6,6 +6,7 @@ import {Button} from 'primeng/button';
 import {ConfirmDialog} from 'primeng/confirmdialog';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {Toast} from 'primeng/toast';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-list-clients',
@@ -20,6 +21,7 @@ export class ListClients {
   constructor(
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
+    private router: Router,
   ) {
     this.mockData = [
       {
@@ -89,6 +91,10 @@ export class ListClients {
         });
       }
     });
+  }
+
+  navigateToEditClient(id: number) {
+    this.router.navigate(['/client/' + id]);
   }
 
 }
