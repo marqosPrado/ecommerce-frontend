@@ -177,7 +177,7 @@
       <!-- STEP 2 - ENDEREÇO -->
       <p-step-panel [value]="2">
         <ng-template #content let-activateCallback="activateCallback">
-          <form [formGroup]="clientRegisterForm">
+          <form [formGroup]="clientAddressForm">
 
             <div class="form-row">
               <div class="form-column">
@@ -190,6 +190,7 @@
                     ]"
                     optionLabel="name"
                     inputId="residenceType"
+                    formControlName="residenceType"
                     size="large"
                   />
                   <label for="residenceType">Tipo de residência*</label>
@@ -202,6 +203,7 @@
                     pInputText
                     class="register-input"
                     id="streetType"
+                    formControlName="logradouroType"
                   />
                   <label for="streetType">Tipo de logradouro*</label>
                 </p-floatlabel>
@@ -215,6 +217,7 @@
                     pInputText
                     id="street"
                     class="register-input"
+                    formControlName="logradouro"
                   />
                   <label for="street">Logradouro*</label>
                 </p-floatlabel>
@@ -226,6 +229,7 @@
                     pInputText
                     id="number"
                     class="register-input"
+                    formControlName="residenceNumber"
                   />
                   <label for="number">Número*</label>
                 </p-floatlabel>
@@ -239,6 +243,7 @@
                     pInputText
                     id="district"
                     class="register-input"
+                    formControlName="neighborhood"
                   />
                   <label for="district">Bairro*</label>
                 </p-floatlabel>
@@ -250,6 +255,7 @@
                     mask="99999-999"
                     id="cep"
                     size="large"
+                    formControlName="postalCode"
                     class="register-input"
                   ></p-inputmask>
                   <label for="cep">CEP*</label>
@@ -263,6 +269,7 @@
                   <input
                     pInputText
                     id="city"
+                    formControlName="city"
                     class="register-input"
                   />
                   <label for="city">Cidade*</label>
@@ -274,6 +281,7 @@
                   <input
                     pInputText
                     id="state"
+                    formControlName="state"
                     class="register-input"
                   />
                   <label for="state">Estado*</label>
@@ -285,6 +293,7 @@
                   <input
                     pInputText
                     id="country"
+                    formControlName="country"
                     class="register-input"
                   />
                   <label for="country">País*</label>
@@ -302,6 +311,7 @@
                     [autoResize]="false"
                     cols="30"
                     style="resize: none"
+                    formControlName="observations"
                     class="register-input"
                   ></textarea>
                   <label for="notes">Observações (opcional)</label>

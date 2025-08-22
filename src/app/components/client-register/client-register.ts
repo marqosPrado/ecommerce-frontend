@@ -67,12 +67,24 @@ export class ClientRegister {
     email: new FormControl('', [
       Validators.required,
       Validators.email
-      ]
-    ),
+      ]),
     password: new FormControl('', [
       Validators.required,
-    ])
+    ]),
   });
+
+  clientAddressForm = new FormGroup({
+    residenceType: new FormControl('', [Validators.required]),
+    logradouroType: new FormControl('', [Validators.required]),
+    logradouro: new FormControl('', [Validators.required]),
+    residenceNumber: new FormControl('', [Validators.required]),
+    neighborhood: new FormControl('', [Validators.required]),
+    postalCode: new FormControl('', [Validators.required]),
+    city: new FormControl('', [Validators.required]),
+    state: new FormControl('', [Validators.required]),
+    country: new FormControl('', [Validators.required]),
+    observations: new FormControl('', [Validators.required])
+  })
 
   onSubmit() {
     setTimeout(() => {
