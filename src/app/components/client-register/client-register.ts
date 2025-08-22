@@ -9,6 +9,9 @@ import {DatePicker} from 'primeng/datepicker';
 import {Toast} from 'primeng/toast';
 import {MessageService, ToastMessageOptions} from 'primeng/api';
 import {Password} from 'primeng/password';
+import {Step, StepList, StepPanel, StepPanels, Stepper} from 'primeng/stepper';
+import {Textarea} from 'primeng/textarea';
+import {InputMask} from 'primeng/inputmask';
 
 @Component({
   selector: 'app-client-register',
@@ -23,7 +26,14 @@ import {Password} from 'primeng/password';
     FormsModule,
     DatePicker,
     Toast,
-    Password
+    Password,
+    Stepper,
+    Step,
+    StepList,
+    StepPanel,
+    StepPanels,
+    Textarea,
+    InputMask
   ],
   templateUrl: './client-register.html',
   styleUrl: './client-register.css'

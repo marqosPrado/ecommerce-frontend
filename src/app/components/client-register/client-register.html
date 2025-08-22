@@ -4,175 +4,416 @@
     <h2 style="font-size: 1.5rem">CRIAR CONTA</h2>
   </div>
 
-  <form [formGroup]="clientRegisterForm" (ngSubmit)="onSubmit()">
-    <div class="form-row">
-      <div class="form-column">
-        <p-floatlabel variant="on">
-          <input
-            pInputText
-            class="register-input"
-            id="fullName"
-            autocomplete="off"
-            formControlName="fullName"
-            name="fullName"
-            aria-required="true"
-          />
-          <label for="fullName">Nome completo*</label>
-        </p-floatlabel>
-        @if (clientRegisterForm.get('fullName')?.invalid && clientRegisterForm.get('fullName')?.touched) {
-          <div class="alert alert-danger">
-            @if (clientRegisterForm.get('fullName')?.hasError('required')) {
-              <div>É necessário informar o nome completo.</div>
-            }
-            @if (clientRegisterForm.get('fullName')?.hasError('minlength')) {
-              <div>O nome precisa ter pelo menos 2 caracteres.</div>
-            }
+  <p-stepper [value]="1" class="basis-[50rem]">
+    <p-step-list>
+      <p-step [value]="1">Dados Básicos</p-step>
+      <p-step [value]="2">Endereço</p-step>
+      <p-step [value]="3">Forma de Pagamento</p-step>
+    </p-step-list>
+
+    <p-step-panels>
+      <!-- STEP 1 - DADOS BÁSICOS -->
+      <p-step-panel [value]="1">
+        <ng-template #content let-activateCallback="activateCallback">
+          <form [formGroup]="clientRegisterForm" (ngSubmit)="onSubmit()">
+            <div class="form-row">
+              <div class="form-column">
+                <p-floatlabel variant="on">
+                  <input
+                    pInputText
+                    class="register-input"
+                    id="fullName"
+                    autocomplete="off"
+                    formControlName="fullName"
+                    name="fullName"
+                    aria-required="true"
+                  />
+                  <label for="fullName">Nome completo*</label>
+                </p-floatlabel>
+                @if (clientRegisterForm.get('fullName')?.invalid && clientRegisterForm.get('fullName')?.touched) {
+                  <div class="alert alert-danger">
+                    @if (clientRegisterForm.get('fullName')?.hasError('required')) {
+                      <div>É necessário informar o nome completo.</div>
+                    }
+                    @if (clientRegisterForm.get('fullName')?.hasError('minlength')) {
+                      <div>O nome precisa ter pelo menos 2 caracteres.</div>
+                    }
+                  </div>
+                }
+              </div>
+
+              <div class="form-column">
+                <p-floatlabel variant="on">
+                  <input
+                    pInputText
+                    class="register-input"
+                    id="cpf"
+                    autocomplete="off"
+                    formControlName="cpf"
+                    name="cpf"
+                    maxlength="11"
+                    aria-required="true"
+                  />
+                  <label for="cpf">CPF*</label>
+                </p-floatlabel>
+                @if (clientRegisterForm.get('cpf')?.invalid && clientRegisterForm.get('cpf')?.touched) {
+                  <div class="alert alert-danger">
+                    @if (clientRegisterForm.get('cpf')?.hasError('required')) {
+                      <div>É necessário informar um CPF.</div>
+                    }
+                    @if (clientRegisterForm.get('cpf')?.hasError('invalidCpf')) {
+                      <div>O CPF informado é inválido.</div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-column">
+                <p-select
+                  [options]="[
+                      {name: 'Masculino', value: 'M'},
+                      {name: 'Feminino', value: 'F'}
+                    ]"
+                  optionLabel="name"
+                  placeholder="Gênero*"
+                  size="large"
+                  formControlName="gender"
+                  aria-label="Selecione o gênero"
+                  aria-required="true"
+                />
+                @if (clientRegisterForm.get('gender')?.invalid && clientRegisterForm.get('gender')?.touched) {
+                  <div class="alert alert-danger">
+                    <div>É necessário selecionar um gênero.</div>
+                  </div>
+                }
+              </div>
+
+              <div class="form-column">
+                <p-date-picker
+                  formControlName="birthDate"
+                  [showIcon]="true"
+                  dateFormat="dd/mm/yy"
+                  placeholder="Data de nascimento*"
+                  size="large"
+                  aria-required="true"
+                />
+                @if (clientRegisterForm.get('birthDate')?.invalid && clientRegisterForm.get('birthDate')?.touched) {
+                  <div class="alert alert-danger">
+                    <div>É necessário informar a data de nascimento.</div>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-column">
+                <p-floatlabel variant="on">
+                  <input
+                    pInputText
+                    class="register-input"
+                    id="phone"
+                    autocomplete="off"
+                    formControlName="phone"
+                    name="phone"
+                    maxlength="11"
+                    aria-required="true"
+                  />
+                  <label for="phone">Celular*</label>
+                </p-floatlabel>
+                @if (clientRegisterForm.get('phone')?.invalid && clientRegisterForm.get('phone')?.touched) {
+                  <div class="alert alert-danger">
+                    @if (clientRegisterForm.get('phone')?.hasError('required')) {
+                      <div>É necessário preencher o telefone celular.</div>
+                    }
+                  </div>
+                }
+              </div>
+
+              <div class="form-column">
+                <p-floatlabel variant="on">
+                  <input
+                    pInputText
+                    class="register-input"
+                    id="email"
+                    autocomplete="true"
+                    formControlName="email"
+                    name="email"
+                    aria-required="true"
+                  />
+                  <label for="email">E-mail*</label>
+                </p-floatlabel>
+                @if (clientRegisterForm.get('email')?.invalid && clientRegisterForm.get('email')?.touched) {
+                  <div class="alert alert-danger">
+                    É necessário informar um e-mail.
+                  </div>
+                }
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-column">
+                <p-floatlabel variant="on">
+                  <p-password size="large" inputId="password" formControlName="password"/>
+                  <label for="password">Senha*</label>
+                </p-floatlabel>
+              </div>
+              <div class="form-column">
+                <p-floatlabel variant="on">
+                  <p-password size="large" inputId="confirmPassword"/>
+                  <label for="confirmPassword">Confirmar senha*</label>
+                </p-floatlabel>
+              </div>
+            </div>
+
+            <div class="step-navigation step-navigation-end">
+              <p-button label="Próximo" icon="pi pi-arrow-right" iconPos="right" (onClick)="activateCallback(2)"/>
+            </div>
+          </form>
+        </ng-template>
+      </p-step-panel>
+
+      <!-- STEP 2 - ENDEREÇO -->
+      <p-step-panel [value]="2">
+        <ng-template #content let-activateCallback="activateCallback">
+          <form [formGroup]="clientRegisterForm">
+
+            <div class="form-row">
+              <div class="form-column">
+                <p-floatlabel variant="on">
+                  <p-select
+                    [options]="[
+                      { name: 'Casa', value: 'CASA' },
+                      { name: 'Apartamento', value: 'APTO' },
+                      { name: 'Comércio', value: 'COM' }
+                    ]"
+                    optionLabel="name"
+                    inputId="residenceType"
+                    size="large"
+                  />
+                  <label for="residenceType">Tipo de residência*</label>
+                </p-floatlabel>
+              </div>
+
+              <div class="form-column">
+                <p-floatlabel variant="on">
+                  <input
+                    pInputText
+                    class="register-input"
+                    id="streetType"
+                  />
+                  <label for="streetType">Tipo de logradouro*</label>
+                </p-floatlabel>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-column form-column-full">
+                <p-floatlabel variant="on">
+                  <input
+                    pInputText
+                    id="street"
+                    class="register-input"
+                  />
+                  <label for="street">Logradouro*</label>
+                </p-floatlabel>
+              </div>
+
+              <div class="form-column">
+                <p-floatlabel variant="on">
+                  <input
+                    pInputText
+                    id="number"
+                    class="register-input"
+                  />
+                  <label for="number">Número*</label>
+                </p-floatlabel>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-column">
+                <p-floatlabel variant="on">
+                  <input
+                    pInputText
+                    id="district"
+                    class="register-input"
+                  />
+                  <label for="district">Bairro*</label>
+                </p-floatlabel>
+              </div>
+
+              <div class="form-column">
+                <p-floatlabel variant="on">
+                  <p-inputmask
+                    mask="99999-999"
+                    id="cep"
+                    size="large"
+                    class="register-input"
+                  ></p-inputmask>
+                  <label for="cep">CEP*</label>
+                </p-floatlabel>
+              </div>
+            </div>
+
+            <div class="form-row form-row-three">
+              <div class="form-column">
+                <p-floatlabel variant="on">
+                  <input
+                    pInputText
+                    id="city"
+                    class="register-input"
+                  />
+                  <label for="city">Cidade*</label>
+                </p-floatlabel>
+              </div>
+
+              <div class="form-column">
+                <p-floatlabel variant="on">
+                  <input
+                    pInputText
+                    id="state"
+                    class="register-input"
+                  />
+                  <label for="state">Estado*</label>
+                </p-floatlabel>
+              </div>
+
+              <div class="form-column">
+                <p-floatlabel variant="on">
+                  <input
+                    pInputText
+                    id="country"
+                    class="register-input"
+                  />
+                  <label for="country">País*</label>
+                </p-floatlabel>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-column form-column-full">
+                <p-floatlabel variant="on">
+                  <textarea
+                    pTextarea
+                    id="notes"
+                    rows="50"
+                    [autoResize]="false"
+                    cols="30"
+                    style="resize: none"
+                    class="register-input"
+                  ></textarea>
+                  <label for="notes">Observações (opcional)</label>
+                </p-floatlabel>
+              </div>
+            </div>
+          </form>
+
+          <div class="step-navigation">
+            <p-button label="Voltar" severity="secondary" icon="pi pi-arrow-left" (onClick)="activateCallback(1)"/>
+            <p-button label="Próximo" icon="pi pi-arrow-right" iconPos="right" (onClick)="activateCallback(3)"/>
           </div>
-        }
-      </div>
+        </ng-template>
+      </p-step-panel>
 
-      <div class="form-column form-column-full">
-        <p-floatlabel variant="on">
-          <input
-            pInputText
-            class="register-input"
-            id="cpf"
-            autocomplete="off"
-            formControlName="cpf"
-            name="cpf"
-            maxlength="11"
-            aria-required="true"
-          />
-          <label for="cpf">CPF*</label>
-        </p-floatlabel>
-        @if (clientRegisterForm.get('cpf')?.invalid && clientRegisterForm.get('cpf')?.touched) {
-          <div class="alert alert-danger">
-            @if (clientRegisterForm.get('cpf')?.hasError('required')) {
-              <div>É necessário informar um CPF.</div>
-            }
-            @if (clientRegisterForm.get('cpf')?.hasError('invalidCpf')) {
-              <div>O CPF informado é inválido.</div>
-            }
+      <!-- STEP 3 - FORMA DE PAGAMENTO -->
+      <p-step-panel [value]="3">
+        <ng-template #content let-activateCallback="activateCallback">
+          <form [formGroup]="clientRegisterForm">
+            <div class="form-row">
+              <div class="form-column form-column-full">
+                <p-floatlabel variant="on">
+                  <p-inputmask
+                    mask="9999 9999 9999 9999"
+                    id="cardNumber"
+                    class="register-input"
+                    size="large"
+                    placeholder="0000 0000 0000 0000"
+                    aria-required="true"
+                  ></p-inputmask>
+                  <label for="cardNumber">Número do cartão*</label>
+                </p-floatlabel>
+<!--                @if (clientRegisterForm.get('cardNumber')?.invalid && clientRegisterForm.get('cardNumber')?.touched) {-->
+<!--                  <div class="alert alert-danger">-->
+<!--                    <div>É necessário informar o número do cartão.</div>-->
+<!--                  </div>-->
+<!--                }-->
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-column form-column-full">
+                <p-floatlabel variant="on">
+                  <input
+                    pInputText
+                    class="register-input"
+                    id="cardHolderName"
+                    aria-required="true"
+                  />
+                  <label for="cardHolderName">Nome impresso no cartão*</label>
+                </p-floatlabel>
+<!--                @if (clientRegisterForm.get('cardHolderName')?.invalid && clientRegisterForm.get('cardHolderName')?.touched) {-->
+<!--                  <div class="alert alert-danger">-->
+<!--                    <div>É necessário informar o nome impresso no cartão.</div>-->
+<!--                  </div>-->
+<!--                }-->
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-column">
+                <p-floatlabel variant="on">
+                  <p-select
+                    [options]="[
+                      { name: 'Visa', value: 'VISA' },
+                      { name: 'Mastercard', value: 'MASTERCARD' },
+                      { name: 'American Express', value: 'AMEX' },
+                      { name: 'Elo', value: 'ELO' },
+                      { name: 'Hipercard', value: 'HIPERCARD' }
+                    ]"
+                    optionLabel="name"
+                    inputId="cardBrand"
+                    size="large"
+                    aria-required="true"
+                  />
+                  <label for="cardBrand">Bandeira do cartão*</label>
+                </p-floatlabel>
+<!--                @if (clientRegisterForm.get('cardBrand')?.invalid && clientRegisterForm.get('cardBrand')?.touched) {-->
+<!--                  <div class="alert alert-danger">-->
+<!--                    <div>É necessário selecionar a bandeira do cartão.</div>-->
+<!--                  </div>-->
+<!--                }-->
+              </div>
+
+              <div class="form-column">
+                <p-floatlabel variant="on">
+                  <input
+                    pInputText
+                    class="register-input"
+                    id="cardSecurityCode"
+                    [maxLength]="3"
+                    aria-required="true"
+                  />
+                  <label for="securityCode">Código de segurança*</label>
+                </p-floatlabel>
+<!--                @if (clientRegisterForm.get('securityCode')?.invalid && clientRegisterForm.get('securityCode')?.touched) {-->
+<!--                  <div class="alert alert-danger">-->
+<!--                    <div>É necessário informar o código de segurança.</div>-->
+<!--                  </div>-->
+<!--                }-->
+              </div>
+            </div>
+          </form>
+
+          <div class="step-navigation">
+            <p-button label="Voltar" severity="secondary" icon="pi pi-arrow-left" (onClick)="activateCallback(2)"/>
+            <p-button label="Criar conta" type="submit" size="large" [disabled]="clientRegisterForm.invalid"/>
           </div>
-        }
-      </div>
-    </div>
+        </ng-template>
+      </p-step-panel>
+    </p-step-panels>
+  </p-stepper>
 
-    <div class="form-row">
-      <div class="form-column">
-        <p-select
-          [options]="[
-              {name: 'Masculino', value: 'M'},
-              {name: 'Feminino', value: 'F'}
-            ]"
-          optionLabel="name"
-          placeholder="Gênero*"
-          class="w-full md:w-56"
-          size="large"
-          formControlName="gender"
-          aria-label="Selecione o gênero"
-          aria-required="true"
-        />
-        @if (clientRegisterForm.get('gender')?.invalid && clientRegisterForm.get('gender')?.touched) {
-          <div class="alert alert-danger">
-            <div>É necessário selecionar um gênero.</div>
-          </div>
-        }
-      </div>
-
-      <div class="form-column form-column-full">
-        <p-date-picker
-          formControlName="birthDate"
-          [showIcon]="true"
-          dateFormat="dd/mm/yy"
-          placeholder="Data de nascimento*"
-          size="large"
-          aria-required="true"
-        />
-        @if (clientRegisterForm.get('birthDate')?.invalid && clientRegisterForm.get('birthDate')?.touched) {
-          <div class="alert alert-danger">
-            <div>É necessário informar a data de nascimento.</div>
-          </div>
-        }
-      </div>
-    </div>
-
-    <div class="form-row">
-      <div class="form-column">
-        <p-floatlabel variant="on">
-          <input
-            pInputText
-            class="register-input"
-            id="phone"
-            autocomplete="off"
-            formControlName="phone"
-            name="phone"
-            maxlength="11"
-            aria-required="true"
-          />
-          <label for="phone">Celular*</label>
-        </p-floatlabel>
-
-        @if (clientRegisterForm.get('phone')?.invalid && clientRegisterForm.get('phone')?.touched) {
-          <div class="alert alert-danger">
-            @if (clientRegisterForm.get('phone')?.hasError('required')) {
-              <div>É necessário preencher o telefone celular.</div>
-            }
-          </div>
-        }
-      </div>
-
-      <div class="form-column">
-        <p-floatlabel variant="on">
-          <input
-            pInputText
-            class="register-input"
-            id="email"
-            autocomplete="true"
-            formControlName="email"
-            name="email"
-            aria-required="true"
-          />
-          <label for="email">E-mail*</label>
-        </p-floatlabel>
-
-        @if (clientRegisterForm.get('email')?.invalid && clientRegisterForm.get('email')?.touched) {
-          <div class="alert alert-danger">
-            É necessário informar um e-mail.
-          </div>
-        }
-      </div>
-
-      <div style="display: flex;flex-direction: row; justify-content: space-between; gap: 41px; width: 100%">
-        <div class="form-column">
-          <p-floatlabel variant="on">
-            <p-password
-              size="large"
-              inputId="on_label"
-            />
-            <label for="on_label">Senha</label>
-          </p-floatlabel>
-        </div>
-
-        <div class="form-column">
-          <p-floatlabel variant="on">
-            <p-password
-              size="large"
-              inputId="on_label"
-            />
-            <label for="on_label">Confirmar senha</label>
-          </p-floatlabel>
-        </div>
-      </div>
-    </div>
-
-    <p-toast position="bottom-right" />
-    <p-button
-      class="submit-button"
-      label="Criar conta"
-      type="submit"
-      size="large"
-      [disabled]="clientRegisterForm.invalid"
-    />
-  </form>
+  <p-toast position="bottom-right"/>
 </main>

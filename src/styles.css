@@ -6,7 +6,7 @@
   /* 🎨 Fundo */
   --color-background: #1c1b22;
   --color-surface-dark: #121212;
-  --color-surface-darker: #0f0f0f;
+  --color-surface-darker: #09090b;
 
   --color-background-light: #ffffff;
   --color-background-light-white-soft: #fdfdfd;
@@ -49,4 +49,9 @@
   margin: 0;
   padding: 0;
   font-family: "Inter", sans-serif;
+}
+
+body {
+  background-color: var(--color-surface-darker);
+  color: var(--color-text-primary);
 }

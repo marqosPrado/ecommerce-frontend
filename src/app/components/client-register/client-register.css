@@ -12,41 +12,106 @@ main {
 form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
   width: 100%;
-  max-width: 600px;
+  padding: 5px;
+  max-width: 700px;
 }
 
 .form-row {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 20px;
+  align-items: flex-start;
 }
 
 .form-column {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  width: 100%;
+  flex: 1;
+  min-width: 250px;
 }
 
 .form-column-full {
-  width: 100%;
+  flex: 2;
+  min-width: 100%;
+}
+
+.form-row .form-column:not(.form-column-full) {
+  flex: 1;
+  min-width: calc(50% - 10px);
+}
+
+.form-row-three .form-column {
+  flex: 1;
+  min-width: calc(33.333% - 14px);
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    flex-direction: column;
+  }
+
+  .form-column,
+  .form-column-full {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .form-row-three .form-column {
+    width: 100%;
+    min-width: 100%;
+  }
+}
+
+.register-input {
+  width: 100% !important;
+  height: 48px;
+  box-sizing: border-box;
+}
+
+::ng-deep .p-select,
+::ng-deep .p-datepicker,
+::ng-deep .p-password {
+  width: 100% !important;
+}
+
+::ng-deep .p-select .p-select-label,
+::ng-deep .p-datepicker input,
+::ng-deep .p-password input {
+  height: 48px !important;
+  padding: 12px !important;
+}
+
+::ng-deep .p-inputtextarea {
+  min-height: 80px !important;
+  resize: vertical;
 }
 
 .alert.alert-danger {
   color: #a44b4c;
   font-size: 0.875rem;
-}
-
-.register-input {
-  width: 100%;
-  padding: 12px;
+  margin-top: 4px;
 }
 
 .submit-button {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  margin-top: 20px;
+}
+
+.step-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.step-navigation-end {
+  justify-content: flex-end;
 }
