@@ -1,4 +1,4 @@
-type Watch = {
+type Product = {
   id: number;
   title: string;
   price: number;
@@ -9,4 +9,5 @@ type Watch = {
   boxMaterial: string;
   boxFormat: string;
   dial: string;
+  images: string[];
 }
