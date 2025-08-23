@@ -1,0 +1,31 @@
+<div style="
+  display: flex;
+  flex-direction: column;
+  width: 260px;
+  background-color: var(--color-background);
+  border-radius: 10px;
+  overflow: hidden;
+  gap: 1rem;
+  text-align: center;
+  padding: 1rem;
+">
+  <div style="width: 100%; height: 260px; overflow: hidden; border-radius: 10px;">
+    <img
+      src="https://timeland.vtexassets.com/arquivos/ids/2935351-260-260?v=638909034097400000&width=260&height=260&aspect=true"
+      [alt]="title"
+      style="width: 100%; height: 100%; object-fit: cover;"
+    />
+  </div>
+
+  <div>
+    <h2 style="font-size: 16px; margin: 0 0 0.25rem 0;">{{ title }}</h2>
+    <div>
+      <span>R$ {{ price | number:'1.2-2' }}</span>
+    </div>
+  </div>
+
+  <!-- Botão -->
+  <div style="margin-top: 0.5rem;">
+    <p-button label="Ver produto" [style]="{width: '100%'}"></p-button>
+  </div>
+</div>
