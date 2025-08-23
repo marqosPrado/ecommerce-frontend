@@ -23,17 +23,31 @@
           <span style="font-size: 22px; font-weight: 800; color: var(--color-blue-light)">10x de R$ {{product.price / 10}}</span>
         </div>
 
-        <p-button
-          [style]="{width: '100%'}"
-          size="large"
-          label="Comprar"
-        />
+        <div style="width: 100%; display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem">
+          <div style="display: flex; flex-direction: column; gap: 0.65rem">
+            <span style="font-weight: 700; color: var(--color-green-dark)">Em estoque</span>
+            <p-button
+              [style]="{width: '100%'}"
+              size="large"
+              label="Comprar"
+            />
+          </div>
+          <p-button
+            icon="pi pi-cart-plus"
+            [style]="{width: '100%'}"
+            size="large"
+            label="Adicionar ao carrinho"
+          />
+        </div>
 
         <div style="display: flex; flex-direction: column; gap: 1rem">
-          <span>Calcular frete</span>
+          <div style="display: flex; gap: 0.5rem; align-items: center">
+            <i class="pi pi-truck"></i>
+            <span>Calcular frete</span>
+          </div>
           <div style="display: flex; flex-direction: row; gap: 1rem; align-items: center">
-            <input type="text" pInputText />
-            <a href="https://buscacepinter.correios.com.br/app/endereco/index.php?t">Não sei <br>meu cep</a>
+            <input type="text" pSize="large" pInputText />
+            <a href="https://buscacepinter.correios.com.br/app/endereco/index.php?t" style="color: var(--color-text-primary)">Não sei <br>meu cep</a>
           </div>
         </div>
       </div>
