@@ -9,13 +9,15 @@
   </div>
 
   <div style="display: flex; flex-direction: column; gap: 2rem">
-    <div style="display: flex; flex-direction: row; justify-content: space-between">
-      <h2>Cartões</h2>
-      <p-button
-        label="ADICIONAR CARTÃO DE CRÉDITO"
-        (click)="handleCreditCardForm()"
-      />
-    </div>
+    @if (!showCreditCardForm()) {
+      <div style="display: flex; flex-direction: row; justify-content: space-between">
+        <h2>Cartões</h2>
+        <p-button
+          label="ADICIONAR CARTÃO DE CRÉDITO"
+          (click)="handleCreditCardForm()"
+        />
+      </div>
+    }
 
     @if (showCreditCardForm()) {
       <div style="display: flex; flex-direction: column; gap: 1rem">
@@ -135,7 +137,7 @@
           </div>
 
           <div style="display: flex; justify-content: space-between; margin-top: 2rem">
-            <p-button label="Voltar para minha conta" variant="outlined"/>
+            <p-button label="Voltar para minha conta" variant="outlined" (onClick)="handleCreditCardForm()"/>
             <p-button label="Cadastrar novo cartão"/>
           </div>
         </form>
