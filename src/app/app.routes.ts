@@ -13,7 +13,7 @@ export const routes: Routes = [
     component: ListClients
   },
   {
-    path: 'client/:id',
+    path: 'client/edit/:id',
     component: EditClient
   }
 ];
