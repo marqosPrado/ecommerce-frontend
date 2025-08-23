@@ -3,8 +3,13 @@ import {ClientRegister} from './components/client-register/client-register';
 import {ListClients} from './components/list-clients/list-clients';
 import {EditClient} from './components/edit-client/edit-client';
 import {ClientWallet} from './components/client-wallet/client-wallet';
+import {Main} from './components/main/main';
 
 export const routes: Routes = [
+  {
+    path: '',
+    component: Main
+  },
   {
     path: 'client/register',
     component: ClientRegister
