@@ -1,0 +1,17 @@
+<div class="gallery-container" style="display: flex; gap: 1rem; width: fit-content; height: fit-content">
+  <div class="thumbnails" style="display: flex; flex-direction: column; gap: 0.5rem;">
+    @for (image of images; track $index; let i = $index) {
+      <img
+        [src]="image"
+        [class.active]="i === selectedIndex"
+        (click)="selectImage(i)"
+        style="width: 60px; height: 60px; object-fit: cover; cursor: pointer; border: 2px solid transparent; border-radius: 5px; transition: border 0.2s;"
+      />
+    }
+  </div>
+
+  <!-- Preview -->
+  <div class="preview">
+    <img [src]="images[selectedIndex]" style="width: 624px; height: 600px; object-fit: cover; border-radius: 10px;" />
+  </div>
+</div>
