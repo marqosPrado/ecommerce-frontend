@@ -20,13 +20,13 @@ import {PrimeTemplate} from 'primeng/api';
   styleUrl: './main.css'
 })
 export class Main implements OnInit {
-  watches: Watch[] = [];
+  watches: Product[] = [];
 
   ngOnInit(): void {
     this.watches = this.getAllWatches();
   }
 
-  getAllWatches(): Watch[] {
+  getAllWatches(): Product[] {
     return [
       {
         id: 1,
@@ -38,10 +38,17 @@ export class Main implements OnInit {
         mechanism: 'Cronógrafo',
         boxFormat: 'Redonda – 40 mm de diâmetro, 11 mm de espessura',
         boxMaterial: 'Aço Inox',
-        dial: 'Prata Sunray, indexes grandes e luminosos, calendário entre 4h e 5h'
+        dial: 'Prata Sunray, indexes grandes e luminosos, calendário entre 4h e 5h',
+        images: [
+          'https://golden.vtexassets.com/arquivos/ids/2939097-800-800/Relogio-Masculino-Solar-Tech-Orient-Prata-MBSS1448-P2SX.jpg?v=638914216648270000',
+          'https://golden.vtexassets.com/arquivos/ids/2939098-800-800/Relogio-Masculino-Solar-Tech-Orient-Prata-MBSS1448-P2SX.jpg?v=638914216676130000',
+          'https://golden.vtexassets.com/arquivos/ids/2939099-800-800/Relogio-Masculino-Solar-Tech-Orient-Prata-MBSS1448-P2SX.jpg?v=638914216696300000',
+          'https://golden.vtexassets.com/arquivos/ids/2939100-800-800/Relogio-Masculino-Solar-Tech-Orient-Prata-MBSS1448-P2SX.jpg?v=638914216717570000',
+          'https://golden.vtexassets.com/arquivos/ids/2939101-800-800/Relogio-Masculino-Solar-Tech-Orient-Prata-MBSS1448-P2SX.jpg?v=638914216788900000',
+        ]
       },
       {
-        id: 1,
+        id: 2,
         title: 'Relógio Orient Submariner',
         price: 1999.00,
         gender: 'Masculino',
@@ -50,10 +57,17 @@ export class Main implements OnInit {
         mechanism: 'Cronógrafo',
         boxFormat: 'Redonda – 40 mm de diâmetro, 11 mm de espessura',
         boxMaterial: 'Aço Inox',
-        dial: 'Prata Sunray, indexes grandes e luminosos, calendário entre 4h e 5h'
+        dial: 'Prata Sunray, indexes grandes e luminosos, calendário entre 4h e 5h',
+        images: [
+          'https://golden.vtexassets.com/arquivos/ids/2939097-800-800/Relogio-Masculino-Solar-Tech-Orient-Prata-MBSS1448-P2SX.jpg?v=638914216648270000',
+          'https://golden.vtexassets.com/arquivos/ids/2939098-800-800/Relogio-Masculino-Solar-Tech-Orient-Prata-MBSS1448-P2SX.jpg?v=638914216676130000',
+          'https://golden.vtexassets.com/arquivos/ids/2939099-800-800/Relogio-Masculino-Solar-Tech-Orient-Prata-MBSS1448-P2SX.jpg?v=638914216696300000',
+          'https://golden.vtexassets.com/arquivos/ids/2939100-800-800/Relogio-Masculino-Solar-Tech-Orient-Prata-MBSS1448-P2SX.jpg?v=638914216717570000',
+          'https://golden.vtexassets.com/arquivos/ids/2939101-800-800/Relogio-Masculino-Solar-Tech-Orient-Prata-MBSS1448-P2SX.jpg?v=638914216788900000',
+        ]
       },
       {
-        id: 1,
+        id: 3,
         title: 'Relógio Orient Submariner',
         price: 1999.00,
         gender: 'Masculino',
@@ -62,67 +76,14 @@ export class Main implements OnInit {
         mechanism: 'Cronógrafo',
         boxFormat: 'Redonda – 40 mm de diâmetro, 11 mm de espessura',
         boxMaterial: 'Aço Inox',
-        dial: 'Prata Sunray, indexes grandes e luminosos, calendário entre 4h e 5h'
-      },
-      {
-        id: 1,
-        title: 'Relógio Orient Submariner',
-        price: 1999.00,
-        gender: 'Masculino',
-        line: 'Automático',
-        style: 'Diver',
-        mechanism: 'Cronógrafo',
-        boxFormat: 'Redonda – 40 mm de diâmetro, 11 mm de espessura',
-        boxMaterial: 'Aço Inox',
-        dial: 'Prata Sunray, indexes grandes e luminosos, calendário entre 4h e 5h'
-      },
-      {
-        id: 1,
-        title: 'Relógio Orient Submariner',
-        price: 1999.00,
-        gender: 'Masculino',
-        line: 'Automático',
-        style: 'Diver',
-        mechanism: 'Cronógrafo',
-        boxFormat: 'Redonda – 40 mm de diâmetro, 11 mm de espessura',
-        boxMaterial: 'Aço Inox',
-        dial: 'Prata Sunray, indexes grandes e luminosos, calendário entre 4h e 5h'
-      },
-      {
-        id: 1,
-        title: 'Relógio Orient Submariner',
-        price: 1999.00,
-        gender: 'Masculino',
-        line: 'Automático',
-        style: 'Diver',
-        mechanism: 'Cronógrafo',
-        boxFormat: 'Redonda – 40 mm de diâmetro, 11 mm de espessura',
-        boxMaterial: 'Aço Inox',
-        dial: 'Prata Sunray, indexes grandes e luminosos, calendário entre 4h e 5h'
-      },
-      {
-        id: 1,
-        title: 'Relógio Orient Submariner',
-        price: 1999.00,
-        gender: 'Masculino',
-        line: 'Automático',
-        style: 'Diver',
-        mechanism: 'Cronógrafo',
-        boxFormat: 'Redonda – 40 mm de diâmetro, 11 mm de espessura',
-        boxMaterial: 'Aço Inox',
-        dial: 'Prata Sunray, indexes grandes e luminosos, calendário entre 4h e 5h'
-      },
-      {
-        id: 1,
-        title: 'Relógio Orient Submariner',
-        price: 1999.00,
-        gender: 'Masculino',
-        line: 'Automático',
-        style: 'Diver',
-        mechanism: 'Cronógrafo',
-        boxFormat: 'Redonda – 40 mm de diâmetro, 11 mm de espessura',
-        boxMaterial: 'Aço Inox',
-        dial: 'Prata Sunray, indexes grandes e luminosos, calendário entre 4h e 5h'
+        dial: 'Prata Sunray, indexes grandes e luminosos, calendário entre 4h e 5h',
+        images: [
+          'https://golden.vtexassets.com/arquivos/ids/2939097-800-800/Relogio-Masculino-Solar-Tech-Orient-Prata-MBSS1448-P2SX.jpg?v=638914216648270000',
+          'https://golden.vtexassets.com/arquivos/ids/2939098-800-800/Relogio-Masculino-Solar-Tech-Orient-Prata-MBSS1448-P2SX.jpg?v=638914216676130000',
+          'https://golden.vtexassets.com/arquivos/ids/2939099-800-800/Relogio-Masculino-Solar-Tech-Orient-Prata-MBSS1448-P2SX.jpg?v=638914216696300000',
+          'https://golden.vtexassets.com/arquivos/ids/2939100-800-800/Relogio-Masculino-Solar-Tech-Orient-Prata-MBSS1448-P2SX.jpg?v=638914216717570000',
+          'https://golden.vtexassets.com/arquivos/ids/2939101-800-800/Relogio-Masculino-Solar-Tech-Orient-Prata-MBSS1448-P2SX.jpg?v=638914216788900000',
+        ]
       },
     ];
   }
