@@ -1,16 +1,18 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, signal} from '@angular/core';
 import {Header} from '../../common/header/header';
 import {FloatLabel} from 'primeng/floatlabel';
 import {InputText} from 'primeng/inputtext';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {Select} from 'primeng/select';
 import {DatePicker} from 'primeng/datepicker';
-import {Button} from 'primeng/button';
+import {Button, ButtonDirective, ButtonIcon, ButtonLabel} from 'primeng/button';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {CommonModule} from '@angular/common';
 import {ConfirmDialog} from 'primeng/confirmdialog';
 import {Toast} from 'primeng/toast';
 import {ConfirmationService, MessageService} from 'primeng/api';
+import {InputMask} from 'primeng/inputmask';
+import {Textarea} from 'primeng/textarea';
 
 @Component({
   selector: 'app-edit-client',
@@ -27,14 +29,20 @@ import {ConfirmationService, MessageService} from 'primeng/api';
     ConfirmDialog,
     Toast,
     RouterLink,
+    InputMask,
+    Textarea,
+    ButtonDirective,
+    ButtonLabel,
+    ButtonIcon,
   ],
-  providers: [ConfirmationService],
+  providers: [ConfirmationService, MessageService],
   templateUrl: './edit-client.html',
   styleUrl: './edit-client.css'
 })
 export class EditClient implements OnInit{
   editClientForm!: FormGroup;
   clientId!: string;
+  showAddressForm = signal(false);
 
   constructor(
     private fb: FormBuilder,
@@ -58,6 +66,19 @@ export class EditClient implements OnInit{
       email: [{value: client.email, disabled: true}, [Validators.required, Validators.email]],
     });
   }
+
+  newClientAddressForm = new FormGroup({
+    residenceType: new FormControl('', [Validators.required]),
+    logradouroType: new FormControl('', [Validators.required]),
+    logradouro: new FormControl('', [Validators.required]),
+    neighbourhood: new FormControl('', [Validators.required]),
+    residenceNumber: new FormControl('', [Validators.required]),
+    postalCode: new FormControl('', [Validators.required]),
+    city: new FormControl('', [Validators.required]),
+    state: new FormControl('', [Validators.required]),
+    country: new FormControl('', [Validators.required]),
+    observations: new FormControl('', [])
+  })
 
   getClientById(id: string) {
     return {
@@ -92,5 +113,13 @@ export class EditClient implements OnInit{
         }, 2000)
       }
     });
+  }
+
+  addNewAddress() {
+    this.showAddressForm.set(true)
+  }
+
+  cancelNewAddress() {
+    this.showAddressForm.set(false)
   }
 }
