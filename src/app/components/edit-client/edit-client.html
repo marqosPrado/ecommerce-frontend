@@ -2,7 +2,7 @@
 
 <p-toast position="bottom-right"/>
 <p-confirm-dialog></p-confirm-dialog>
-<div style="width: 100%; display: flex; flex-direction: column; padding: 4rem; gap: 2rem">
+<div style="width: 100%; display: flex; flex-direction: column; padding: 7rem; gap: 2rem">
   <div style="display: flex; flex-direction: row; align-items: center; gap: 0.5rem">
     <i class="pi pi-user"></i>
     <h2>MEUS DADOS</h2>
@@ -103,34 +103,269 @@
             variant="outlined"
             severity="warn"
             [style]="{'width': '50%', 'padding': '0.4rem 0.35rem'}"
+            (click)="addNewAddress()"
           />
         </div>
 
-        <div
-          style="width: 100%; border: 1px solid #6b280c;border-radius: 4px; padding: 0.5rem;display: flex; flex-direction: row; justify-content: space-between">
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; padding: 0.5rem">
-            <div>
-              <span>Endereço principal</span>
-            </div>
-            <div>
-              <span>Rua Antônio Ruiz Veiga</span>
-            </div>
-            <div>
-              <span>Número: 100, BL 03 AP 204</span>
-            </div>
-            <div>
-              <span>CEP: 08773495 - Mogi das Cruzes</span>
-            </div>
-          </div>
+        @if (showAddressForm()) {
+          <div style="display: flex; flex-direction: column; gap: 1rem">
+            <button
+              pButton
+              (click)="cancelNewAddress()"
+            >
+              <i class="pi pi-chevron-left" pButtonIcon></i>
+              <span pButtonLabel>Voltar</span>
+            </button>
 
-          <div style="height: 100%; display: flex; align-items: flex-end">
-            <p-button
-              severity="secondary"
-              icon="pi pi-pencil"
-              label="Editar"
-            />
+            <form style="display: flex; flex-direction: column; gap: 1rem" [formGroup]="newClientAddressForm">
+              <div style="display: flex; flex-direction: row; width: 100%; gap: 8px">
+                <div [style]="{'width': '45%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
+                  <p-floatlabel variant="on" [style]="{'width': '100%'}">
+                    <p-select
+                      [options]="[
+                        { name: 'Casa', value: 'CASA' },
+                        { name: 'Apartamento', value: 'APTO' },
+                        { name: 'Comércio', value: 'COM' }
+                      ]"
+                      optionLabel="name"
+                      inputId="residenceType"
+                      [style]="{'width': '100%'}"
+                      size="large"
+                      formControlName="residenceType"
+                    />
+                    <label for="residenceType">Tipo de residência*</label>
+                  </p-floatlabel>
+                  @if (newClientAddressForm.get('residenceType')?.invalid && newClientAddressForm.get('residenceType')?.touched) {
+                    <div class="alert alert-danger">
+                      @if (newClientAddressForm.get('residenceType')?.hasError('required')) {
+                        <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o tipo de residência.</div>
+                      }
+                    </div>
+                  }
+                </div>
+
+                <div [style]="{'width': '55%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
+                  <p-floatlabel
+                    variant="on"
+                    [style]="{'width': '100%'}">
+                    <input
+                      pInputText
+                      style="width: 100%"
+                      pSize="large"
+                      id="streetType"
+                      formControlName="logradouroType"
+                    />
+                    <label for="streetType">Tipo de logradouro*</label>
+                  </p-floatlabel>
+                  @if (newClientAddressForm.get('logradouroType')?.invalid && newClientAddressForm.get('logradouroType')?.touched) {
+                    <div class="alert alert-danger">
+                      @if (newClientAddressForm.get('logradouroType')?.hasError('required')) {
+                        <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o tipo do logradouro.</div>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; width: 100%; gap: 8px">
+                <div [style]="{'width': '100%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
+                  <p-floatlabel variant="on" [style]="{'width': '100%'}">
+                    <input
+                      pInputText
+                      style="width: 100%"
+                      id="street"
+                      pSize="large"
+                      formControlName="logradouro"
+                    />
+                    <label for="street">Logradouro*</label>
+                  </p-floatlabel>
+                  @if (newClientAddressForm.get('logradouro')?.invalid && newClientAddressForm.get('logradouro')?.touched) {
+                    <div class="alert alert-danger">
+                      @if (newClientAddressForm.get('logradouro')?.hasError('required')) {
+                        <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o número.</div>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <div style="display: flex; flex-direction: row; width: 100%; gap: 8px">
+                <div [style]="{'width': '60%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
+                  <p-floatlabel variant="on" [style]="{'width': '100%'}">
+                    <input
+                      pInputText
+                      id="district"
+                      pSize="large"
+                      style="width: 100%"
+                      formControlName="neighbourhood"
+                    />
+                    <label for="district">Bairro*</label>
+                  </p-floatlabel>
+                  @if (newClientAddressForm.get('neighbourhood')?.invalid && newClientAddressForm.get('neighbourhood')?.touched) {
+                    <div class="alert alert-danger">
+                      @if (newClientAddressForm.get('neighbourhood')?.hasError('required')) {
+                        <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o número.</div>
+                      }
+                    </div>
+                  }
+                </div>
+
+                <div [style]="{'width': '40%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
+                  <p-floatlabel variant="on" [style]="{'width': '100%'}">
+                    <input
+                      pInputText
+                      id="number"
+                      pSize="large"
+                      style="width: 100%"
+                      formControlName="residenceNumber"
+                    />
+                    <label for="number">Número*</label>
+                  </p-floatlabel>
+                  @if (newClientAddressForm.get('residenceNumber')?.invalid && newClientAddressForm.get('residenceNumber')?.touched) {
+                    <div class="alert alert-danger">
+                      @if (newClientAddressForm.get('residenceNumber')?.hasError('required')) {
+                        <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o número.</div>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <div style="display: flex; flex-direction: row; width: 100%; gap: 8px">
+                <div [style]="{'width': '30%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
+                  <p-floatlabel variant="on" [style]="{'width': '100%'}">
+                    <p-inputmask
+                      mask="99999-999"
+                      id="cep"
+                      size="large"
+                      [style]="{'width': '100%'}"
+                      formControlName="postalCode"
+                    ></p-inputmask>
+                    <label for="cep">CEP*</label>
+                  </p-floatlabel>
+                  @if (newClientAddressForm.get('postalCode')?.invalid && newClientAddressForm.get('postalCode')?.touched) {
+                    <div class="alert alert-danger">
+                      @if (newClientAddressForm.get('postalCode')?.hasError('required')) {
+                        <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o CEP.</div>
+                      }
+                    </div>
+                  }
+                </div>
+
+                <div [style]="{'width': '70%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
+                  <p-floatlabel variant="on" [style]="{'width': '100%'}">
+                    <input
+                      pInputText
+                      id="city"
+                      style="width: 100%"
+                      pSize="large"
+                      formControlName="city"
+                    />
+                    <label for="city">Cidade*</label>
+                  </p-floatlabel>
+                  @if (newClientAddressForm.get('city')?.invalid && newClientAddressForm.get('city')?.touched) {
+                    <div class="alert alert-danger">
+                      @if (newClientAddressForm.get('city')?.hasError('required')) {
+                        <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar a cidade.</div>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <div style="display: flex; flex-direction: row; width: 100%; gap: 8px">
+                <div [style]="{'width': '50%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
+                  <p-floatlabel variant="on" [style]="{'width': '100%'}">
+                    <input
+                      pInputText
+                      id="state"
+                      style="width: 100%"
+                      pSize="large"
+                      formControlName="state"
+                    />
+                    <label for="state">Estado*</label>
+                  </p-floatlabel>
+                  @if (newClientAddressForm.get('state')?.invalid && newClientAddressForm.get('state')?.touched) {
+                    <div class="alert alert-danger">
+                      @if (newClientAddressForm.get('state')?.hasError('required')) {
+                        <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o estado.</div>
+                      }
+                    </div>
+                  }
+                </div>
+
+                <div [style]="{'width': '50%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
+                  <p-floatlabel variant="on" [style]="{'width': '100%'}">
+                    <input
+                      pInputText
+                      id="country"
+                      style="width: 100%"
+                      pSize="large"
+                      formControlName="country"
+                    />
+                    <label for="country">País*</label>
+                  </p-floatlabel>
+                  @if (newClientAddressForm.get('country')?.invalid && newClientAddressForm.get('country')?.touched) {
+                    <div class="alert alert-danger">
+                      @if (newClientAddressForm.get('country')?.hasError('required')) {
+                        <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o país.</div>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <p-floatlabel variant="on" [style]="{'width': '100%'}">
+                <textarea
+                  pTextarea
+                  id="notes"
+                  rows="5"
+                  [autoResize]="false"
+                  style="width: 100%;resize: none"
+                  formControlName="observations"
+                ></textarea>
+                <label for="notes">Observações (opcional)</label>
+              </p-floatlabel>
+
+
+              <div style="width: 100%; display: flex; justify-content: center; align-items: center">
+                <p-button
+                  severity="primary"
+                  size="large"
+                  label="Cadastrar endereço"
+                  [disabled]="newClientAddressForm.invalid"
+                />
+              </div>
+
+            </form>
           </div>
-        </div>
+        } @else {
+          <div
+            style="width: 100%; border: 1px solid #6b280c;border-radius: 4px; padding: 0.5rem;display: flex; flex-direction: row; justify-content: space-between">
+            <div style="display: flex; flex-direction: column; gap: 0.5rem; padding: 0.5rem">
+              <div>
+                <span>Endereço principal</span>
+              </div>
+              <div>
+                <span>Rua Antônio Ruiz Veiga</span>
+              </div>
+              <div>
+                <span>Número: 100, BL 03 AP 204</span>
+              </div>
+              <div>
+                <span>CEP: 08773495 - Mogi das Cruzes</span>
+              </div>
+            </div>
+
+            <div style="height: 100%; display: flex; align-items: flex-end">
+              <p-button
+                severity="secondary"
+                icon="pi pi-pencil"
+                label="Editar"
+              />
+            </div>
+          </div>
+        }
       </section>
     </div>
 
