@@ -1,0 +1,35 @@
+<app-header></app-header>
+<app-line-session></app-line-session>
+<app-banner></app-banner>
+
+<main style="width: 100%; display: flex; flex-direction: column; padding: 6rem; align-items: center; justify-content: center; gap: 6rem">
+  <div style="display: flex; flex-direction: column; width: 100%; gap: 4rem; justify-content: center; align-items: center; ">
+    <h2 style="font-size: 36px;">Relógios em Destaque</h2>
+
+    <section style="width: 100%; display: flex; justify-content: center; align-items: center">
+      <p-carousel [value]="watches" [numVisible]="4" [circular]="false" style="max-width: 100%;">
+        <ng-template pTemplate="item" let-watch>
+          <app-product-card
+            [title]="watch.title"
+            [price]="watch.price"
+          ></app-product-card>
+        </ng-template>
+      </p-carousel>
+    </section>
+  </div>
+
+  <div style="display: flex; flex-direction: column; width: 100%; gap: 4rem; justify-content: center; align-items: center; ">
+    <h2 style="font-size: 36px">Relógios Casio</h2>
+
+    <section style="width: 100%; display: flex; justify-content: center; align-items: center">
+      <p-carousel [value]="watches" [numVisible]="4" [circular]="false" style="max-width: 100%;">
+        <ng-template pTemplate="item" let-watch>
+          <app-product-card
+            [title]="watch.title"
+            [price]="watch.price"
+          ></app-product-card>
+        </ng-template>
+      </p-carousel>
+    </section>
+  </div>
+</main>
