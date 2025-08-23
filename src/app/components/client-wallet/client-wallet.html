@@ -5,7 +5,11 @@
       <i class="pi pi-wallet"></i>
       <h2>Minha carteira</h2>
     </div>
-    <span>Gerencie seus cartões de crédito ou adicione novos</span>
+    @if (showCreditCardForm()) {
+      <span>Cadastre abaixo o seu cartão de crédito</span>
+    } @else {
+      <span>Gerencie seus cartões de crédito ou adicione novos</span>
+    }
   </div>
 
   <div style="display: flex; flex-direction: column; gap: 2rem">
