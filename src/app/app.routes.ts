@@ -5,6 +5,7 @@ import {EditClient} from './components/edit-client/edit-client';
 import {ClientWallet} from './components/client-wallet/client-wallet';
 import {Main} from './components/main/main';
 import {ProductDetails} from './components/product-details/product-details';
+import {Cart} from './components/cart/cart';
 
 export const routes: Routes = [
   {
@@ -30,5 +31,9 @@ export const routes: Routes = [
   {
     path: 'produto/:id',
     component: ProductDetails
+  },
+  {
+    path: 'carrinho',
+    component: Cart
   }
 ];
