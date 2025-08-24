@@ -7,7 +7,6 @@ import {Select} from 'primeng/select';
 import {RadioButton} from 'primeng/radiobutton';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {CreditCard, CreditCardTypes} from '../../types/CreditCard';
-import {InputText} from 'primeng/inputtext';
 
 @Component({
   selector: 'app-cart',
