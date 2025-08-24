@@ -1,0 +1,84 @@
+<main style="width: 100%; min-height: 100vh; display: flex; flex-direction: column;; padding: 6rem">
+  <header style="padding: 1rem 1.5rem;">
+    <h2 style="margin: 0; display: flex; align-items: center; gap: .5rem;">
+      <i class="pi pi-cog" style="font-size: 20px;"></i>
+      Administração
+    </h2>
+  </header>
+
+  <section style="flex: 1; padding: 1rem 1.5rem;">
+    <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+      <p-card header="Clientes" subheader="Gerencie seus clientes" class="shadow-2" [style]="{padding: '1rem'}">
+        <ng-template pTemplate="header">
+          <div style="display: flex; align-items: center; gap: .5rem;">
+            <i class="pi pi-users" style="font-size: 1.25rem;"></i>
+            <span><strong>Clientes</strong></span>
+          </div>
+        </ng-template>
+
+        <p style="margin: 0;">
+          Cadastre, edite e visualize informações dos clientes, incluindo dados de contato e status.
+        </p>
+
+        <ng-template pTemplate="footer">
+          <p-button
+            [fluid]="true"
+            label="Gerenciar Clientes"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            routerLink="/admin/clientes"
+            aria-label="Ir para gerenciamento de clientes">
+          </p-button>
+        </ng-template>
+      </p-card>
+
+      <p-card header="Produtos" subheader="Catálogo e estoque" class="shadow-2" [style]="{padding: '1rem'}" >
+        <ng-template pTemplate="header">
+          <div style="display: flex; align-items: center; gap: .5rem;">
+            <i class="pi pi-box" style="font-size: 1.25rem;"></i>
+            <span><strong>Produtos</strong></span>
+          </div>
+        </ng-template>
+
+        <p style="margin: 0;">
+          Mantenha o catálogo atualizado: crie, edite e gerencie preços, categorias e disponibilidade.
+        </p>
+
+        <ng-template pTemplate="footer">
+          <p-button
+            [fluid]="true"
+            label="Gerenciar Produtos"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            routerLink="/admin/produtos"
+            aria-label="Ir para gerenciamento de produtos">
+          </p-button>
+        </ng-template>
+      </p-card>
+
+      <p-card header="Análises" subheader="Indicadores e relatórios" class="shadow-2" [style]="{padding: '1rem'}" >
+        <ng-template pTemplate="header">
+          <div style="display: flex; align-items: center; gap: .5rem;">
+            <i class="pi pi-chart-line" style="font-size: 1.25rem;"></i>
+            <span><strong>Análises</strong></span>
+          </div>
+        </ng-template>
+
+        <p style="margin: 0;">
+          Acompanhe métricas de vendas, clientes e produtos com gráficos e relatórios consolidados.
+        </p>
+
+        <ng-template pTemplate="footer">
+          <p-button
+            [fluid]="true"
+            label="Ver Análises"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            routerLink="/admin/analises"
+            aria-label="Ir para a página de análises">
+          </p-button>
+        </ng-template>
+      </p-card>
+    </div>
+  </section>
+</main>
