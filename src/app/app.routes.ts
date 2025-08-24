@@ -6,6 +6,8 @@ import {ClientWallet} from './components/client-wallet/client-wallet';
 import {Main} from './components/main/main';
 import {ProductDetails} from './components/product-details/product-details';
 import {Cart} from './components/cart/cart';
+import {ProductSearch} from './components/product-search/product-search';
+import {Login} from './components/login/login';
 
 export const routes: Routes = [
   {
@@ -35,5 +37,24 @@ export const routes: Routes = [
   {
     path: 'carrinho',
     component: Cart
-  }
+  },
+  {
+    path: 'login',
+    component: Login
+  },
+  {
+    path: 'produto',
+    component: ProductSearch
+  },
+  // {
+  //   path: 'administrador',
+  //   component: null
+  // },
+  // {
+  //   path: 'administrador/clientes',
+  //   component: null
+  // },
+  // {
+  //   path: 'admistrador/produto/cadastro'
+  // }
 ];
