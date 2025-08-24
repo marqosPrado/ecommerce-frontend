@@ -1,0 +1,142 @@
+<app-header></app-header>
+<app-line-session></app-line-session>
+
+<main style="width: 100%; height: 100%; padding: 4rem">
+  <div style="width: 100%; display: flex; flex-direction: row; gap: 1rem">
+    <div style="width: 75%; height: 50%">
+      <p-stepper [value]="activeStep" class="basis-[50rem]">
+        <p-step-list>
+          <p-step [value]="1">Carrinho</p-step>
+          <p-step [value]="2">Header II</p-step>
+          <p-step [value]="3">Header II</p-step>
+        </p-step-list>
+        <p-step-panels>
+          <p-step-panel [value]="1">
+            <ng-template #content let-activateCallback="activateCallback">
+              <div class="flex flex-col h-48">
+                <div
+                  style="display: flex; flex-direction: column; gap: 2rem"
+                  class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium"
+                >
+                  <div style="width: 100%; display: flex; justify-content: space-between; align-items: center">
+                    <div style="display: flex; gap: 0.5rem; align-items: center">
+                      <i class="pi pi-shopping-bag"></i>
+                      <span>Produto e Serviço</span>
+                    </div>
+
+                    <p-button icon="pi pi-trash" size="large" label="Remover todos os produto"/>
+                  </div>
+
+                  <div style="width: 100%; display: flex;">
+                    <div style="width: 60%; max-width: 60%; display: flex; gap: 0.5rem; flex-direction: row;">
+                      <img
+                        src="https://golden.vtexassets.com/arquivos/ids/2939097-800-800/Relogio-Masculino-Solar-Tech-Orient-Prata-MBSS1448-P2SX.jpg?v=638914216648270000"
+                        style="width: 120px; height: 120px; object-fit: cover; cursor: pointer; border: 2px solid transparent; border-radius: 5px; transition: border 0.2s;"
+                      />
+
+                      <div style="display: flex; flex-direction: column; gap: 0.5rem; padding: 0.5rem">
+                        <div style="display: flex; flex-direction: column; gap: 0.3rem">
+                          <span>Orient</span>
+                          <span style="font-weight: bold">Titulo do produto</span>
+                        </div>
+
+                        <div style="display: flex; flex-direction: column">
+                          <span style="font-size: 12px">Com desconto à vista: <strong>R$ 444,99</strong></span>
+                          <span style="font-size: 12px">Parcelado no cartão sem juros: <strong>R$ 444,99</strong></span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div style="width: 20%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0.5rem;">
+                      <span>Quant.</span>
+                      <p-select
+                        [options]="[
+                        {name: '1', value: '1'},
+                        {name: '2', value: '2'},
+                        {name: '3', value: '3'},
+                        {name: '4', value: '4'},
+                        {name: '5', value: '5'},
+                        {name: '6', value: '6'},
+                        {name: '7', value: '7'},
+                      ]"
+                        optionLabel="name"
+                        class="w-full md:w-56"
+                        [virtualScroll]="true"
+                        [virtualScrollItemSize]="7"
+                        appendTo="body"
+                      />
+                      <p-button icon="pi pi-trash" size="small" label="Remover" variant="outlined" />
+                    </div>
+
+                    <div style="width: 20%; display: flex; flex-direction: column; justify-content: center; align-items: end">
+                      <span>Preço à vista:</span>
+                      <span style="font-size: 16px; font-weight: bold">R$ 449,00</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </p-step-panel>
+
+          <p-step-panel [value]="2">
+            <ng-template #content>
+              <div class="flex flex-col h-48">
+                <div
+                  class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium"
+                >
+                  Content II
+                </div>
+              </div>
+            </ng-template>
+          </p-step-panel>
+
+          <p-step-panel [value]="3">
+            <ng-template #content let-activateCallback="activateCallback">
+              <div class="flex flex-col h-48">
+                <div
+                  class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium"
+                >
+                  Content III
+                </div>
+              </div>
+            </ng-template>
+          </p-step-panel>
+        </p-step-panels>
+      </p-stepper>
+    </div>
+
+    <div style="width: 25%; padding: 1rem; display: flex; flex-direction: column; gap: 4rem">
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <i class="pi pi-file" style="font-size: 22px" ></i>
+        <h2>Resumo</h2>
+      </div>
+
+      <div style="display: flex; flex-direction: row; justify-content: space-between">
+        <span style="font-size: 14px">Valores dos produtos</span>
+        <span><strong>R$ 5589,99</strong></span>
+      </div>
+
+      <div style="width: 100%; display: flex; gap: 0.5rem; margin-top: 1rem; flex-direction: column; align-items: center">
+        <p-button
+          label="Próximo"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          size="large"
+          [style]="{width: '100%'}"
+          (onClick)="nextStep()"
+          [disabled]="activeStep === 3"
+        />
+
+        <p-button
+          label="Voltar"
+          severity="secondary"
+          icon="pi pi-arrow-left"
+          size="large"
+          [style]="{width: '100%'}"
+          (onClick)="previousStep()"
+          [disabled]="activeStep === 1"
+        />
+      </div>
+    </div>
+  </div>
+</main>
