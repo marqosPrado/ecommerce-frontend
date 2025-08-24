@@ -8,6 +8,7 @@ import {ProductDetails} from './components/product-details/product-details';
 import {Cart} from './components/cart/cart';
 import {ProductSearch} from './components/product-search/product-search';
 import {Login} from './components/login/login';
+import {Admin} from './components/admin/admin';
 
 export const routes: Routes = [
   {
@@ -46,10 +47,10 @@ export const routes: Routes = [
     path: 'produto',
     component: ProductSearch
   },
-  // {
-  //   path: 'administrador',
-  //   component: null
-  // },
+  {
+    path: 'administrador',
+    component: Admin
+  },
   // {
   //   path: 'administrador/clientes',
   //   component: null
