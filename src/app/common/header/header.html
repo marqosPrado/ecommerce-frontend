@@ -1,15 +1,14 @@
 <header class="header-container">
   <div class="header-principal">
-    <h1 class="main-title">Times</h1>
-
-<!--    <p-iconfield iconPosition="left">-->
-<!--      <p-inputicon class="pi pi-search" />-->
-<!--      <input type="text" pInputText placeholder="Search" />-->
-<!--    </p-iconfield>-->
+    <a href="/" style="text-decoration: none"><h1 class="main-title">Times</h1></a>
 
     <div class="header-buttons">
-      <p>Menu</p>
-      <p>Logout</p>
+      <a [routerLink]="['/minha-conta']" aria-label="Minha conta" class="header-icon" title="Minha conta">
+        <i class="pi pi-cog"></i>
+      </a>
+      <a [routerLink]="['/carrinho']" aria-label="Carrinho" class="header-icon" title="Carrinho">
+        <i class="pi pi-shopping-cart"></i>
+      </a>
     </div>
   </div>
 </header>
