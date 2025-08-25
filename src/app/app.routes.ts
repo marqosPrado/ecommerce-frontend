@@ -12,6 +12,7 @@ import {Admin} from './components/admin/admin';
 import {AdminClientManagement} from './components/admin-client-management/admin-client-management';
 import {AdminProductManagement} from './components/admin-product-management/admin-product-management';
 import {AdminAnalytics} from './components/admin-analytics/admin-analytics';
+import {ClientDashboard} from './components/client-dashboard/client-dashboard';
 
 export const routes: Routes = [
   {
@@ -29,6 +30,10 @@ export const routes: Routes = [
   {
     path: 'client/edit/:id',
     component: EditClient
+  },
+  {
+    path: 'minha-conta',
+    component: ClientDashboard
   },
   {
     path: 'minha-conta/carteira',
