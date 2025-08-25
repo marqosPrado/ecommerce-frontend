@@ -48,7 +48,7 @@ export const routes: Routes = [
     component: ProductSearch
   },
   {
-    path: 'administrador',
+    path: 'admin',
     component: Admin
   },
   // {
