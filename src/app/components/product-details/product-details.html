@@ -67,6 +67,7 @@
       <p-carousel [value]="aiRecommendations" [numVisible]="4" [circular]="false" style="max-width: 100%;">
         <ng-template pTemplate="item" let-product>
           <app-product-card
+            [id]="product.id"
             [title]="product.title"
             [price]="product.price"
           ></app-product-card>

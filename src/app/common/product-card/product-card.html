@@ -26,6 +26,10 @@
 
   <!-- Botão -->
   <div style="margin-top: 0.5rem;">
-    <p-button label="Ver produto" [style]="{width: '100%'}"></p-button>
+    <p-button
+      label="Ver produto"
+      [style]="{ width: '100%' }"
+      [routerLink]="['/produto', id]"
+    ></p-button>
   </div>
 </div>
