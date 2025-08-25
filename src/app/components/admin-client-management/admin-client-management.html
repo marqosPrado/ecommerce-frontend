@@ -1,0 +1,93 @@
+<main style="width: 100%; min-height: 100vh; display: flex; flex-direction: column; padding: 6rem;">
+  <header style="padding: 0 0 1rem 0;">
+    <h2 style="margin: 0; display: flex; align-items: center; gap: .5rem;">
+      <i class="pi pi-users" style="font-size: 20px;"></i>
+      Gerenciamento de Clientes
+    </h2>
+    <p style="margin: .25rem 0 0 0; color: var(#6b7280);">
+      Visualize, filtre e desative/reative clientes.
+    </p>
+  </header>
+
+  <section style="flex: 1;">
+    <p-card class="shadow-2" [style]="{ padding: '1rem' }">
+      <ng-template pTemplate="header">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem;">
+          <div style="display: flex; align-items: center; gap: .5rem;">
+            <i class="pi pi-database" style="font-size: 1.1rem;"></i>
+            <strong>Clientes</strong>
+          </div>
+          <span style="color: var(#6b7280)">Gerencie o status de atividade dos clientes</span>
+        </div>
+      </ng-template>
+
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin-bottom: .75rem; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: .5rem;">
+          <i class="pi pi-search" style="color: var(#6b7280);"></i>
+          <input
+            pInputText
+            type="text"
+            placeholder="Buscar por nome, e‑mail, CPF ou telefone"
+            style="width: 320px; max-width: 100%;"
+            (input)="onGlobalFilter(dt, $event)"
+          />
+        </div>
+      </div>
+
+      <p-table #dt [value]="clients" dataKey="id" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20]"
+               [tableStyle]="{ 'min-width': '60rem' }"
+               [globalFilterFields]="['fullName','email','cpf','phone']">
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 2rem">#</th>
+            <th>Nome</th>
+            <th>CPF</th>
+            <th>E-mail</th>
+            <th>Telefone</th>
+            <th style="width: 8rem">Status</th>
+            <th style="width: 12rem; text-align: center;">Ações</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-client let-rowIndex="rowIndex">
+          <tr>
+            <td>{{ rowIndex + 1 }}</td>
+            <td>{{ client.fullName }}</td>
+            <td>{{ client.cpf }}</td>
+            <td>{{ client.email }}</td>
+            <td>{{ client.phone }}</td>
+            <td>
+              <p-tag [severity]="getStatusSeverity(client.active)" [value]="client.active ? 'Ativo' : 'Inativo'"></p-tag>
+            </td>
+            <td style="text-align: center;">
+              <div style="display: inline-flex; gap: .5rem;">
+                <p-button
+                  [label]="client.active ? 'Desativar' : 'Reativar'"
+                  [severity]="client.active ? 'danger' : 'success'"
+                  size="small"
+                  iconPos="left"
+                  [icon]="client.active ? 'pi pi-ban' : 'pi pi-check'"
+                  (onClick)="confirmToggle(client)"></p-button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="7" style="text-align: center; color: var(--color-text-muted, #6b7280);">Nenhum cliente encontrado.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+      <ng-template pTemplate="footer">
+        <div style="display: flex; align-items: center; justify-content: flex-end; gap: .5rem;">
+          <small style="color: var(--color-text-primary, #6b7280);">Total: {{ clients.length }} clientes</small>
+        </div>
+      </ng-template>
+    </p-card>
+  </section>
+
+  <p-confirmDialog></p-confirmDialog>
+  <p-toast></p-toast>
+</main>
