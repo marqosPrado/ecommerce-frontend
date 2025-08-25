@@ -9,6 +9,7 @@ import {Cart} from './components/cart/cart';
 import {ProductSearch} from './components/product-search/product-search';
 import {Login} from './components/login/login';
 import {Admin} from './components/admin/admin';
+import {AdminClientManagement} from './components/admin-client-management/admin-client-management';
 
 export const routes: Routes = [
   {
@@ -51,10 +52,10 @@ export const routes: Routes = [
     path: 'admin',
     component: Admin
   },
-  // {
-  //   path: 'administrador/clientes',
-  //   component: null
-  // },
+  {
+    path: 'admin/clientes',
+    component: AdminClientManagement
+  },
   // {
   //   path: 'admistrador/produto/cadastro'
   // }
