@@ -10,6 +10,7 @@ import {ProductSearch} from './components/product-search/product-search';
 import {Login} from './components/login/login';
 import {Admin} from './components/admin/admin';
 import {AdminClientManagement} from './components/admin-client-management/admin-client-management';
+import {AdminProductManagement} from './components/admin-product-management/admin-product-management';
 
 export const routes: Routes = [
   {
@@ -55,6 +56,10 @@ export const routes: Routes = [
   {
     path: 'admin/clientes',
     component: AdminClientManagement
+  },
+  {
+    path: 'admin/produtos',
+    component: AdminProductManagement
   },
   // {
   //   path: 'admistrador/produto/cadastro'
