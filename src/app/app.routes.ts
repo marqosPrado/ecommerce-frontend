@@ -11,6 +11,7 @@ import {Login} from './components/login/login';
 import {Admin} from './components/admin/admin';
 import {AdminClientManagement} from './components/admin-client-management/admin-client-management';
 import {AdminProductManagement} from './components/admin-product-management/admin-product-management';
+import {AdminAnalytics} from './components/admin-analytics/admin-analytics';
 
 export const routes: Routes = [
   {
@@ -60,6 +61,10 @@ export const routes: Routes = [
   {
     path: 'admin/produtos',
     component: AdminProductManagement
+  },
+  {
+    path: 'admin/analises',
+    component: AdminAnalytics
   },
   // {
   //   path: 'admistrador/produto/cadastro'
