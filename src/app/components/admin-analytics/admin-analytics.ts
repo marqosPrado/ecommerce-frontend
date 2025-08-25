@@ -67,7 +67,6 @@ export class AdminAnalytics implements OnInit {
   funnelBarData: any;
   funnelBarOptions: any;
 
-  // Paleta baseada no tema (pega do CSS)
   textColor = '';
   textColorSecondary = '';
   surfaceBorder = '';
@@ -95,7 +94,6 @@ export class AdminAnalytics implements OnInit {
 
     this.updateOverview();
 
-    // Line Chart — Vendas por período
     const sales = this.generateSeries(labels.length, 300, 2000);
     this.salesLineData = {
       labels,
@@ -112,7 +110,6 @@ export class AdminAnalytics implements OnInit {
     };
     this.salesLineOptions = this.baseLineOptions('Volume de vendas no período');
 
-    // Doughnut — Distribuição por categoria
     const catData = this.mockCategoryDistribution();
     this.categoryDoughnutData = {
       labels: ['Eletrônicos', 'Moda', 'Casa & Jardim', 'Esportes'],
@@ -126,7 +123,6 @@ export class AdminAnalytics implements OnInit {
     };
     this.categoryDoughnutOptions = this.basePieOptions();
 
-    // Bar — Perfil de clientes (faixa etária por gênero)
     const ages = ['18-24','25-34','35-44','45-54','55+'];
     const male = this.generateSeries(ages.length, 20, 200);
     const female = this.generateSeries(ages.length, 20, 220);
@@ -139,7 +135,6 @@ export class AdminAnalytics implements OnInit {
     };
     this.customerProfileBarOptions = this.baseBarOptions('Volume de compras por faixa etária e gênero');
 
-    // Stacked Area — Tendências por produto (3 produtos)
     const prodA = this.generateSeries(labels.length, 50, 300);
     const prodB = this.generateSeries(labels.length, 30, 240);
     const prodC = this.generateSeries(labels.length, 20, 200);
@@ -153,7 +148,6 @@ export class AdminAnalytics implements OnInit {
     };
     this.trendsStackedAreaOptions = this.baseLineOptions('Produtos mais vendidos (área empilhada)', true);
 
-    // Radar — Comportamento
     const behaviorLabels = ['Freq. Compras', 'Valor Médio', 'Variedade', 'Fidelidade', 'Carrinhos Abandonados', 'Devoluções'];
     this.behaviorRadarData = {
       labels: behaviorLabels,
@@ -169,7 +163,6 @@ export class AdminAnalytics implements OnInit {
     };
     this.behaviorRadarOptions = this.baseRadarOptions();
 
-    // Funnel (simulado com bar horizontal)
     const funnelStages = ['Visitantes', 'Carrinho', 'Checkout', 'Compra'];
     const funnelValues = this.mockFunnelData();
     this.funnelBarData = {
