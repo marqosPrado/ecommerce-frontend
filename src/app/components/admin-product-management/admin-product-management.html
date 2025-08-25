@@ -1,0 +1,109 @@
+<main style="width: 100%; min-height: 100vh; display: flex; flex-direction: column; padding: 6rem;">
+  <header style="padding: 0 0 1rem 0;">
+    <h2 style="margin: 0; display: flex; align-items: center; gap: .5rem;">
+      <i class="pi pi-box" style="font-size: 20px;"></i>
+      Gerenciamento de Produtos
+    </h2>
+    <p style="margin: .25rem 0 0 0; color: var(#6b7280);">
+      Visualize os produtos por cliente e altere o status de processamento e entrega.
+    </p>
+  </header>
+
+  <section style="flex: 1;">
+    <p-card class="shadow-2" [style]="{ padding: '1rem' }">
+      <ng-template pTemplate="header">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem;">
+          <div style="display: flex; align-items: center; gap: .5rem;">
+            <i class="pi pi-database" style="font-size: 1.1rem;"></i>
+            <strong>Produtos de Clientes</strong>
+          </div>
+          <span style="color: var(#6b7280)">Gerencie o status dos produtos</span>
+        </div>
+      </ng-template>
+
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin-bottom: .75rem; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: .5rem;">
+          <i class="pi pi-search" style="color: var(#6b7280);"></i>
+          <input
+            pInputText
+            type="text"
+            placeholder="Buscar por produto, cliente ou SKU"
+            style="width: 320px; max-width: 100%;"
+            (input)="onGlobalFilter(dt, $event)"
+          />
+        </div>
+      </div>
+
+      <p-table
+        #dt
+        [value]="rows"
+        dataKey="id"
+        [paginator]="true"
+        [rows]="10"
+        [rowsPerPageOptions]="[5,10,20]"
+        [tableStyle]="{ 'min-width': '70rem' }"
+        [globalFilterFields]="['productName','clientName','sku','status']">
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 2rem">#</th>
+            <th>Produto</th>
+            <th>SKU</th>
+            <th>Cliente</th>
+            <th style="width: 10rem">Criado em</th>
+            <th style="width: 10rem">Status</th>
+            <th style="width: 16rem; text-align: center;">Alterar status</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
+          <tr>
+            <td>{{ rowIndex + 1 }}</td>
+            <td>{{ row.productName }}</td>
+            <td>{{ row.sku }}</td>
+            <td>{{ row.clientName }}</td>
+            <td>{{ row.createdAt | date: 'short' }}</td>
+            <td>
+              <p-tag
+                [severity]="getStatusSeverity(row.status)"
+                [value]="getStatusLabel(row.status)">
+              </p-tag>
+            </td>
+            <td style="text-align: center;">
+              <div style="display: inline-flex; gap: .5rem; align-items: center;">
+                <p-select
+                  [options]="statusOptions"
+                  optionLabel="name"
+                  optionValue="value"
+                  [ngModel]="row.status"
+                  appendTo="body"
+                  class="w-12rem"
+                  (ngModelChange)="onPickStatus(row, $event)">
+                </p-select>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="7" style="text-align: center; color: var(#6b7280);">
+              Nenhum produto encontrado.
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+      <ng-template pTemplate="footer">
+        <div style="display: flex; align-items: center; justify-content: flex-end; gap: .5rem;">
+          <small style="color: var(#6b7280);">
+            Total: {{ rows.length }} registros
+          </small>
+        </div>
+      </ng-template>
+    </p-card>
+  </section>
+
+  <p-confirmDialog></p-confirmDialog>
+  <p-toast></p-toast>
+</main>
