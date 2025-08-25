@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Header} from "../../common/header/header";
 import {LineSession} from "../../common/line-session/line-session";
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, RouterLink} from '@angular/router';
 import {Gallery} from '../../common/gallery/gallery';
 import {ProductTableDetails} from '../../common/product-table-details/product-table-details';
 import {Button} from 'primeng/button';
@@ -22,6 +22,7 @@ import {ProductCard} from '../../common/product-card/product-card';
     Carousel,
     PrimeTemplate,
     ProductCard,
+    RouterLink
   ],
   templateUrl: './product-details.html',
   styleUrl: './product-details.css'
