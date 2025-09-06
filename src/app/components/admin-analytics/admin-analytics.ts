@@ -3,7 +3,6 @@ import { Card } from 'primeng/card';
 import { Button } from 'primeng/button';
 import { Select } from 'primeng/select';
 import { ChartModule } from 'primeng/chart';
-import { InputText } from 'primeng/inputtext';
 import {FormsModule} from '@angular/forms';
 import {DecimalPipe} from '@angular/common';
 
@@ -12,7 +11,7 @@ type Period = 'daily' | 'weekly' | 'monthly';
 @Component({
   selector: 'app-admin-analytics',
   standalone: true,
-  imports: [Card, Button, Select, ChartModule, InputText, FormsModule, DecimalPipe],
+  imports: [Card, Button, Select, ChartModule, FormsModule, DecimalPipe],
   templateUrl: './admin-analytics.html',
   styleUrl: './admin-analytics.css'
 })
