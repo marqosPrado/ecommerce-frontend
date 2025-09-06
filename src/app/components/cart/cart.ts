@@ -73,22 +73,18 @@ export class Cart implements OnInit {
     return [
       {
         id: 1,
-        cardNumber: '444* **** **** 4444',
-        printedCardName: 'MARCOS V F PRADO',
-        validity: '08/33',
+        number: '444* **** **** 4444',
+        printedName: 'MARCOS V F PRADO',
         cardFlag: CreditCardTypes.MASTER_CARD,
         securityCode: '336',
-        surname: 'Pessoal',
         isMain: true,
       },
       {
         id: 2,
-        cardNumber: '555* **** **** 7777',
-        printedCardName: 'MARCOS V F PRADO',
-        validity: '08/33',
+        number: '555* **** **** 7777',
+        printedName: 'MARCOS V F PRADO',
         cardFlag: CreditCardTypes.VISA,
         securityCode: '956',
-        surname: 'Empresa',
         isMain: false,
       }
     ]
