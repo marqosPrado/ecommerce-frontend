@@ -1,16 +1,14 @@
 export enum CreditCardTypes {
-  MASTER_CARD = 'MASTER_CARD',
+  MASTER_CARD = 'MASTERCARD',
   VISA = 'VISA',
   ELO = 'ELO'
 }
 
 export type CreditCard = {
-  id: number,
-  cardNumber: string;
-  printedCardName: string;
-  validity: string;
+  id?: number,
+  number: string;
+  printedName: string;
   cardFlag: CreditCardTypes;
   securityCode: string;
-  surname: string;
-  isMain: boolean;
+  isMain?: boolean;
 }
