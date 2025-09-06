@@ -73,11 +73,12 @@
               <div class="form-column">
                 <p-select
                   [options]="[
-                      {name: 'Masculino', value: 'M'},
-                      {name: 'Feminino', value: 'F'}
+                      {name: 'Masculino', value: 'MASCULINO'},
+                      {name: 'Feminino', value: 'FEMININO'}
                     ]"
                   optionLabel="name"
                   placeholder="Gênero*"
+                  optionValue="value"
                   size="large"
                   formControlName="gender"
                   aria-label="Selecione o gênero"
@@ -109,28 +110,52 @@
 
             <div class="form-row">
               <div class="form-column">
+                <p-select
+                  [options]="[
+                      {name: 'Celular', value: 'CELULAR'},
+                      {name: 'Fixo', value: 'FIXO'}
+                    ]"
+                  optionLabel="name"
+                  placeholder="Tipo de Telefone*"
+                  size="large"
+                  optionValue="value"
+                  formControlName="typePhoneNumber"
+                  aria-label="Selecione um tipo de telefone"
+                  aria-required="true"
+                />
+                @if (clientRegisterForm.get('typePhoneNumber')?.invalid && clientRegisterForm.get('typePhoneNumber')?.touched) {
+                  <div class="alert alert-danger">
+                    <div>É necessário selecionar um tipo de telefone.</div>
+                  </div>
+                }
+              </div>
+
+              <div class="form-column">
                 <p-floatlabel variant="on">
                   <input
                     pInputText
                     class="register-input"
-                    id="phone"
+                    id="phoneNumber"
+                    pSize="large"
                     autocomplete="off"
-                    formControlName="phone"
-                    name="phone"
+                    formControlName="phoneNumber"
+                    name="phoneNumber"
                     maxlength="11"
                     aria-required="true"
                   />
-                  <label for="phone">Celular*</label>
+                  <label for="phoneNumber">Telefone*</label>
                 </p-floatlabel>
-                @if (clientRegisterForm.get('phone')?.invalid && clientRegisterForm.get('phone')?.touched) {
+                @if (clientRegisterForm.get('phoneNumber')?.invalid && clientRegisterForm.get('phoneNumber')?.touched) {
                   <div class="alert alert-danger">
-                    @if (clientRegisterForm.get('phone')?.hasError('required')) {
+                    @if (clientRegisterForm.get('phoneNumber')?.hasError('required')) {
                       <div>É necessário preencher o telefone celular.</div>
                     }
                   </div>
                 }
               </div>
+            </div>
 
+            <div class="form-row">
               <div class="form-column">
                 <p-floatlabel variant="on">
                   <input
@@ -161,20 +186,19 @@
               </div>
               <div class="form-column">
                 <p-floatlabel variant="on">
-                  <p-password size="large" inputId="confirmPassword"/>
+                  <p-password size="large" inputId="confirmPassword" formControlName="confirmPassword"/>
                   <label for="confirmPassword">Confirmar senha*</label>
                 </p-floatlabel>
               </div>
             </div>
 
             <div class="step-navigation step-navigation-end">
-              <p-button label="Próximo" icon="pi pi-arrow-right" iconPos="right" (onClick)="activateCallback(2)"/>
+              <p-button label="Próximo" icon="pi pi-arrow-right" iconPos="right" (onClick)="activateCallback(2)" [disabled]="clientRegisterForm.invalid" />
             </div>
           </form>
         </ng-template>
       </p-step-panel>
 
-      <!-- STEP 2 - ENDEREÇO -->
       <p-step-panel [value]="2">
         <ng-template #content let-activateCallback="activateCallback">
           <form [formGroup]="clientAddressForm">
@@ -185,28 +209,38 @@
                   <p-select
                     [options]="[
                       { name: 'Casa', value: 'CASA' },
-                      { name: 'Apartamento', value: 'APTO' },
-                      { name: 'Comércio', value: 'COM' }
+                      { name: 'Apartamento', value: 'APARTAMENTO' },
                     ]"
                     optionLabel="name"
-                    inputId="residenceType"
-                    formControlName="residenceType"
+                    optionValue="value"
+                    inputId="typeResidence"
+                    formControlName="typeResidence"
                     size="large"
                   />
-                  <label for="residenceType">Tipo de residência*</label>
+                  <label for="typeResidence">Tipo de residência*</label>
                 </p-floatlabel>
               </div>
 
               <div class="form-column">
-                <p-floatlabel variant="on">
-                  <input
-                    pInputText
-                    class="register-input"
-                    id="streetType"
-                    formControlName="logradouroType"
-                  />
-                  <label for="streetType">Tipo de logradouro*</label>
-                </p-floatlabel>
+                <p-select
+                  [options]="[
+                      {name: 'Rua', value: 'RUA'},
+                      {name: 'Avenida', value: 'AVENIDA'},
+                      {name: 'Rodovia', value: 'RODOVIA'}
+                    ]"
+                  optionLabel="name"
+                  placeholder="Tipo de Logradouro*"
+                  size="large"
+                  optionValue="value"
+                  formControlName="typePlace"
+                  aria-label="Selecione um tipo de logradouro"
+                  aria-required="true"
+                />
+                @if (clientAddressForm.get('typePlace')?.invalid && clientAddressForm.get('typePlace')?.touched) {
+                  <div class="alert alert-danger">
+                    <div>É necessário selecionar um tipo de telefone.</div>
+                  </div>
+                }
               </div>
             </div>
 
@@ -217,7 +251,7 @@
                     pInputText
                     id="street"
                     class="register-input"
-                    formControlName="logradouro"
+                    formControlName="street"
                   />
                   <label for="street">Logradouro*</label>
                 </p-floatlabel>
@@ -229,7 +263,7 @@
                     pInputText
                     id="number"
                     class="register-input"
-                    formControlName="residenceNumber"
+                    formControlName="number"
                   />
                   <label for="number">Número*</label>
                 </p-floatlabel>
@@ -255,7 +289,7 @@
                     mask="99999-999"
                     id="cep"
                     size="large"
-                    formControlName="postalCode"
+                    formControlName="cep"
                     class="register-input"
                   ></p-inputmask>
                   <label for="cep">CEP*</label>
@@ -277,15 +311,24 @@
               </div>
 
               <div class="form-column">
-                <p-floatlabel variant="on">
-                  <input
-                    pInputText
-                    id="state"
-                    formControlName="state"
-                    class="register-input"
-                  />
-                  <label for="state">Estado*</label>
-                </p-floatlabel>
+                <p-select
+                  [options]="[
+                      {name: 'São Paulo', value: 25},
+                      {name: 'Rio de Janeiro', value: 19}
+                    ]"
+                  optionLabel="name"
+                  optionValue="value"
+                  placeholder="Estado*"
+                  size="large"
+                  formControlName="stateId"
+                  aria-label="Selecione um estado"
+                  aria-required="true"
+                />
+                @if (clientAddressForm.get('stateId')?.invalid && clientAddressForm.get('stateId')?.touched) {
+                  <div class="alert alert-danger">
+                    <div>É necessário selecionar um estado.</div>
+                  </div>
+                }
               </div>
 
               <div class="form-column">
@@ -322,33 +365,33 @@
 
           <div class="step-navigation">
             <p-button label="Voltar" severity="secondary" icon="pi pi-arrow-left" (onClick)="activateCallback(1)"/>
-            <p-button label="Próximo" icon="pi pi-arrow-right" iconPos="right" (onClick)="activateCallback(3)"/>
+            <p-button label="Próximo" icon="pi pi-arrow-right" iconPos="right" (onClick)="activateCallback(3)" [disabled]="clientAddressForm.invalid" />
           </div>
         </ng-template>
       </p-step-panel>
 
-      <!-- STEP 3 - FORMA DE PAGAMENTO -->
       <p-step-panel [value]="3">
         <ng-template #content let-activateCallback="activateCallback">
-          <form [formGroup]="clientRegisterForm">
+          <form [formGroup]="clientPaymentForm">
             <div class="form-row">
               <div class="form-column form-column-full">
                 <p-floatlabel variant="on">
                   <p-inputmask
                     mask="9999 9999 9999 9999"
-                    id="cardNumber"
+                    id="number"
                     class="register-input"
                     size="large"
                     placeholder="0000 0000 0000 0000"
+                    formControlName="number"
                     aria-required="true"
                   ></p-inputmask>
-                  <label for="cardNumber">Número do cartão*</label>
+                  <label for="number">Número do cartão*</label>
                 </p-floatlabel>
-<!--                @if (clientRegisterForm.get('cardNumber')?.invalid && clientRegisterForm.get('cardNumber')?.touched) {-->
-<!--                  <div class="alert alert-danger">-->
-<!--                    <div>É necessário informar o número do cartão.</div>-->
-<!--                  </div>-->
-<!--                }-->
+                @if (clientPaymentForm.get('number')?.invalid && clientPaymentForm.get('number')?.touched) {
+                  <div class="alert alert-danger">
+                    <div>É necessário informar o número do cartão.</div>
+                  </div>
+                }
               </div>
             </div>
 
@@ -358,16 +401,17 @@
                   <input
                     pInputText
                     class="register-input"
-                    id="cardHolderName"
+                    id="printedName"
+                    formControlName="printedName"
                     aria-required="true"
                   />
-                  <label for="cardHolderName">Nome impresso no cartão*</label>
+                  <label for="printedName">Nome impresso no cartão*</label>
                 </p-floatlabel>
-<!--                @if (clientRegisterForm.get('cardHolderName')?.invalid && clientRegisterForm.get('cardHolderName')?.touched) {-->
-<!--                  <div class="alert alert-danger">-->
-<!--                    <div>É necessário informar o nome impresso no cartão.</div>-->
-<!--                  </div>-->
-<!--                }-->
+                @if (clientPaymentForm.get('printedName')?.invalid && clientPaymentForm.get('printedName')?.touched) {
+                  <div class="alert alert-danger">
+                    <div>É necessário informar o nome impresso no cartão.</div>
+                  </div>
+                }
               </div>
             </div>
 
@@ -383,17 +427,19 @@
                       { name: 'Hipercard', value: 'HIPERCARD' }
                     ]"
                     optionLabel="name"
-                    inputId="cardBrand"
+                    inputId="cardFlag"
+                    optionValue="value"
                     size="large"
+                    formControlName="cardFlag"
                     aria-required="true"
                   />
-                  <label for="cardBrand">Bandeira do cartão*</label>
+                  <label for="cardFlag">Bandeira do cartão*</label>
                 </p-floatlabel>
-<!--                @if (clientRegisterForm.get('cardBrand')?.invalid && clientRegisterForm.get('cardBrand')?.touched) {-->
-<!--                  <div class="alert alert-danger">-->
-<!--                    <div>É necessário selecionar a bandeira do cartão.</div>-->
-<!--                  </div>-->
-<!--                }-->
+                @if (clientPaymentForm.get('cardFlag')?.invalid && clientPaymentForm.get('cardFlag')?.touched) {
+                  <div class="alert alert-danger">
+                    <div>É necessário selecionar a bandeira do cartão.</div>
+                  </div>
+                }
               </div>
 
               <div class="form-column">
@@ -401,24 +447,25 @@
                   <input
                     pInputText
                     class="register-input"
-                    id="cardSecurityCode"
+                    id="securityCode"
+                    formControlName="securityCode"
                     [maxLength]="3"
                     aria-required="true"
                   />
                   <label for="securityCode">Código de segurança*</label>
                 </p-floatlabel>
-<!--                @if (clientRegisterForm.get('securityCode')?.invalid && clientRegisterForm.get('securityCode')?.touched) {-->
-<!--                  <div class="alert alert-danger">-->
-<!--                    <div>É necessário informar o código de segurança.</div>-->
-<!--                  </div>-->
-<!--                }-->
+                @if (clientPaymentForm.get('securityCode')?.invalid && clientPaymentForm.get('securityCode')?.touched) {
+                  <div class="alert alert-danger">
+                    <div>É necessário informar o código de segurança.</div>
+                  </div>
+                }
               </div>
             </div>
           </form>
 
           <div class="step-navigation">
             <p-button label="Voltar" severity="secondary" icon="pi pi-arrow-left" (onClick)="activateCallback(2)"/>
-            <p-button label="Criar conta" type="submit" size="large" [disabled]="clientRegisterForm.invalid"/>
+            <p-button label="Criar conta" type="submit" size="large" [disabled]="clientRegisterForm.invalid || clientAddressForm.invalid || clientPaymentForm.invalid" (onClick)="onSubmit()"/>
           </div>
         </ng-template>
       </p-step-panel>
