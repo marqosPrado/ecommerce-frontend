@@ -119,7 +119,9 @@
                   [severity]="client.active ? 'danger' : 'success'"
                   size="small"
                   iconPos="left"
-                  [icon]="client.active ? 'pi pi-ban' : 'pi pi-check'"></p-button>
+                  [icon]="client.active ? 'pi pi-ban' : 'pi pi-check'"
+                  (click)="confirmToggle(client)">
+                </p-button>
               </div>
             </td>
           </tr>

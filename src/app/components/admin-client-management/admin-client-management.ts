@@ -76,31 +76,41 @@ export class AdminClientManagement {
     return active ? 'success' : 'danger';
   }
 
-  // confirmToggle(client: AdminClient) {
-  //   const acao = client.active ? 'desativar' : 'reativar';
-  //   this.confirmationService.confirm({
-  //     header: 'Confirmação',
-  //     message: `Tem certeza que deseja ${acao} o cliente "${client.fullName}"?`,
-  //     icon: 'pi pi-exclamation-triangle',
-  //     acceptLabel: 'Confirmar',
-  //     rejectLabel: 'Cancelar',
-  //     acceptButtonStyleClass: 'p-button-primary',
-  //     rejectButtonStyleClass: 'p-button-secondary',
-  //     accept: () => this.toggleActive(client.id)
-  //   });
-  // }
+  confirmToggle(client: ClientFilter) {
+    const action = client.active ? 'desativar' : 'reativar';
+    this.confirmationService.confirm({
+      header: 'Confirmação',
+      message: `Tem certeza que deseja ${action} o cliente "${client.fullName}"?`,
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Confirmar',
+      rejectLabel: 'Cancelar',
+      acceptButtonStyleClass: 'p-button-primary',
+      rejectButtonStyleClass: 'p-button-secondary',
+      accept: () => this.toggleActive(client)
+    });
+  }
 
-  // toggleActive(id: number) {
-  //   this.clients = this.clients.map(c => c.id === id ? { ...c, active: !c.active } : c);
-  //   const updated = this.clients.find(c => c.id === id);
-  //   if (updated) {
-  //     this.messageService.add({
-  //       severity: 'success',
-  //       life: 2000,
-  //       summary: 'Sucesso',
-  //       detail: updated.active ? 'Cliente reativado.' : 'Cliente desativado.'
-  //     });
-  //   }
-  // }
+  toggleActive(client: ClientFilter) {
+    this.adminService.handleClientStatus(!client.active, client.id!).subscribe({
+      next: () => {
+        client.active = !client.active;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Sucesso',
+          detail: client.active ? 'Cliente reativado.' : 'Cliente desativado.',
+          life: 2000
+        });
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Não foi possível atualizar o status do cliente.',
+          life: 3000
+        });
+        console.error('Erro ao atualizar status:', err);
+      }
+    });
+  }
 
 }

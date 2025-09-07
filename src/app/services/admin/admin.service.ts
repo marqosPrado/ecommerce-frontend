@@ -44,4 +44,9 @@ export class AdminService {
 
     return this.http.get<Page<ClientFilter>>(url, { params });
   }
+
+  handleClientStatus(active: boolean, id: string) {
+    const url = `${this.baseUrl}/${id}/status`;
+    return this.http.patch(url, { active });
+  }
 }
