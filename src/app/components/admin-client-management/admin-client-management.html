@@ -21,26 +21,80 @@
         </div>
       </ng-template>
 
-      <div style="display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin-bottom: .75rem; flex-wrap: wrap;">
-        <div style="display: flex; align-items: center; gap: .5rem;">
-          <i class="pi pi-search" style="color: var(#6b7280);"></i>
-          <input
-            pInputText
-            type="text"
-            placeholder="Buscar por nome, e‑mail, CPF ou telefone"
-            style="width: 320px; max-width: 100%;"
-            (input)="onGlobalFilter(dt, $event)"
-          />
+      <form [formGroup]="clientFilterForm" (ngSubmit)="onFilterSubmit()" style="display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin-bottom: .75rem; flex-wrap: wrap;">
+        <p-floatlabel variant="on">
+          <input pInputText id="on_label" formControlName="name" autocomplete="off" />
+          <label for="on_label">Nome</label>
+        </p-floatlabel>
+
+        <p-floatlabel variant="on">
+          <input pInputText id="on_label" formControlName="cpf" autocomplete="off" />
+          <label for="on_label">CPF</label>
+        </p-floatlabel>
+
+        <p-floatlabel variant="on">
+          <input pInputText id="on_label" formControlName="email" autocomplete="off" />
+          <label for="on_label">E-mail</label>
+        </p-floatlabel>
+
+        <p-floatlabel variant="on">
+          <input pInputText id="on_label" formControlName="phoneNumber" autocomplete="off" />
+          <label for="on_label">Número de telefone</label>
+        </p-floatlabel>
+
+        <div style="display: flex; flex-direction: row; gap: 1rem; border: var(--input-border) solid 1px; padding: 0.5rem 0.75rem 0.75rem 1rem; border-radius: 5px; justify-content: center; align-items: center">
+          <div style="display: flex; flex-direction: row; gap: 0.5rem">
+            <p-radiobutton name="gender" value="MASCULINO" formControlName="gender" inputId="masculino" />
+            <label for="masculino" class="ml-2">Masculino</label>
+          </div>
+
+          <div style="display: flex; flex-direction: row; gap: 0.5rem">
+            <p-radiobutton name="gender" value="FEMININO" formControlName="gender" inputId="feminino" />
+            <label for="feminino" class="ml-2">Feminino</label>
+          </div>
+
+          <div style="display: flex; flex-direction: row; gap: 0.5rem">
+            <p-radiobutton name="gender" value="null" formControlName="gender" inputId="feminino" />
+            <label for="all" class="ml-2">Todos</label>
+          </div>
         </div>
-      </div>
+
+        <div style="display: flex; flex-direction: row; gap: 1rem; border: var(--input-border) solid 1px; padding: 0.5rem 0.75rem 0.75rem 1rem; border-radius: 5px; justify-content: center; align-items: center">
+          <div style="display: flex; flex-direction: row; gap: 0.5rem">
+            <p-radiobutton name="active" value="true" formControlName="active" inputId="ativo" />
+            <label for="ativo" class="ml-2">Ativo</label>
+          </div>
+
+          <div style="display: flex; flex-direction: row; gap: 0.5rem">
+            <p-radiobutton name="active" value="false" formControlName="active" inputId="inativo" />
+            <label for="inativo" class="ml-2">Inativo</label>
+          </div>
+
+          <div style="display: flex; flex-direction: row; gap: 0.5rem">
+            <p-radiobutton name="active" value="null" formControlName="active" inputId="inativo" />
+            <label for="todos" class="ml-2">Todos</label>
+          </div>
+        </div>
+
+
+        <button pButton type="submit" (click)="onFilterSubmit()">
+          <i class="pi pi-search" pButtonIcon></i>
+          <span pButtonLabel>Pesquisar</span>
+        </button>
+
+      </form>
 
       <p-table #dt [value]="clients" dataKey="id" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20]"
                [tableStyle]="{ 'min-width': '60rem' }"
-               [globalFilterFields]="['fullName','email','cpf','phone']">
+               [totalRecords]="totalRecords" [loading]="loading"
+               (onLazyLoad)="loadClients($event)" lazy="true"
+               [globalFilterFields]="['fullName','email','cpf','phone']"
+      >
         <ng-template pTemplate="header">
           <tr>
             <th style="width: 2rem">#</th>
             <th>Nome</th>
+            <th>Gênero</th>
             <th>CPF</th>
             <th>E-mail</th>
             <th>Telefone</th>
@@ -53,9 +107,10 @@
           <tr>
             <td>{{ rowIndex + 1 }}</td>
             <td>{{ client.fullName }}</td>
+            <td>{{ client.gender }}</td>
             <td>{{ client.cpf }}</td>
             <td>{{ client.email }}</td>
-            <td>{{ client.phone }}</td>
+            <td>{{ client.phoneNumber }}</td>
             <td>
               <p-tag [severity]="getStatusSeverity(client.active)" [value]="client.active ? 'Ativo' : 'Inativo'"></p-tag>
             </td>
@@ -66,8 +121,7 @@
                   [severity]="client.active ? 'danger' : 'success'"
                   size="small"
                   iconPos="left"
-                  [icon]="client.active ? 'pi pi-ban' : 'pi pi-check'"
-                  (onClick)="confirmToggle(client)"></p-button>
+                  [icon]="client.active ? 'pi pi-ban' : 'pi pi-check'"></p-button>
               </div>
             </td>
           </tr>
