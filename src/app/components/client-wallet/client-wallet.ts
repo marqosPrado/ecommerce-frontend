@@ -1,4 +1,4 @@
-import {Component, signal} from '@angular/core';
+import {Component, OnInit, signal} from '@angular/core';
 import {Header} from '../../common/header/header';
 import {Button} from 'primeng/button';
 import {Card} from 'primeng/card';
@@ -11,12 +11,16 @@ import {Checkbox} from 'primeng/checkbox';
 import {Toast} from 'primeng/toast';
 import {ClientService} from '../../services/client.service';
 import {MessageService} from 'primeng/api';
-import {CreditCardTypes} from '../../types/CreditCard';
+import {CreditCard, CreditCardTypes} from '../../types/CreditCard';
 import {Select} from 'primeng/select';
+import {Client} from '../../types/Client';
+import {MaskCard} from '../../utils/mask-card';
+import {CommonModule} from '@angular/common';
 
 @Component({
   selector: 'app-client-wallet',
   imports: [
+    CommonModule,
     Header,
     Button,
     Card,
@@ -27,12 +31,14 @@ import {Select} from 'primeng/select';
     DatePicker,
     Checkbox,
     Toast,
-    Select
+    Select,
+    MaskCard
   ],
   templateUrl: './client-wallet.html',
   styleUrl: './client-wallet.css'
 })
-export class ClientWallet {
+export class ClientWallet implements OnInit {
+  creditCards: CreditCard[] = [];
   showCreditCardForm = signal(false)
   creditCardForm: FormGroup;
 
@@ -52,6 +58,10 @@ export class ClientWallet {
     });
   }
 
+  ngOnInit(): void {
+    this.loadClient()
+  }
+
   submitCreditCard() {
     if (this.creditCardForm.invalid) return;
 
@@ -61,6 +71,7 @@ export class ClientWallet {
     this.clientService.registerNewCreditCard(clientId, cardData).subscribe({
       next: (res) => {
         this.showCreditCardForm.set(false);
+        this.loadClient()
         this.creditCardForm.reset({ isMain: false });
         this.messageService.add({severity:'success', summary:'Sucesso', detail:'Cartão cadastrado com sucesso!'});
       },
@@ -69,6 +80,18 @@ export class ClientWallet {
         this.messageService.add({severity:'error', summary:'Erro', detail:'Não foi possível cadastrar o cartão.'});
       }
     });
+  }
+
+  loadClient() {
+    this.clientService.getClientById(1).subscribe({
+      next: (res: Client) => {
+        this.creditCards = res.creditCards;
+      },
+
+      error: (err) => {
+        console.error('Erro ao buscar cliente:', err);
+      }
+    })
   }
 
   handleCreditCardForm() {

@@ -241,40 +241,22 @@
         </form>
       </div>
     } @else {
-      <div style="display: flex; flex-direction: row; gap: 1rem">
-        <!--      Colocar for-->
+      <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
         <p-card
-          header="CARTÃO MARCOS"
-          [style]="{ width: '25%', height: 'auto', display: 'flex'}"
+          *ngFor="let card of creditCards; let i = index"
+          [header]="`CARTÃO ${i + 1}`"
+          [style]="{ width: '25%', height: 'auto'}"
         >
           <p class="m-0 mb-2">
-            444* **** **** 4444
+            {{ card.number | maskCard }}
           </p>
           <p class="m-0 mb-2">
-            Vence em 08/33
+            {{ card.cardFlag }}
           </p>
-          <ng-template #footer>
-            <div class="flex gap-4 mt-1">
-              <p-button
-                label="Remover"
-                severity="secondary"
-                class="w-full"
-                [outlined]="true"
-                styleClass="w-full" />
-            </div>
-          </ng-template>
-        </p-card>
+          <p class="m-0 mb-2" *ngIf="card.isMain">
+            <strong>(Cartão principal)</strong>
+          </p>
 
-        <p-card
-          header="CARTÃO MARCOS"
-          [style]="{ width: '25%', height: 'auto', display: 'flex'}"
-        >
-          <p class="m-0 mb-2">
-            444* **** **** 4444
-          </p>
-          <p class="m-0 mb-2">
-            Vence em 08/33
-          </p>
           <ng-template #footer>
             <div class="flex gap-4 mt-1">
               <p-button
@@ -282,7 +264,8 @@
                 severity="secondary"
                 class="w-full"
                 [outlined]="true"
-                styleClass="w-full" />
+                styleClass="w-full"
+              />
             </div>
           </ng-template>
         </p-card>
