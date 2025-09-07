@@ -92,7 +92,6 @@
       >
         <ng-template pTemplate="header">
           <tr>
-            <th style="width: 2rem">#</th>
             <th>Nome</th>
             <th>Gênero</th>
             <th>CPF</th>
@@ -105,7 +104,6 @@
 
         <ng-template pTemplate="body" let-client let-rowIndex="rowIndex">
           <tr>
-            <td>{{ rowIndex + 1 }}</td>
             <td>{{ client.fullName }}</td>
             <td>{{ client.gender }}</td>
             <td>{{ client.cpf }}</td>
