@@ -13,6 +13,8 @@ import {Toast} from 'primeng/toast';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {InputMask} from 'primeng/inputmask';
 import {Textarea} from 'primeng/textarea';
+import {ClientService} from '../../services/client.service';
+import {Client} from '../../types/Client';
 
 @Component({
   selector: 'app-edit-client',
@@ -47,6 +49,7 @@ export class EditClient implements OnInit{
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
+    private clientService: ClientService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
     private router: Router,
@@ -55,15 +58,35 @@ export class EditClient implements OnInit{
   ngOnInit() {
     this.clientId = this.route.snapshot.paramMap.get('id')!;
 
-    const client = this.getClientById(this.clientId);
-
     this.editClientForm = this.fb.group({
-      fullName: [client.fullName, Validators.required],
-      cpf: [{value: client.cpf, disabled: true}, [Validators.required, Validators.pattern(/\d{3}\.\d{3}\.\d{3}-\d{2}/)]],
-      gender: [client.gender, Validators.required],
-      birthDate: [{value: new Date(client.birthDate), disabled: true}, Validators.required],
-      phone: [client.phone, Validators.required],
-      email: [{value: client.email, disabled: true}, [Validators.required, Validators.email]],
+      fullName: ['', Validators.required],
+      cpf: [{ value: '', disabled: true }, [Validators.required]],
+      gender: ['', Validators.required],
+      birthDate: [{ value: '', disabled: true }, Validators.required],
+      phoneNumber: ['', Validators.required],
+      email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
+    });
+
+    this.loadClient();
+  }
+
+  loadClient() {
+    this.clientService.getClientById(Number(this.clientId)).subscribe({
+      next: (client: Client) => {
+        this.editClientForm.patchValue({
+          fullName: client.fullName,
+          cpf: client.cpf,
+          gender: client.gender,
+          birthDate: new Date(client.birthDate),
+          phoneNumber: client.phoneNumber,
+          email: client.email,
+        });
+
+        console.log('Endereços do cliente:', client.addresses);
+      },
+      error: (err) => {
+        console.error('Erro ao buscar cliente:', err);
+      }
     });
   }
 
@@ -79,18 +102,6 @@ export class EditClient implements OnInit{
     country: new FormControl('', [Validators.required]),
     observations: new FormControl('', [])
   })
-
-  getClientById(id: string) {
-    return {
-      id: id,
-      fullName: 'John Doe',
-      cpf: '123.456.789-00',
-      gender: 'M',
-      birthDate: '1990-01-15',
-      phone: '(11) 91234-5678',
-      email: 'john.doe@example.com',
-    };
-  }
 
   editClient() {
     this.confirmationService.confirm({

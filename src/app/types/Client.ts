@@ -2,13 +2,13 @@ import {Address} from './Address';
 import {CreditCard} from './CreditCard';
 
 export type Client = {
+  id?: number;
   fullName: string;
   cpf: string;
   gender: string;
   birthDate: string;
-  phone: string;
+  phoneNumber: string;
   email: string;
-  password: string;
   active?: boolean;
   credit?: number;
   addresses: Address[];

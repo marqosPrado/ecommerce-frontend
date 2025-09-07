@@ -13,4 +13,8 @@ export class ClientService {
   registerClient(clientData: Client) {
     return this.http.post<Client>(`${this.apiUrl}/register`, clientData)
   }
+
+  getClientById(clientId: number) {
+    return this.http.get<Client>(`${this.apiUrl}/${clientId}/all`)
+  }
 }
