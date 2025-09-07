@@ -31,4 +31,8 @@ export class ClientService {
   registerNewCreditCard(clientId: number, card: CreditCard) {
     return this.http.post(`${this.apiUrl}/${clientId}/credit-card/new`, card);
   }
+
+  removeCreditCard(clientId: number, card: CreditCard) {
+    return this.http.delete<void>(`${this.apiUrl}/${clientId}/credit-card/${card.id}/remove`);
+  }
 }

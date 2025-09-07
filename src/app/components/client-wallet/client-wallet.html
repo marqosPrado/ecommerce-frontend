@@ -1,5 +1,6 @@
 <app-header/>
 <p-toast></p-toast>
+<p-confirmDialog />
 <main style="padding: 3rem 12rem 4rem 12rem">
   <div style="display: flex; flex-direction: column; margin-bottom: 4rem; gap: 8px;">
     <div style="display: flex; flex-direction: row; align-items: center; gap: 8px;">
@@ -265,6 +266,7 @@
                 class="w-full"
                 [outlined]="true"
                 styleClass="w-full"
+                (onClick)="removeCreditCard(card)"
               />
             </div>
           </ng-template>

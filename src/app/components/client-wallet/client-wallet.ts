@@ -10,12 +10,13 @@ import {DatePicker} from 'primeng/datepicker';
 import {Checkbox} from 'primeng/checkbox';
 import {Toast} from 'primeng/toast';
 import {ClientService} from '../../services/client.service';
-import {MessageService} from 'primeng/api';
+import {ConfirmationService, MessageService} from 'primeng/api';
 import {CreditCard, CreditCardTypes} from '../../types/CreditCard';
 import {Select} from 'primeng/select';
 import {Client} from '../../types/Client';
 import {MaskCard} from '../../utils/mask-card';
 import {CommonModule} from '@angular/common';
+import {ConfirmDialog} from 'primeng/confirmdialog';
 
 @Component({
   selector: 'app-client-wallet',
@@ -32,8 +33,10 @@ import {CommonModule} from '@angular/common';
     Checkbox,
     Toast,
     Select,
-    MaskCard
+    MaskCard,
+    ConfirmDialog
   ],
+  providers: [ConfirmationService, MessageService],
   templateUrl: './client-wallet.html',
   styleUrl: './client-wallet.css'
 })
@@ -44,7 +47,8 @@ export class ClientWallet implements OnInit {
 
   constructor(
     private clientService: ClientService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService,
   ) {
     this.creditCardForm = new FormGroup({
       number: new FormControl('', [Validators.required, Validators.minLength(16), Validators.maxLength(16)]),
@@ -60,6 +64,38 @@ export class ClientWallet implements OnInit {
 
   ngOnInit(): void {
     this.loadClient()
+  }
+
+  removeCreditCard(card: CreditCard) {
+    this.confirmationService.confirm({
+      message: 'Tem certeza que deseja remover este cartão?',
+      header: 'Confirmação',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Sim',
+      rejectLabel: 'Não',
+      accept: () => {
+        const clientId = 1;
+        this.clientService.removeCreditCard(clientId, card).subscribe({
+          next: () => {
+            this.loadClient();
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Sucesso',
+              detail: 'Cartão removido com sucesso!'
+            });
+          },
+          error: (err) => {
+            console.error('Erro ao remover cartão', err);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erro',
+              detail: 'Não foi possível remover o cartão.'
+            });
+          }
+        });
+      },
+      reject: () => {}
+    });
   }
 
   submitCreditCard() {
