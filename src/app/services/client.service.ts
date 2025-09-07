@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Client} from '../types/Client';
 import {Address} from '../types/Address';
+import {CreditCard} from '../types/CreditCard';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +25,10 @@ export class ClientService {
   }
 
   registerNewAddress(clientId: number, address: Address) {
-    return this.http.post(`/api/client/${clientId}/new`, address);
+    return this.http.post(`${this.apiUrl}/${clientId}/address/new`, address);
+  }
+
+  registerNewCreditCard(clientId: number, card: CreditCard) {
+    return this.http.post(`${this.apiUrl}/${clientId}/credit-card/new`, card);
   }
 }
