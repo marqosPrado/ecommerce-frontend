@@ -54,7 +54,7 @@
           </div>
 
           <div style="display: flex; flex-direction: row; gap: 0.5rem">
-            <p-radiobutton name="gender" value="null" formControlName="gender" inputId="feminino" />
+            <p-radiobutton name="gender" [value]="null" formControlName="gender" inputId="feminino" />
             <label for="all" class="ml-2">Todos</label>
           </div>
         </div>
@@ -71,7 +71,7 @@
           </div>
 
           <div style="display: flex; flex-direction: row; gap: 0.5rem">
-            <p-radiobutton name="active" value="null" formControlName="active" inputId="inativo" />
+            <p-radiobutton name="active" [value]="null" formControlName="active" inputId="inativo" />
             <label for="todos" class="ml-2">Todos</label>
           </div>
         </div>

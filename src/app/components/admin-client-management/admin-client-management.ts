@@ -37,8 +37,8 @@ export class AdminClientManagement {
       cpf: [''],
       email: [''],
       phoneNumber: [''],
-      gender: [''],
-      active: ['']
+      gender: [null],
+      active: [null]
     })
   }
 
