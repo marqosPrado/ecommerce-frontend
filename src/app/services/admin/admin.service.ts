@@ -6,6 +6,7 @@ import {Observable} from 'rxjs';
 
 
 export type ClientFilter = {
+  id?: string;
   fullName: string;
   cpf: string;
   email: string;
