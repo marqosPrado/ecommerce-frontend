@@ -35,4 +35,9 @@ export class ClientService {
   removeCreditCard(clientId: number, card: CreditCard) {
     return this.http.delete<void>(`${this.apiUrl}/${clientId}/credit-card/${card.id}/remove`);
   }
+
+  updateAddress(clientId: number, addressId: number, address: Address) {
+    return this.http.put(`${this.apiUrl}/${clientId}/address/${addressId}/update`, address);
+  }
+
 }

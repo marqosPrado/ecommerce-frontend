@@ -49,6 +49,7 @@ export class EditClient implements OnInit{
   showAddressForm = signal(false);
   loading = false;
   clientAddresses = signal<Address[]>([]);
+  editingAddressId = signal<number | null>(null);
 
   constructor(
     private fb: FormBuilder,
@@ -159,6 +160,7 @@ export class EditClient implements OnInit{
 
   editAddress(address: Address) {
     this.showAddressForm.set(true);
+    this.editingAddressId.set(address.id!);
     this.newClientAddressForm.patchValue({
       typeResidence: address.typeResidence,
       typePlace: address.typePlace,
@@ -179,8 +181,21 @@ export class EditClient implements OnInit{
       return;
     }
 
+    const payload: Address = {
+      typeResidence: this.newClientAddressForm.get('typeResidence')?.value!,
+      typePlace: this.newClientAddressForm.get('typePlace')?.value!,
+      street: this.newClientAddressForm.get('street')?.value!,
+      number: Number(this.newClientAddressForm.get('number')?.value),
+      neighborhood: this.newClientAddressForm.get('neighbourhood')?.value!,
+      cep: this.newClientAddressForm.get('cep')?.value!,
+      city: this.newClientAddressForm.get('city')?.value!,
+      stateId: Number(this.newClientAddressForm.get('stateId')?.value),
+      country: this.newClientAddressForm.get('country')?.value!,
+      observations: this.newClientAddressForm.get('observations')?.value || undefined
+    };
+
     this.confirmationService.confirm({
-      message: 'Deseja cadastrar este novo endereço?',
+      message: this.editingAddressId() ? 'Deseja salvar as alterações deste endereço?' : 'Deseja cadastrar este novo endereço?',
       header: 'Confirmação',
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Sim',
@@ -188,43 +203,34 @@ export class EditClient implements OnInit{
       acceptButtonStyleClass: 'p-button-primary',
       rejectButtonStyleClass: 'p-button-secondary',
       accept: () => {
-        const payload: Address = {
-          typeResidence: this.newClientAddressForm.get('typeResidence')?.value!,
-          typePlace: this.newClientAddressForm.get('typePlace')?.value!,
-          street: this.newClientAddressForm.get('street')?.value!,
-          number: Number(this.newClientAddressForm.get('number')?.value),
-          neighborhood: this.newClientAddressForm.get('neighbourhood')?.value!, // cuidado com o nome
-          cep: this.newClientAddressForm.get('cep')?.value!,
-          city: this.newClientAddressForm.get('city')?.value!,
-          stateId: Number(this.newClientAddressForm.get('stateId')?.value),
-          country: this.newClientAddressForm.get('country')?.value!,
-          observations: this.newClientAddressForm.get('observations')?.value || undefined
-        };
-
         this.loading = true;
+        const request$ = this.editingAddressId()
+          ? this.clientService.updateAddress(Number(this.clientId), this.editingAddressId()!, payload)
+          : this.clientService.registerNewAddress(Number(this.clientId), payload);
 
-        this.clientService.registerNewAddress(Number(this.clientId), payload).subscribe({
+        request$.subscribe({
           next: () => {
             this.loading = false;
             this.messageService.add({
               severity: 'success',
               life: 2000,
               summary: 'Sucesso!',
-              detail: 'Endereço cadastrado com sucesso!'
+              detail: this.editingAddressId() ? 'Endereço atualizado com sucesso!' : 'Endereço cadastrado com sucesso!'
             });
 
             this.newClientAddressForm.reset();
             this.showAddressForm.set(false);
+            this.editingAddressId.set(null);
             this.loadClient();
           },
           error: (err) => {
             this.loading = false;
-            console.error('Erro ao cadastrar endereço:', err);
+            console.error('Erro ao salvar endereço:', err);
             this.messageService.add({
               severity: 'error',
               life: 4000,
               summary: 'Erro!',
-              detail: 'Não foi possível cadastrar o endereço.'
+              detail: 'Não foi possível salvar o endereço.'
             });
           }
         });
