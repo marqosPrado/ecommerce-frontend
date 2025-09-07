@@ -124,20 +124,20 @@
                     <p-select
                       [options]="[
                         { name: 'Casa', value: 'CASA' },
-                        { name: 'Apartamento', value: 'APTO' },
-                        { name: 'Comércio', value: 'COM' }
+                        { name: 'Apartamento', value: 'APARTAMENTO' },
                       ]"
                       optionLabel="name"
-                      inputId="residenceType"
+                      optionValue="value"
+                      inputId="typeResidence"
                       [style]="{'width': '100%'}"
                       size="large"
-                      formControlName="residenceType"
+                      formControlName="typeResidence"
                     />
                     <label for="residenceType">Tipo de residência*</label>
                   </p-floatlabel>
-                  @if (newClientAddressForm.get('residenceType')?.invalid && newClientAddressForm.get('residenceType')?.touched) {
+                  @if (newClientAddressForm.get('typeResidence')?.invalid && newClientAddressForm.get('typeResidence')?.touched) {
                     <div class="alert alert-danger">
-                      @if (newClientAddressForm.get('residenceType')?.hasError('required')) {
+                      @if (newClientAddressForm.get('typeResidence')?.hasError('required')) {
                         <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o tipo de residência.</div>
                       }
                     </div>
@@ -145,23 +145,23 @@
                 </div>
 
                 <div [style]="{'width': '55%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
-                  <p-floatlabel
-                    variant="on"
-                    [style]="{'width': '100%'}">
-                    <input
-                      pInputText
-                      style="width: 100%"
-                      pSize="large"
-                      id="streetType"
-                      formControlName="logradouroType"
-                    />
-                    <label for="streetType">Tipo de logradouro*</label>
-                  </p-floatlabel>
-                  @if (newClientAddressForm.get('logradouroType')?.invalid && newClientAddressForm.get('logradouroType')?.touched) {
+                  <p-select
+                    [options]="[
+                      {name: 'Rua', value: 'RUA'},
+                      {name: 'Avenida', value: 'AVENIDA'},
+                      {name: 'Rodovia', value: 'RODOVIA'}
+                    ]"
+                    optionLabel="name"
+                    placeholder="Tipo de Logradouro*"
+                    size="large"
+                    optionValue="value"
+                    formControlName="typePlace"
+                    aria-label="Selecione um tipo de logradouro"
+                    aria-required="true"
+                  />
+                  @if (newClientAddressForm.get('typePlace')?.invalid && newClientAddressForm.get('typePlace')?.touched) {
                     <div class="alert alert-danger">
-                      @if (newClientAddressForm.get('logradouroType')?.hasError('required')) {
-                        <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o tipo do logradouro.</div>
-                      }
+                      <div>É necessário selecionar o tipo de logradouro.</div>
                     </div>
                   }
                 </div>
@@ -175,14 +175,14 @@
                       style="width: 100%"
                       id="street"
                       pSize="large"
-                      formControlName="logradouro"
+                      formControlName="street"
                     />
                     <label for="street">Logradouro*</label>
                   </p-floatlabel>
-                  @if (newClientAddressForm.get('logradouro')?.invalid && newClientAddressForm.get('logradouro')?.touched) {
+                  @if (newClientAddressForm.get('street')?.invalid && newClientAddressForm.get('street')?.touched) {
                     <div class="alert alert-danger">
-                      @if (newClientAddressForm.get('logradouro')?.hasError('required')) {
-                        <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o número.</div>
+                      @if (newClientAddressForm.get('street')?.hasError('required')) {
+                        <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o logradouro.</div>
                       }
                     </div>
                   }
@@ -204,7 +204,7 @@
                   @if (newClientAddressForm.get('neighbourhood')?.invalid && newClientAddressForm.get('neighbourhood')?.touched) {
                     <div class="alert alert-danger">
                       @if (newClientAddressForm.get('neighbourhood')?.hasError('required')) {
-                        <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o número.</div>
+                        <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o bairro.</div>
                       }
                     </div>
                   }
@@ -217,13 +217,13 @@
                       id="number"
                       pSize="large"
                       style="width: 100%"
-                      formControlName="residenceNumber"
+                      formControlName="number"
                     />
                     <label for="number">Número*</label>
                   </p-floatlabel>
-                  @if (newClientAddressForm.get('residenceNumber')?.invalid && newClientAddressForm.get('residenceNumber')?.touched) {
+                  @if (newClientAddressForm.get('number')?.invalid && newClientAddressForm.get('number')?.touched) {
                     <div class="alert alert-danger">
-                      @if (newClientAddressForm.get('residenceNumber')?.hasError('required')) {
+                      @if (newClientAddressForm.get('number')?.hasError('required')) {
                         <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o número.</div>
                       }
                     </div>
@@ -239,13 +239,13 @@
                       id="cep"
                       size="large"
                       [style]="{'width': '100%'}"
-                      formControlName="postalCode"
+                      formControlName="cep"
                     ></p-inputmask>
                     <label for="cep">CEP*</label>
                   </p-floatlabel>
-                  @if (newClientAddressForm.get('postalCode')?.invalid && newClientAddressForm.get('postalCode')?.touched) {
+                  @if (newClientAddressForm.get('cep')?.invalid && newClientAddressForm.get('cep')?.touched) {
                     <div class="alert alert-danger">
-                      @if (newClientAddressForm.get('postalCode')?.hasError('required')) {
+                      @if (newClientAddressForm.get('cep')?.hasError('required')) {
                         <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o CEP.</div>
                       }
                     </div>
@@ -275,20 +275,23 @@
 
               <div style="display: flex; flex-direction: row; width: 100%; gap: 8px">
                 <div [style]="{'width': '50%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
-                  <p-floatlabel variant="on" [style]="{'width': '100%'}">
-                    <input
-                      pInputText
-                      id="state"
-                      style="width: 100%"
-                      pSize="large"
-                      formControlName="state"
-                    />
-                    <label for="state">Estado*</label>
-                  </p-floatlabel>
-                  @if (newClientAddressForm.get('state')?.invalid && newClientAddressForm.get('state')?.touched) {
+                  <p-select
+                    [options]="[
+                      {name: 'São Paulo', value: 25},
+                      {name: 'Rio de Janeiro', value: 19}
+                    ]"
+                    optionLabel="name"
+                    optionValue="value"
+                    placeholder="Estado*"
+                    size="large"
+                    formControlName="stateId"
+                    aria-label="Selecione um estado"
+                    aria-required="true"
+                  />
+                  @if (newClientAddressForm.get('stateId')?.invalid && newClientAddressForm.get('stateId')?.touched) {
                     <div class="alert alert-danger">
-                      @if (newClientAddressForm.get('state')?.hasError('required')) {
-                        <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o estado.</div>
+                      @if (newClientAddressForm.get('country')?.hasError('required')) {
+                        <div style="color: #a44b4c;font-size: 0.875rem;">É necessário selecionar um estado.</div>
                       }
                     </div>
                   }
@@ -334,37 +337,39 @@
                   size="large"
                   label="Cadastrar endereço"
                   [disabled]="newClientAddressForm.invalid"
+                  [loading]="loading"
+                  (click)="registerNewAddress()"
                 />
               </div>
 
             </form>
           </div>
         } @else {
-          <div
-            style="width: 100%; border: 1px solid #6b280c;border-radius: 4px; padding: 0.5rem;display: flex; flex-direction: row; justify-content: space-between">
-            <div style="display: flex; flex-direction: column; gap: 0.5rem; padding: 0.5rem">
-              <div>
-                <span>Endereço principal</span>
-              </div>
-              <div>
-                <span>Rua Antônio Ruiz Veiga</span>
-              </div>
-              <div>
-                <span>Número: 100, BL 03 AP 204</span>
-              </div>
-              <div>
-                <span>CEP: 08773495 - Mogi das Cruzes</span>
-              </div>
-            </div>
+          @for (address of clientAddresses(); track address.id) {
+            <div
+              style="width: 100%; border: 1px solid #6b280c; border-radius: 4px; padding: 0.5rem; display: flex; flex-direction: row; justify-content: space-between; margin-bottom: 1rem">
 
-            <div style="height: 100%; display: flex; align-items: flex-end">
-              <p-button
-                severity="secondary"
-                icon="pi pi-pencil"
-                label="Editar"
-              />
+              <div style="display: flex; flex-direction: column; gap: 0.5rem; padding: 0.5rem">
+                <div>
+                  <span>Tipo: {{ address.typeResidence }} - {{ address.typePlace }}</span>
+                </div>
+                <div><span>{{ address.street }}</span></div>
+                <div><span>Número: {{ address.number }}</span></div>
+                <div><span>Bairro: {{ address.neighborhood }}</span></div>
+                <div><span>CEP: {{ address.cep }} - {{ address.city }}</span></div>
+                <div *ngIf="address.observations"><span>Observações: {{ address.observations }}</span></div>
+              </div>
+
+              <div style="height: 100%; display: flex; align-items: flex-end">
+                <p-button
+                  severity="secondary"
+                  icon="pi pi-pencil"
+                  label="Editar"
+                  (click)="editAddress(address)"
+                />
+              </div>
             </div>
-          </div>
+          }
         }
       </section>
     </div>

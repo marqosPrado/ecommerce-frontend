@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Client} from '../types/Client';
+import {Address} from '../types/Address';
 
 @Injectable({
   providedIn: 'root'
@@ -20,5 +21,9 @@ export class ClientService {
 
   updateClientBasicData(clientId: number, clientData: Partial<Client>) {
     return this.http.put<Client>(`${this.apiUrl}/${clientId}/basic-update`, clientData);
+  }
+
+  registerNewAddress(clientId: number, address: Address) {
+    return this.http.post(`/api/client/${clientId}/new`, address);
   }
 }

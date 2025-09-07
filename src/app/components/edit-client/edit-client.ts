@@ -15,6 +15,7 @@ import {InputMask} from 'primeng/inputmask';
 import {Textarea} from 'primeng/textarea';
 import {ClientService} from '../../services/client.service';
 import {Client} from '../../types/Client';
+import {Address} from '../../types/Address';
 
 @Component({
   selector: 'app-edit-client',
@@ -43,9 +44,11 @@ import {Client} from '../../types/Client';
 })
 export class EditClient implements OnInit{
   editClientForm!: FormGroup;
+  newClientAddressForm!: FormGroup;
   clientId!: string;
   showAddressForm = signal(false);
   loading = false;
+  clientAddresses = signal<Address[]>([]);
 
   constructor(
     private fb: FormBuilder,
@@ -68,6 +71,19 @@ export class EditClient implements OnInit{
       email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
     });
 
+    this.newClientAddressForm = this.fb.group({
+      typeResidence: new FormControl('', [Validators.required]),
+      typePlace: new FormControl('', [Validators.required]),
+      street: new FormControl('', [Validators.required]),
+      neighbourhood: new FormControl('', [Validators.required]),
+      number: new FormControl<number | null>(null, [Validators.required]),
+      cep: new FormControl('', [Validators.required]),
+      city: new FormControl('', [Validators.required]),
+      stateId: new FormControl<number | null>(null, [Validators.required]),
+      country: new FormControl('', [Validators.required]),
+      observations: new FormControl('', [])
+    })
+
     this.loadClient();
   }
 
@@ -83,26 +99,13 @@ export class EditClient implements OnInit{
           email: client.email,
         });
 
-        console.log('Endereços do cliente:', client.addresses);
+        this.clientAddresses.set(client.addresses);
       },
       error: (err) => {
         console.error('Erro ao buscar cliente:', err);
       }
     });
   }
-
-  newClientAddressForm = new FormGroup({
-    residenceType: new FormControl('', [Validators.required]),
-    logradouroType: new FormControl('', [Validators.required]),
-    logradouro: new FormControl('', [Validators.required]),
-    neighbourhood: new FormControl('', [Validators.required]),
-    residenceNumber: new FormControl('', [Validators.required]),
-    postalCode: new FormControl('', [Validators.required]),
-    city: new FormControl('', [Validators.required]),
-    state: new FormControl('', [Validators.required]),
-    country: new FormControl('', [Validators.required]),
-    observations: new FormControl('', [])
-  })
 
   editClient() {
     if (this.editClientForm.invalid) {
@@ -154,11 +157,88 @@ export class EditClient implements OnInit{
     });
   }
 
+  editAddress(address: Address) {
+    this.showAddressForm.set(true);
+    this.newClientAddressForm.patchValue({
+      typeResidence: address.typeResidence,
+      typePlace: address.typePlace,
+      street: address.street,
+      number: address.number,
+      neighbourhood: address.neighborhood,
+      cep: address.cep,
+      city: address.city,
+      stateId: address.stateId,
+      country: address.country,
+      observations: address.observations
+    });
+  }
+
+  registerNewAddress() {
+    if (this.newClientAddressForm.invalid) {
+      this.newClientAddressForm.markAllAsTouched();
+      return;
+    }
+
+    this.confirmationService.confirm({
+      message: 'Deseja cadastrar este novo endereço?',
+      header: 'Confirmação',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Sim',
+      rejectLabel: 'Cancelar',
+      acceptButtonStyleClass: 'p-button-primary',
+      rejectButtonStyleClass: 'p-button-secondary',
+      accept: () => {
+        const payload: Address = {
+          typeResidence: this.newClientAddressForm.get('typeResidence')?.value!,
+          typePlace: this.newClientAddressForm.get('typePlace')?.value!,
+          street: this.newClientAddressForm.get('street')?.value!,
+          number: Number(this.newClientAddressForm.get('number')?.value),
+          neighborhood: this.newClientAddressForm.get('neighbourhood')?.value!, // cuidado com o nome
+          cep: this.newClientAddressForm.get('cep')?.value!,
+          city: this.newClientAddressForm.get('city')?.value!,
+          stateId: Number(this.newClientAddressForm.get('stateId')?.value),
+          country: this.newClientAddressForm.get('country')?.value!,
+          observations: this.newClientAddressForm.get('observations')?.value || undefined
+        };
+
+        this.loading = true;
+
+        this.clientService.registerNewAddress(Number(this.clientId), payload).subscribe({
+          next: () => {
+            this.loading = false;
+            this.messageService.add({
+              severity: 'success',
+              life: 2000,
+              summary: 'Sucesso!',
+              detail: 'Endereço cadastrado com sucesso!'
+            });
+
+            this.newClientAddressForm.reset();
+            this.showAddressForm.set(false);
+            this.loadClient();
+          },
+          error: (err) => {
+            this.loading = false;
+            console.error('Erro ao cadastrar endereço:', err);
+            this.messageService.add({
+              severity: 'error',
+              life: 4000,
+              summary: 'Erro!',
+              detail: 'Não foi possível cadastrar o endereço.'
+            });
+          }
+        });
+      }
+    });
+  }
+
   addNewAddress() {
+    this.newClientAddressForm.reset();
     this.showAddressForm.set(true)
   }
 
   cancelNewAddress() {
+    this.newClientAddressForm.reset();
     this.showAddressForm.set(false)
   }
 }

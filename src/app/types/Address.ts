@@ -1,12 +1,13 @@
 export type Address = {
+  id?: number;
   typeResidence: string;
   typePlace: string;
   street: string;
-  number: string;
+  number: number;
   neighborhood: string;
   cep: string;
   city: string;
-  state: number;
+  stateId: number;
   country: string;
   observations?: string;
 };
