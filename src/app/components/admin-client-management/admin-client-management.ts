@@ -1,70 +1,106 @@
-import { Component } from '@angular/core';
-import {Table, TableModule} from 'primeng/table';
-import { Button } from 'primeng/button';
-import { Tag } from 'primeng/tag';
-import { InputText } from 'primeng/inputtext';
-import { ConfirmDialog } from 'primeng/confirmdialog';
-import { Toast } from 'primeng/toast';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { Client } from '../list-clients/type/client';
+import {Component} from '@angular/core';
+import {TableLazyLoadEvent, TableModule} from 'primeng/table';
+import {Button, ButtonDirective, ButtonIcon, ButtonLabel} from 'primeng/button';
+import {Tag} from 'primeng/tag';
+import {InputText} from 'primeng/inputtext';
+import {ConfirmDialog} from 'primeng/confirmdialog';
+import {Toast} from 'primeng/toast';
+import {ConfirmationService, MessageService} from 'primeng/api';
 import {Card} from 'primeng/card';
+import {FloatLabel} from 'primeng/floatlabel';
+import {RadioButton} from 'primeng/radiobutton';
+import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import {AdminService, ClientFilter} from '../../services/admin/admin.service';
 
-type AdminClient = Client & { active: boolean };
 
 @Component({
   selector: 'app-admin-client-management',
   standalone: true,
-  imports: [TableModule, Button, Tag, InputText, ConfirmDialog, Toast, Card],
+  imports: [TableModule, Button, Tag, InputText, ConfirmDialog, Toast, Card, FloatLabel, RadioButton, ReactiveFormsModule, ButtonLabel, ButtonDirective, ButtonIcon],
   providers: [ConfirmationService, MessageService],
   templateUrl: './admin-client-management.html'
 })
 export class AdminClientManagement {
-  clients: AdminClient[] = [
-    { id: 1, fullName: 'John Doe',   cpf: '123.456.789-00', gender: 'M', birthDate: '1990-01-15', phone: '(11) 91234-5678', email: 'john.doe@example.com',  active: true },
-    { id: 2, fullName: 'Maria Silva',cpf: '987.654.321-11', gender: 'F', birthDate: '1988-07-22', phone: '(21) 99876-5432', email: 'maria.silva@example.com', active: false },
-    { id: 3, fullName: 'Carlos Pereira', cpf: '111.222.333-44', gender: 'M', birthDate: '1995-03-09', phone: '(31) 98765-4321', email: 'carlos.pereira@example.com', active: true },
-    { id: 4, fullName: 'Ana Souza',  cpf: '555.666.777-88', gender: 'F', birthDate: '1992-11-30', phone: '(41) 97654-3210', email: 'ana.souza@example.com',   active: true },
-    { id: 5, fullName: 'Lucas Almeida', cpf: '222.333.444-55', gender: 'M', birthDate: '1998-05-05', phone: '(51) 96543-2109', email: 'lucas.almeida@example.com', active: false },
-  ];
+  clients: ClientFilter[] = [];
+  clientFilterForm: FormGroup;
+  totalRecords = 0;
+  loading = false;
 
   constructor(
+    private fb: FormBuilder,
+    private adminService: AdminService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService
-  ) {}
+  ) {
+    this.clientFilterForm = this.fb.group({
+      name: [''],
+      cpf: [''],
+      email: [''],
+      phoneNumber: [''],
+      gender: [''],
+      active: ['']
+    })
+  }
+
+  onFilterSubmit() {
+    this.loadClients({ first: 0, rows: 10 });
+  }
+
+  loadClients(event: TableLazyLoadEvent) {
+    this.loading = true;
+    const page = event.first! / event.rows!;
+    const size = event.rows!;
+
+    const filter: Partial<ClientFilter> = this.clientFilterForm.value;
+
+    this.adminService.getClients(filter, page, size).subscribe({
+      next: (res) => {
+        this.clients = res.content;
+        this.totalRecords = res.totalElements;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.loading = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Não foi possível carregar os clientes. Tente novamente mais tarde.'
+        });
+        console.error('Erro ao buscar clientes:', err);
+      }
+    });
+  }
+
 
   getStatusSeverity(active: boolean): 'success' | 'danger' | 'warning' | 'info' {
     return active ? 'success' : 'danger';
   }
 
-  confirmToggle(client: AdminClient) {
-    const acao = client.active ? 'desativar' : 'reativar';
-    this.confirmationService.confirm({
-      header: 'Confirmação',
-      message: `Tem certeza que deseja ${acao} o cliente "${client.fullName}"?`,
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Confirmar',
-      rejectLabel: 'Cancelar',
-      acceptButtonStyleClass: 'p-button-primary',
-      rejectButtonStyleClass: 'p-button-secondary',
-      accept: () => this.toggleActive(client.id)
-    });
-  }
+  // confirmToggle(client: AdminClient) {
+  //   const acao = client.active ? 'desativar' : 'reativar';
+  //   this.confirmationService.confirm({
+  //     header: 'Confirmação',
+  //     message: `Tem certeza que deseja ${acao} o cliente "${client.fullName}"?`,
+  //     icon: 'pi pi-exclamation-triangle',
+  //     acceptLabel: 'Confirmar',
+  //     rejectLabel: 'Cancelar',
+  //     acceptButtonStyleClass: 'p-button-primary',
+  //     rejectButtonStyleClass: 'p-button-secondary',
+  //     accept: () => this.toggleActive(client.id)
+  //   });
+  // }
 
-  toggleActive(id: number) {
-    this.clients = this.clients.map(c => c.id === id ? { ...c, active: !c.active } : c);
-    const updated = this.clients.find(c => c.id === id);
-    if (updated) {
-      this.messageService.add({
-        severity: 'success',
-        life: 2000,
-        summary: 'Sucesso',
-        detail: updated.active ? 'Cliente reativado.' : 'Cliente desativado.'
-      });
-    }
-  }
+  // toggleActive(id: number) {
+  //   this.clients = this.clients.map(c => c.id === id ? { ...c, active: !c.active } : c);
+  //   const updated = this.clients.find(c => c.id === id);
+  //   if (updated) {
+  //     this.messageService.add({
+  //       severity: 'success',
+  //       life: 2000,
+  //       summary: 'Sucesso',
+  //       detail: updated.active ? 'Cliente reativado.' : 'Cliente desativado.'
+  //     });
+  //   }
+  // }
 
-  onGlobalFilter(dt: Table, event: Event) {
-    const input = event.target as HTMLInputElement;
-    dt.filterGlobal(input.value, 'contains');
-  }
 }
