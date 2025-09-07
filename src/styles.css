@@ -45,6 +45,8 @@
   /* 🔹 Suaves e neutras (hover, bordas) */
   --color-slate: #334155;
   --color-gray-light: #c0c0c0;
+
+  --input-border: #3f3f46;
 }
 
 * {
