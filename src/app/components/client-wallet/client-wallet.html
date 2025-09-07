@@ -1,4 +1,5 @@
 <app-header/>
+<p-toast></p-toast>
 <main style="padding: 3rem 12rem 4rem 12rem">
   <div style="display: flex; flex-direction: column; margin-bottom: 4rem; gap: 8px;">
     <div style="display: flex; flex-direction: row; align-items: center; gap: 8px;">
@@ -32,81 +33,115 @@
 
         <form style="display: flex; flex-direction: column; gap: 1rem" [formGroup]="creditCardForm">
           <div [style]="{'width': '100%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
-            <p-floatlabel variant="on" [style]="{'width': '100%'}">
-              <input
-                pInputText
-                id="city"
-                style="width: 100%"
-                formControlName="name"
-                pSize="large"
-              />
-              <label for="city">Nome do cartão*</label>
+            <p-floatlabel variant="on">
+              <p-inputmask
+                mask="9999 9999 9999 9999"
+                id="number"
+                [style]="{width: '100%'}"
+                [unmask]="true"
+                size="large"
+                placeholder="0000 0000 0000 0000"
+                formControlName="number"
+                aria-required="true"
+              ></p-inputmask>
+              <label for="number">Número do cartão*</label>
             </p-floatlabel>
-            @if (creditCardForm.get('name')?.invalid && creditCardForm.get('name')?.touched) {
+            @if (creditCardForm.get('number')?.invalid && creditCardForm.get('number')?.touched) {
               <div class="alert alert-danger">
-                @if (creditCardForm.get('name')?.hasError('required')) {
-                  <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o nome.</div>
+                @if (creditCardForm.get('number')?.hasError('required')) {
+                  <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o número do cartão.</div>
                 }
               </div>
             }
           </div>
 
-          <div [style]="{'width': '100%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
-            <p-floatlabel variant="on" [style]="{'width': '100%'}">
-              <input
-                pInputText
-                id="city"
-                style="width: 100%"
-                formControlName="printedName"
-                pSize="large"
-              />
-              <label for="city">Nome impresso no cartão*</label>
-            </p-floatlabel>
-            @if (creditCardForm.get('printedName')?.invalid && creditCardForm.get('printedName')?.touched) {
-              <div class="alert alert-danger">
-                @if (creditCardForm.get('printedName')?.hasError('required')) {
-                  <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o nome impresso no cartão.</div>
-                }
-              </div>
-            }
-          </div>
-
-          <div style="display: flex; flex-direction: row; width: 100%; gap: 8px">
+          <div style="width: 100%; display: flex; gap: 1rem">
             <div [style]="{'width': '50%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
               <p-floatlabel variant="on" [style]="{'width': '100%'}">
-                <p-inputmask
-                  mask="MM/AA"
-                  id="validity"
-                  size="large"
-                  formControlName="validity"
-                  [style]="{'width': '100%'}"
-                ></p-inputmask>
-                <label for="validity">Validade*</label>
+                <input
+                  pInputText
+                  id="city"
+                  style="width: 100%"
+                  formControlName="printedName"
+                  pSize="large"
+                />
+                <label for="city">Nome impresso no cartão*</label>
               </p-floatlabel>
-              @if (creditCardForm.get('validity')?.invalid && creditCardForm.get('validity')?.touched) {
+              @if (creditCardForm.get('printedName')?.invalid && creditCardForm.get('printedName')?.touched) {
                 <div class="alert alert-danger">
-                  @if (creditCardForm.get('validity')?.hasError('required')) {
-                    <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar a validade do cartão.</div>
+                  @if (creditCardForm.get('printedName')?.hasError('required')) {
+                    <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o nome impresso no cartão.</div>
                   }
                 </div>
               }
             </div>
 
             <div [style]="{'width': '50%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
+              <p-floatlabel variant="on">
+                <p-select
+                  [options]="[
+                      { name: 'Visa', value: 'VISA' },
+                      { name: 'Mastercard', value: 'MASTERCARD' },
+                      { name: 'American Express', value: 'AMERICAN_EXPRESS' },
+                      { name: 'Elo', value: 'ELO' },
+                      { name: 'Hipercard', value: 'HIPERCARD' }
+                    ]"
+                  optionLabel="name"
+                  inputId="cardFlag"
+                  optionValue="value"
+                  size="large"
+                  style="width: 100%"
+                  formControlName="cardFlag"
+                  aria-required="true"
+                />
+                <label for="cardFlag">Bandeira do cartão*</label>
+              </p-floatlabel>
+              @if (creditCardForm.get('cardFlag')?.invalid && creditCardForm.get('cardFlag')?.touched) {
+                <div class="alert alert-danger">
+                  @if (creditCardForm.get('cardFlag')?.hasError('required')) {
+                    <div style="color: #a44b4c;font-size: 0.875rem;">É necessário selecionar a bandeira do cartão.</div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+
+
+          <div style="display: flex; flex-direction: row; width: 100%; gap: 8px">
+<!--            <div [style]="{'width': '50%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">-->
+<!--              <p-floatlabel variant="on" [style]="{'width': '100%'}">-->
+<!--                <p-inputmask-->
+<!--                  mask="MM/AA"-->
+<!--                  id="validity"-->
+<!--                  size="large"-->
+<!--                  formControlName="validity"-->
+<!--                  [style]="{'width': '100%'}"-->
+<!--                ></p-inputmask>-->
+<!--                <label for="validity">Validade*</label>-->
+<!--              </p-floatlabel>-->
+<!--              @if (creditCardForm.get('validity')?.invalid && creditCardForm.get('validity')?.touched) {-->
+<!--                <div class="alert alert-danger">-->
+<!--                  @if (creditCardForm.get('validity')?.hasError('required')) {-->
+<!--                    <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar a validade do cartão.</div>-->
+<!--                  }-->
+<!--                </div>-->
+<!--              }-->
+<!--            </div>-->
+
+            <div [style]="{'width': '100%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
               <p-floatlabel variant="on" [style]="{'width': '100%'}">
                 <p-inputmask
-                  mask="___"
-                  [max]="3"
-                  id="verificationCode"
+                  mask="999"
+                  id="securityCode"
                   size="large"
-                  formControlName="verificationCode"
+                  formControlName="securityCode"
                   [style]="{'width': '100%'}"
                 ></p-inputmask>
-                <label for="verificationCode">Código de verificação*</label>
+                <label for="securityCode">Código de verificação*</label>
               </p-floatlabel>
-              @if (creditCardForm.get('verificationCode')?.invalid && creditCardForm.get('verificationCode')?.touched) {
+              @if (creditCardForm.get('securityCode')?.invalid && creditCardForm.get('securityCode')?.touched) {
                 <div class="alert alert-danger">
-                  @if (creditCardForm.get('verificationCode')?.hasError('required')) {
+                  @if (creditCardForm.get('securityCode')?.hasError('required')) {
                     <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o nome.</div>
                   }
                 </div>
@@ -119,20 +154,19 @@
           <div style="display: flex; flex-direction: row; width: 100%; gap: 8px">
             <div [style]="{'width': '50%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
               <p-floatlabel variant="on">
-                <input
-                  pInputText
-                  class="register-input"
+                <p-inputmask
+                  mask="999.999.999-99"
                   id="cpf"
-                  pSize="large"
+                  [unmask]="true"
+                  size="large"
                   formControlName="cpf"
                   [style]="{'width': '100%'}"
-                  autocomplete="off"
-                  name="cpf"
-                  maxlength="11"
+                  placeholder="000.000.000-00"
                   aria-required="true"
-                />
+                ></p-inputmask>
                 <label for="cpf">CPF*</label>
               </p-floatlabel>
+
               @if (creditCardForm.get('cpf')?.invalid && creditCardForm.get('cpf')?.touched) {
                 <div class="alert alert-danger">
                   @if (creditCardForm.get('cpf')?.hasError('required')) {
@@ -194,7 +228,7 @@
           <div class="flex items-center">
             <p-checkbox
               inputId="mainCard"
-              formControlName="mainCard"
+              formControlName="isMain"
               [binary]="true">
             </p-checkbox>
             <label for="mainCard" class="ml-2"> Este é meu cartão principal </label>
@@ -202,7 +236,7 @@
 
           <div style="display: flex; justify-content: space-between; margin-top: 2rem">
             <p-button label="Voltar para minha conta" variant="outlined" (onClick)="handleCreditCardForm()"/>
-            <p-button label="Cadastrar novo cartão" [disabled]="creditCardForm.invalid"/>
+            <p-button label="Cadastrar novo cartão" [disabled]="creditCardForm.invalid" (onClick)="submitCreditCard()" />
           </div>
         </form>
       </div>
