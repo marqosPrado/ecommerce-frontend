@@ -9,6 +9,13 @@ export type Client = {
   phone: string;
   email: string;
   password: string;
+  active?: boolean;
+  credit?: number;
   addresses: Address[];
   creditCards: CreditCard[];
 };
+
+export enum Gender {
+  MALE = 'MASCULINO',
+  FEMALE = 'FEMININO',
+}
