@@ -46,9 +46,9 @@
               <input formControlName="phoneNumber" pInputText id="phone" pSize="large" name="phoneNumber" autocomplete="off" maxlength="11"/>
               <label for="phone">Celular*</label>
             </p-floatlabel>
-            @if (editClientForm.get('phone')?.invalid && editClientForm.get('phone')?.touched) {
+            @if (editClientForm.get('phoneNumber')?.invalid && editClientForm.get('phoneNumber')?.touched) {
               <div class="alert alert-danger">
-                @if (editClientForm.get('phone')?.hasError('required')) {
+                @if (editClientForm.get('phoneNumber')?.hasError('required')) {
                   <div style="color: #a44b4c;font-size: 0.875rem;">É necessário preencher o telefone celular.</div>
                 }
               </div>
@@ -370,7 +370,13 @@
     </div>
 
     <div style="width: 100%; display: flex; justify-content: start; align-items: center; gap: 8px">
-      <p-button severity="primary" size="large" label="SALVAR ALTERAÇÕES" (click)="editClient()" />
+      <p-button
+        severity="primary"
+        size="large"
+        label="SALVAR ALTERAÇÕES"
+        [loading]="loading"
+        (click)="editClient()"
+      />
       <p-button
         label="Voltar a lista"
         size="large"

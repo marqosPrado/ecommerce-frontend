@@ -45,6 +45,7 @@ export class EditClient implements OnInit{
   editClientForm!: FormGroup;
   clientId!: string;
   showAddressForm = signal(false);
+  loading = false;
 
   constructor(
     private fb: FormBuilder,
@@ -124,8 +125,11 @@ export class EditClient implements OnInit{
           gender: this.editClientForm.get('gender')?.value,
         };
 
+        this.loading = true;
+
         this.clientService.updateClientBasicData(Number(this.clientId), payload).subscribe({
           next: () => {
+            this.loading = false;
             this.messageService.add({
               severity: 'success',
               life: 2000,
@@ -133,11 +137,10 @@ export class EditClient implements OnInit{
               detail: 'Alterações salvas com sucesso!'
             });
 
-            setTimeout(() => {
-              this.router.navigate(['/client/all']);
-            }, 2000);
+            this.loadClient();
           },
           error: (err) => {
+            this.loading = false;
             console.error('Erro ao salvar alterações:', err);
             this.messageService.add({
               severity: 'error',
