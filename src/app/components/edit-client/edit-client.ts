@@ -104,8 +104,13 @@ export class EditClient implements OnInit{
   })
 
   editClient() {
+    if (this.editClientForm.invalid) {
+      this.editClientForm.markAllAsTouched();
+      return;
+    }
+
     this.confirmationService.confirm({
-      message: 'Tem certeza que salvar essa alteração?',
+      message: 'Tem certeza que deseja salvar essa alteração?',
       header: 'Confirmação',
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Sim',
@@ -113,15 +118,35 @@ export class EditClient implements OnInit{
       acceptButtonStyleClass: 'p-button-primary',
       rejectButtonStyleClass: 'p-button-secondary',
       accept: () => {
-        this.messageService.add({
-          severity: 'success',
-          life: 2000,
-          summary: 'Sucesso!',
-          detail: 'Alteração realizado com sucesso!'
+        const payload = {
+          fullName: this.editClientForm.get('fullName')?.value,
+          phoneNumber: this.editClientForm.get('phoneNumber')?.value,
+          gender: this.editClientForm.get('gender')?.value,
+        };
+
+        this.clientService.updateClientBasicData(Number(this.clientId), payload).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              life: 2000,
+              summary: 'Sucesso!',
+              detail: 'Alterações salvas com sucesso!'
+            });
+
+            setTimeout(() => {
+              this.router.navigate(['/client/all']);
+            }, 2000);
+          },
+          error: (err) => {
+            console.error('Erro ao salvar alterações:', err);
+            this.messageService.add({
+              severity: 'error',
+              life: 4000,
+              summary: 'Erro!',
+              detail: 'Não foi possível salvar as alterações.'
+            });
+          }
         });
-        setTimeout(() => {
-          this.router.navigate(['/client/all']);
-        }, 2000)
       }
     });
   }

@@ -17,4 +17,8 @@ export class ClientService {
   getClientById(clientId: number) {
     return this.http.get<Client>(`${this.apiUrl}/${clientId}/all`)
   }
+
+  updateClientBasicData(clientId: number, clientData: Partial<Client>) {
+    return this.http.put<Client>(`${this.apiUrl}/${clientId}/basic-update`, clientData);
+  }
 }
