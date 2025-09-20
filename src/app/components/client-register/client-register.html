@@ -26,6 +26,7 @@
                     formControlName="fullName"
                     name="fullName"
                     aria-required="true"
+                    data-cy="input-fullName"
                   />
                   <label for="fullName">Nome completo*</label>
                 </p-floatlabel>
@@ -52,6 +53,7 @@
                     name="cpf"
                     maxlength="11"
                     aria-required="true"
+                    data-cy="input-cpf"
                   />
                   <label for="cpf">CPF*</label>
                 </p-floatlabel>
@@ -82,6 +84,7 @@
                   formControlName="gender"
                   aria-label="Selecione o gênero"
                   aria-required="true"
+                  data-cy="select-gender"
                 />
                 @if (clientRegisterForm.get('gender')?.invalid && clientRegisterForm.get('gender')?.touched) {
                   <div class="alert alert-danger">
@@ -98,6 +101,7 @@
                   placeholder="Data de nascimento*"
                   size="large"
                   aria-required="true"
+                  data-cy="input-birthDate"
                 />
                 @if (clientRegisterForm.get('birthDate')?.invalid && clientRegisterForm.get('birthDate')?.touched) {
                   <div class="alert alert-danger">
@@ -121,6 +125,7 @@
                   formControlName="typePhoneNumber"
                   aria-label="Selecione um tipo de telefone"
                   aria-required="true"
+                  data-cy="select-typePhoneNumber"
                 />
                 @if (clientRegisterForm.get('typePhoneNumber')?.invalid && clientRegisterForm.get('typePhoneNumber')?.touched) {
                   <div class="alert alert-danger">
@@ -141,6 +146,7 @@
                     name="phoneNumber"
                     maxlength="11"
                     aria-required="true"
+                    data-cy="input-phoneNumber"
                   />
                   <label for="phoneNumber">Telefone*</label>
                 </p-floatlabel>
@@ -165,6 +171,7 @@
                     formControlName="email"
                     name="email"
                     aria-required="true"
+                    data-cy="input-email"
                   />
                   <label for="email">E-mail*</label>
                 </p-floatlabel>
@@ -179,20 +186,37 @@
             <div class="form-row">
               <div class="form-column">
                 <p-floatlabel variant="on">
-                  <p-password size="large" inputId="password" formControlName="password"/>
+                  <p-password
+                    size="large"
+                    inputId="password"
+                    formControlName="password"
+                    data-cy="input-password"
+                  />
                   <label for="password">Senha*</label>
                 </p-floatlabel>
               </div>
               <div class="form-column">
                 <p-floatlabel variant="on">
-                  <p-password size="large" inputId="confirmPassword" formControlName="confirmPassword"/>
+                  <p-password
+                    size="large"
+                    inputId="confirmPassword"
+                    formControlName="confirmPassword"
+                    data-cy="input-confirmPassword"
+                  />
                   <label for="confirmPassword">Confirmar senha*</label>
                 </p-floatlabel>
               </div>
             </div>
 
             <div class="step-navigation step-navigation-end">
-              <p-button label="Próximo" icon="pi pi-arrow-right" iconPos="right" (onClick)="activateCallback(2)" [disabled]="clientRegisterForm.invalid" />
+              <p-button
+                label="Próximo"
+                icon="pi pi-arrow-right"
+                iconPos="right"
+                (onClick)="activateCallback(2)"
+                [disabled]="clientRegisterForm.invalid"
+                data-cy="btn-step1-next"
+              />
             </div>
           </form>
         </ng-template>
@@ -215,6 +239,7 @@
                     inputId="typeResidence"
                     formControlName="typeResidence"
                     size="large"
+                    data-cy="select-typeResidence"
                   />
                   <label for="typeResidence">Tipo de residência*</label>
                 </p-floatlabel>
@@ -234,6 +259,7 @@
                   formControlName="typePlace"
                   aria-label="Selecione um tipo de logradouro"
                   aria-required="true"
+                  data-cy="select-typePlace"
                 />
                 @if (clientAddressForm.get('typePlace')?.invalid && clientAddressForm.get('typePlace')?.touched) {
                   <div class="alert alert-danger">
@@ -251,6 +277,7 @@
                     id="street"
                     class="register-input"
                     formControlName="street"
+                    data-cy="input-street"
                   />
                   <label for="street">Logradouro*</label>
                 </p-floatlabel>
@@ -263,6 +290,7 @@
                     id="number"
                     class="register-input"
                     formControlName="number"
+                    data-cy="input-number"
                   />
                   <label for="number">Número*</label>
                 </p-floatlabel>
@@ -277,6 +305,7 @@
                     id="district"
                     class="register-input"
                     formControlName="neighborhood"
+                    data-cy="input-neighborhood"
                   />
                   <label for="district">Bairro*</label>
                 </p-floatlabel>
@@ -290,6 +319,7 @@
                     size="large"
                     formControlName="cep"
                     class="register-input"
+                    data-cy="input-cep"
                   ></p-inputmask>
                   <label for="cep">CEP*</label>
                 </p-floatlabel>
@@ -304,6 +334,7 @@
                     id="city"
                     formControlName="city"
                     class="register-input"
+                    data-cy="input-city"
                   />
                   <label for="city">Cidade*</label>
                 </p-floatlabel>
@@ -322,6 +353,7 @@
                   formControlName="stateId"
                   aria-label="Selecione um estado"
                   aria-required="true"
+                  data-cy="select-stateId"
                 />
                 @if (clientAddressForm.get('stateId')?.invalid && clientAddressForm.get('stateId')?.touched) {
                   <div class="alert alert-danger">
@@ -337,6 +369,7 @@
                     id="country"
                     formControlName="country"
                     class="register-input"
+                    data-cy="input-country"
                   />
                   <label for="country">País*</label>
                 </p-floatlabel>
@@ -355,6 +388,7 @@
                     style="resize: none"
                     formControlName="observations"
                     class="register-input"
+                    data-cy="input-observations"
                   ></textarea>
                   <label for="notes">Observações (opcional)</label>
                 </p-floatlabel>
@@ -363,8 +397,21 @@
           </form>
 
           <div class="step-navigation">
-            <p-button label="Voltar" severity="secondary" icon="pi pi-arrow-left" (onClick)="activateCallback(1)"/>
-            <p-button label="Próximo" icon="pi pi-arrow-right" iconPos="right" (onClick)="activateCallback(3)" [disabled]="clientAddressForm.invalid" />
+            <p-button
+              label="Voltar"
+              severity="secondary"
+              icon="pi pi-arrow-left"
+              (onClick)="activateCallback(1)"
+              data-cy="btn-step1-back"
+            />
+            <p-button
+              label="Próximo"
+              icon="pi pi-arrow-right"
+              iconPos="right"
+              (onClick)="activateCallback(3)"
+              [disabled]="clientAddressForm.invalid"
+              data-cy="btn-step2-next"
+            />
           </div>
         </ng-template>
       </p-step-panel>
@@ -383,6 +430,7 @@
                     placeholder="0000 0000 0000 0000"
                     formControlName="number"
                     aria-required="true"
+                    data-cy="input-number"
                   ></p-inputmask>
                   <label for="number">Número do cartão*</label>
                 </p-floatlabel>
@@ -403,6 +451,7 @@
                     id="printedName"
                     formControlName="printedName"
                     aria-required="true"
+                    data-cy="input-printedName"
                   />
                   <label for="printedName">Nome impresso no cartão*</label>
                 </p-floatlabel>
@@ -431,6 +480,7 @@
                     size="large"
                     formControlName="cardFlag"
                     aria-required="true"
+                    data-cy="select-cardFlag"
                   />
                   <label for="cardFlag">Bandeira do cartão*</label>
                 </p-floatlabel>
@@ -450,6 +500,7 @@
                     formControlName="securityCode"
                     [maxLength]="3"
                     aria-required="true"
+                    data-cy="input-securityCode"
                   />
                   <label for="securityCode">Código de segurança*</label>
                 </p-floatlabel>
@@ -463,13 +514,31 @@
           </form>
 
           <div class="step-navigation">
-            <p-button label="Voltar" severity="secondary" icon="pi pi-arrow-left" (onClick)="activateCallback(2)"/>
-            <p-button label="Criar conta" type="submit" size="large" [disabled]="clientRegisterForm.invalid || clientAddressForm.invalid || clientPaymentForm.invalid" (onClick)="onSubmit()"/>
+            <p-button
+              label="Voltar"
+              severity="secondary"
+              icon="pi pi-arrow-left"
+              (onClick)="activateCallback(2)"
+              data-cy="btn-step2-back"
+            />
+            <p-button
+              label="Criar conta"
+              type="submit"
+              size="large"
+              [disabled]="clientRegisterForm.invalid
+              || clientAddressForm.invalid
+              || clientPaymentForm.invalid"
+              (onClick)="onSubmit()"
+              data-cy="btn-create-account"
+            />
           </div>
         </ng-template>
       </p-step-panel>
     </p-step-panels>
   </p-stepper>
 
-  <p-toast position="bottom-right"/>
+  <p-toast
+    position="bottom-right"
+    data-cy="p-toast"
+  />
 </main>
