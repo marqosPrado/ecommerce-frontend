@@ -1,5 +1,23 @@
+import {BasicClientDataStep, ClientRegisterPage} from '../support/pages/client-register-page';
+
 describe('Client registration test', () => {
-  it('passes', () => {
-    cy.visit('https://example.cypress.io')
-  })
+
+  it('Should register a user with success', () => {
+    cy.visit('http://localhost:4200/client/register')
+
+    const clientRegisterPage = new ClientRegisterPage()
+
+    const basicData: BasicClientDataStep = {
+      fullName: "Marcos Vinicius Felix do Prado",
+      cpf: '12345678990',
+      gender: 'Masculino',
+      birthDate: '15/04/2003',
+      typePhoneNumber: 'Celular',
+      phoneNumber: "11958889742",
+      email: "marcospradodev@gmail.com",
+      password: 'AbcT3ste@',
+      confirmPassword: 'AbcT3ste@'
+    }
+    clientRegisterPage.fillStep1(basicData)
+  });
 })
