@@ -23,72 +23,138 @@
 
       <form [formGroup]="clientFilterForm" (ngSubmit)="onFilterSubmit()" style="display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin-bottom: .75rem; flex-wrap: wrap;">
         <p-floatlabel variant="on">
-          <input pInputText id="on_label" formControlName="name" autocomplete="off" />
+          <input pInputText
+                 id="on_label"
+                 formControlName="name"
+                 autocomplete="off"
+                 data-cy="filter-name-input"
+          />
           <label for="on_label">Nome</label>
         </p-floatlabel>
 
         <p-floatlabel variant="on">
-          <input pInputText id="on_label" formControlName="cpf" autocomplete="off" />
+          <input pInputText
+                 id="on_label"
+                 formControlName="cpf"
+                 autocomplete="off"
+                 data-cy="filter-cpf-input"
+          />
           <label for="on_label">CPF</label>
         </p-floatlabel>
 
         <p-floatlabel variant="on">
-          <input pInputText id="on_label" formControlName="email" autocomplete="off" />
+          <input pInputText
+                 id="on_label"
+                 formControlName="email"
+                 autocomplete="off"
+                 data-cy="filter-email-input"
+          />
           <label for="on_label">E-mail</label>
         </p-floatlabel>
 
         <p-floatlabel variant="on">
-          <input pInputText id="on_label" formControlName="phoneNumber" autocomplete="off" />
+          <input pInputText
+                 id="on_label"
+                 formControlName="phoneNumber"
+                 autocomplete="off"
+                 data-cy="filter-phoneNumber-input"
+          />
           <label for="on_label">Número de telefone</label>
         </p-floatlabel>
 
         <div style="display: flex; flex-direction: row; gap: 1rem; border: var(--input-border) solid 1px; padding: 0.5rem 0.75rem 0.75rem 1rem; border-radius: 5px; justify-content: center; align-items: center">
           <div style="display: flex; flex-direction: row; gap: 0.5rem">
-            <p-radiobutton name="gender" value="MASCULINO" formControlName="gender" inputId="masculino" />
+            <p-radiobutton
+              name="gender"
+              value="MASCULINO"
+              formControlName="gender"
+              inputId="masculino"
+              data-cy="filter-gender-masc"
+            />
             <label for="masculino" class="ml-2">Masculino</label>
           </div>
 
           <div style="display: flex; flex-direction: row; gap: 0.5rem">
-            <p-radiobutton name="gender" value="FEMININO" formControlName="gender" inputId="feminino" />
+            <p-radiobutton
+              name="gender"
+              value="FEMININO"
+              formControlName="gender"
+              inputId="feminino"
+              data-cy="filter-gender-fem"
+            />
             <label for="feminino" class="ml-2">Feminino</label>
           </div>
 
           <div style="display: flex; flex-direction: row; gap: 0.5rem">
-            <p-radiobutton name="gender" [value]="null" formControlName="gender" inputId="feminino" />
+            <p-radiobutton
+              name="gender"
+              [value]="null"
+              formControlName="gender"
+              inputId="feminino"
+              data-cy="filter-gender-all"
+            />
             <label for="all" class="ml-2">Todos</label>
           </div>
         </div>
 
         <div style="display: flex; flex-direction: row; gap: 1rem; border: var(--input-border) solid 1px; padding: 0.5rem 0.75rem 0.75rem 1rem; border-radius: 5px; justify-content: center; align-items: center">
           <div style="display: flex; flex-direction: row; gap: 0.5rem">
-            <p-radiobutton name="active" value="true" formControlName="active" inputId="ativo" />
+            <p-radiobutton
+              name="active"
+              value="true"
+              formControlName="active"
+              inputId="ativo"
+              data-cy="filter-status-active"
+            />
             <label for="ativo" class="ml-2">Ativo</label>
           </div>
 
           <div style="display: flex; flex-direction: row; gap: 0.5rem">
-            <p-radiobutton name="active" value="false" formControlName="active" inputId="inativo" />
+            <p-radiobutton
+              name="active"
+              value="false"
+              formControlName="active"
+              inputId="inativo"
+              data-cy="filter-status-inactive"
+            />
             <label for="inativo" class="ml-2">Inativo</label>
           </div>
 
           <div style="display: flex; flex-direction: row; gap: 0.5rem">
-            <p-radiobutton name="active" [value]="null" formControlName="active" inputId="inativo" />
+            <p-radiobutton
+              name="active"
+              [value]="null"
+              formControlName="active"
+              inputId="inativo"
+              data-cy="filter-status-all"
+            />
             <label for="todos" class="ml-2">Todos</label>
           </div>
         </div>
 
 
-        <button pButton type="submit" (click)="onFilterSubmit()">
+        <button pButton
+                type="submit"
+                (click)="onFilterSubmit()"
+                data-cy="btn-search"
+        >
           <i class="pi pi-search" pButtonIcon></i>
           <span pButtonLabel>Pesquisar</span>
         </button>
 
       </form>
 
-      <p-table #dt [value]="clients" dataKey="id" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20]"
+      <p-table #dt
+               [value]="clients"
+               dataKey="id"
+               [paginator]="true"
+               [rows]="10"
+               [rowsPerPageOptions]="[5,10,20]"
                [tableStyle]="{ 'min-width': '60rem' }"
                [totalRecords]="totalRecords" [loading]="loading"
                (onLazyLoad)="loadClients($event)" lazy="true"
                [globalFilterFields]="['fullName','email','cpf','phone']"
+               data-cy="client-table"
       >
         <ng-template pTemplate="header">
           <tr>
@@ -120,8 +186,9 @@
                   size="small"
                   iconPos="left"
                   [icon]="client.active ? 'pi pi-ban' : 'pi pi-check'"
-                  (click)="confirmToggle(client)">
-                </p-button>
+                  (click)="confirmToggle(client)"
+                  data-cy="btn-change-client-status"
+                />
               </div>
             </td>
           </tr>
@@ -142,6 +209,12 @@
     </p-card>
   </section>
 
-  <p-confirmDialog></p-confirmDialog>
-  <p-toast></p-toast>
+  <p-confirmDialog
+    data-cy="p-confirmDialog"
+    acceptLabel="Confirmar"
+    rejectLabel="Cancelar"
+  />
+  <p-toast
+    data-cy="p-toast"
+  />
 </main>

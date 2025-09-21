@@ -3,7 +3,7 @@ import {
   ClientAddressDataStep,
   ClientCreditCardDataStep,
   ClientRegisterPage
-} from '../support/pages/client-register-page';
+} from '../../support/pages/client-register-page';
 
 describe('Client registration test', () => {
 
