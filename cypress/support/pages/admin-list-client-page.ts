@@ -19,8 +19,10 @@ export class AdminListClientPage {
   }
 
   fillPhone(phone: string): void {
-    cy.get(selector.inputPhone).clear()
-    cy.get(selector.inputPhone).type(phone)
+    cy.get(selector.inputPhone)
+      .should('exist')
+      .should('be.visible')
+      .type(phone)
   }
 
   selectGenderMasc(): void {
@@ -62,10 +64,12 @@ export class AdminListClientPage {
       .click()
   }
 
-  confirmDialogAction(confirm = true): void {
-    cy.get(selector.confirmDialog).within(() => {
-      cy.contains(confirm ? 'Sim' : 'Não').click()
-    })
+  confirmDialogAction(): void {
+    cy.get('[pc108=""] > .p-ripple').click()
+  }
+
+  cancelDialogAction(): void {
+    cy.get('[pc105=""] > .p-ripple').click()
   }
 
   getToast(): Chainable {

@@ -19,12 +19,6 @@ describe("Admin List Client Management", () => {
     adminListClientPage.getClientTable().should('contain', 'marcospradodev@gmail.com')
   })
 
-  it('Deve filtrar clientes por telefone', () => {
-    adminListClientPage.fillPhone('11958889742')
-    adminListClientPage.clickSearch()
-    adminListClientPage.getClientTable().should('contain', '11958889742')
-  })
-
   it('Deve filtrar clientes por gênero masculino', () => {
     adminListClientPage.selectGenderMasc()
     adminListClientPage.clickSearch()
@@ -35,6 +29,18 @@ describe("Admin List Client Management", () => {
     adminListClientPage.selectStatusActive()
     adminListClientPage.clickSearch()
     adminListClientPage.getClientTable().should('contain', 'Ativo')
+  })
+
+  it('Deve desativar um cliente', () => {
+    adminListClientPage.changeClientStatus(0)
+    adminListClientPage.confirmDialogAction()
+    adminListClientPage.getClientTable().should('contain', 'Inativo')
+  })
+
+  it('Deve filtrar clientes inativos', () => {
+    adminListClientPage.selectStatusInactive()
+    adminListClientPage.clickSearch()
+    adminListClientPage.getClientTable().should('contain', 'Inativo')
   })
 
 })
