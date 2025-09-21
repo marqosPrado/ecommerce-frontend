@@ -12,6 +12,19 @@ export interface BasicClientDataStep {
   confirmPassword: string
 }
 
+export interface ClientAddressDataStep {
+  typeResidence: string,
+  typePlace: string,
+  street: string,
+  number: string,
+  neighborhood: string,
+  cep: string,
+  city: string,
+  stateId: string,
+  country: string,
+  observations: string,
+}
+
 export class ClientRegisterPage {
   fillStep1(data: BasicClientDataStep) {
     cy.get(selector.fullName). type(data.fullName)
@@ -24,6 +37,23 @@ export class ClientRegisterPage {
     cy.get(selector.password).type(data.password)
     cy.get(selector.confirmPassword).type(data.confirmPassword)
     cy.get(selector.btnNextStep)
+      .should('be.visible')
+      .and('be.enabled')
+      .click()
+  }
+
+  fillAddressStep2(data: ClientAddressDataStep) {
+    cy.get(selector.typeResidence).click().contains(data.typeResidence).click()
+    cy.get(selector.typePlace).click().contains(data.typePlace).click()
+    cy.get(selector.street).type(data.street)
+    cy.get(selector.number).type(data.number)
+    cy.get(selector.neighborhood).type(data.neighborhood)
+    cy.get(selector.cep).type(data.cep)
+    cy.get(selector.city).type(data.city)
+    cy.get(selector.state).click().contains(data.stateId).click()
+    cy.get(selector.country).type(data.country)
+    cy.get(selector.observations).type(data.observations)
+    cy.get(selector.btnNextStep2)
       .should('be.visible')
       .and('be.enabled')
       .click()
