@@ -9,4 +9,16 @@ export const registerClientSelectors = {
   password: '[data-cy="input-password"]',
   confirmPassword: '[data-cy="input-confirmPassword"]',
   btnNextStep: '[data-cy="btn-step1-next"] button',
+
+  typeResidence: '[data-cy="select-typeResidence"]',
+  typePlace: '[data-cy="select-typePlace"]',
+  street: '[data-cy="input-street"]',
+  number: '[data-cy="input-number"]',
+  neighborhood: '[data-cy="input-neighborhood"]',
+  cep: '[data-cy="input-cep"]',
+  city: '[data-cy="input-city"]',
+  state: '[data-cy="select-stateId"]',
+  country: '[data-cy="input-country"]',
+  observations: '[data-cy="input-observations"]',
+  btnNextStep2: '[data-cy="btn-step2-next"] button',
 }
