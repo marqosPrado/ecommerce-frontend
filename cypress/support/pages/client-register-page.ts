@@ -25,6 +25,13 @@ export interface ClientAddressDataStep {
   observations: string,
 }
 
+export interface ClientCreditCardDataStep {
+  cardNumber: string,
+  printedName: string,
+  cardFlag: string,
+  securityCode: string
+}
+
 export class ClientRegisterPage {
   fillStep1(data: BasicClientDataStep) {
     cy.get(selector.fullName). type(data.fullName)
@@ -57,5 +64,21 @@ export class ClientRegisterPage {
       .should('be.visible')
       .and('be.enabled')
       .click()
+  }
+
+  fillCreditCardDataStep3(data: ClientCreditCardDataStep) {
+    cy.get(selector.cardNumber).type(data.cardNumber)
+    cy.get(selector.printedName).type(data.printedName)
+    cy.get(selector.cardFlag).click().contains(data.cardFlag).click()
+    cy.get(selector.securityCode).type(data.securityCode)
+    cy.get(selector.registerClientButton)
+      .should('be.visible')
+      .and('be.enabled')
+      .click()
+      .then(() => {
+        cy.get(selector.toast)
+          .should('be.visible')
+          .contains('Cliente registrado com sucesso!')
+      })
   }
 }
