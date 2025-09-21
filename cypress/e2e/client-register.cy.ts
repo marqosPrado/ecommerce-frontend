@@ -1,4 +1,4 @@
-import {BasicClientDataStep, ClientRegisterPage} from '../support/pages/client-register-page';
+import {BasicClientDataStep, ClientAddressDataStep, ClientRegisterPage} from '../support/pages/client-register-page';
 
 describe('Client registration test', () => {
 
@@ -18,6 +18,21 @@ describe('Client registration test', () => {
       password: 'AbcT3ste@',
       confirmPassword: 'AbcT3ste@'
     }
+
+    const clientAddress: ClientAddressDataStep = {
+      typeResidence: 'Casa',
+      typePlace: 'Rua',
+      street: 'Rua Antônio Ruiz Veiga',
+      number: '100',
+      neighborhood: 'Mogilar',
+      cep: '08773495',
+      city: 'Mogi das Cruzes',
+      stateId: 'São Paulo',
+      country: 'Brasil',
+      observations: 'Loren ipsum Loren ipsum Loren ipsum Loren ipsum Loren ipsum Loren ipsum Loren ipsum Loren ipsum'
+    }
+
     clientRegisterPage.fillStep1(basicData)
+    clientRegisterPage.fillAddressStep2(clientAddress)
   });
 })
