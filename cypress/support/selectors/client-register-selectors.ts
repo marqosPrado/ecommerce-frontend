@@ -21,4 +21,13 @@ export const registerClientSelectors = {
   country: '[data-cy="input-country"]',
   observations: '[data-cy="input-observations"]',
   btnNextStep2: '[data-cy="btn-step2-next"] button',
+
+  cardNumber: '[data-cy="input-cardNumber"]',
+  printedName: '[data-cy="input-printedName"]',
+  cardFlag: '[data-cy="select-cardFlag"]',
+  securityCode: '[data-cy="input-securityCode"]',
+
+  registerClientButton: '[data-cy="btn-create-account"] button',
+
+  toast: '[data-cy="p-toast"]',
 }
