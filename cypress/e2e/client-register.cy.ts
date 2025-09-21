@@ -1,4 +1,9 @@
-import {BasicClientDataStep, ClientAddressDataStep, ClientRegisterPage} from '../support/pages/client-register-page';
+import {
+  BasicClientDataStep,
+  ClientAddressDataStep,
+  ClientCreditCardDataStep,
+  ClientRegisterPage
+} from '../support/pages/client-register-page';
 
 describe('Client registration test', () => {
 
@@ -32,7 +37,14 @@ describe('Client registration test', () => {
       observations: 'Loren ipsum Loren ipsum Loren ipsum Loren ipsum Loren ipsum Loren ipsum Loren ipsum Loren ipsum'
     }
 
+    const clientCreditCard: ClientCreditCardDataStep = {
+      cardNumber: '4444444444444444',
+      printedName: 'MARCOS V F PRADO',
+      cardFlag: 'Visa',
+      securityCode: '468'
+    }
     clientRegisterPage.fillStep1(basicData)
     clientRegisterPage.fillAddressStep2(clientAddress)
+    clientRegisterPage.fillCreditCardDataStep3(clientCreditCard)
   });
 })
