@@ -3,6 +3,10 @@ import { adminListClientSelector as selector } from '../selectors/admin-list-cli
 import Chainable = Cypress.Chainable;
 
 export class AdminListClientPage {
+  getNameInput(): Chainable {
+    return cy.get(selector.inputName)
+  }
+
   fillName(name: string): void {
     cy.get(selector.inputName).clear()
     cy.get(selector.inputName).type(name)
@@ -16,6 +20,10 @@ export class AdminListClientPage {
   fillEmail(email: string): void {
     cy.get(selector.inputEmail).clear()
     cy.get(selector.inputEmail).type(email)
+  }
+
+  getPhoneNumberInput(): Chainable {
+    return cy.get(selector.inputPhone);
   }
 
   fillPhone(phone: string): void {
@@ -65,7 +73,7 @@ export class AdminListClientPage {
   }
 
   confirmDialogAction(): void {
-    cy.get('[pc108=""] > .p-ripple').click()
+    cy.get('.p-dialog-footer > .p-ripple').click()
   }
 
   cancelDialogAction(): void {

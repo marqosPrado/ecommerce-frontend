@@ -1,6 +1,9 @@
 <app-header/>
 
-<p-toast position="bottom-right"/>
+<p-toast
+  position="bottom-right"
+  data-by="p-toast"
+/>
 <p-confirm-dialog></p-confirm-dialog>
 <div style="width: 100%; display: flex; flex-direction: column; padding: 7rem; gap: 2rem">
   <div style="display: flex; flex-direction: row; align-items: center; gap: 0.5rem">
@@ -26,7 +29,15 @@
         <form class="form-container" style="gap: 1rem" [formGroup]="editClientForm" >
           <div style="display: flex;flex-direction: column; gap: 8px">
             <p-floatlabel class="form-field" variant="on">
-              <input formControlName="fullName" pInputText id="fullName" pSize="large" name="fullName" autocomplete="off"/>
+              <input
+                pInputText
+                formControlName="fullName"
+                id="fullName"
+                pSize="large"
+                name="fullName"
+                autocomplete="off"
+                data-by="input-fullName"
+              />
               <label for="fullName">Nome completo*</label>
             </p-floatlabel>
             @if (editClientForm.get('fullName')?.invalid && editClientForm.get('fullName')?.touched) {
@@ -43,7 +54,15 @@
 
           <div style="display: flex;flex-direction: column; gap: 8px">
             <p-floatlabel class="form-field" variant="on">
-              <input formControlName="phoneNumber" pInputText id="phone" pSize="large" name="phoneNumber" autocomplete="off" maxlength="11"/>
+              <input pInputText
+                     formControlName="phoneNumber"
+                     id="phone"
+                     pSize="large"
+                     name="phoneNumber"
+                     autocomplete="off"
+                     maxlength="11"
+                     data-by="input-phoneNumber"
+              />
               <label for="phone">Celular*</label>
             </p-floatlabel>
             @if (editClientForm.get('phoneNumber')?.invalid && editClientForm.get('phoneNumber')?.touched) {
@@ -66,15 +85,28 @@
             optionValue="value"
             optionLabel="name"
             placeholder="Gênero*"
+            data-by="select-gender"
           ></p-select>
 
           <p-floatlabel class="form-field" variant="on">
-            <input pInputText formControlName="email" id="email" pSize="large" name="email"/>
+            <input pInputText
+                   formControlName="email"
+                   id="email"
+                   pSize="large"
+                   name="email"
+                   data-by="input-email"
+            />
             <label for="email">E-mail</label>
           </p-floatlabel>
 
           <p-floatlabel class="form-field" variant="on">
-            <input pInputText formControlName="cpf" id="cpf" pSize="large" name="cpf" />
+            <input pInputText
+                   formControlName="cpf"
+                   id="cpf"
+                   pSize="large"
+                   name="cpf"
+                   data-by="input-cpf"
+            />
             <label for="cpf">CPF</label>
           </p-floatlabel>
 
@@ -85,6 +117,7 @@
             formControlName="birthDate"
             size="large"
             placeholder="Data de nascimento*"
+            data-by="input-birthDate"
           ></p-date-picker>
         </form>
       </section>
@@ -381,6 +414,7 @@
         label="SALVAR ALTERAÇÕES"
         [loading]="loading"
         (click)="editClient()"
+        data-by="btn-update-client"
       />
       <p-button
         label="Voltar a lista"
