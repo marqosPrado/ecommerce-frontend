@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {Header} from "../../common/header/header";
 import {LineSession} from "../../common/line-session/line-session";
 import {ActivatedRoute, RouterLink} from '@angular/router';
@@ -9,6 +9,7 @@ import {InputText} from 'primeng/inputtext';
 import {Carousel} from 'primeng/carousel';
 import {PrimeTemplate} from 'primeng/api';
 import {ProductCard} from '../../common/product-card/product-card';
+import {CartService} from '../../services/cart/cart.service';
 
 @Component({
   selector: 'app-product-details',
@@ -31,6 +32,7 @@ export class ProductDetails implements OnInit {
   protected product!: Product;
   protected aiRecommendations!: Product[];
   private productId!: number;
+  private cartService: CartService = inject(CartService);
 
   constructor(
     private route: ActivatedRoute
@@ -40,6 +42,10 @@ export class ProductDetails implements OnInit {
     this.productId = Number(this.route.snapshot.paramMap.get('id')!);
     this.product = this.getProductById(this.productId);
     this.aiRecommendations = this.getAiRecommendations();
+  }
+
+  addToCart(product: Product): void {
+    this.cartService.addToCart(product)
   }
 
   private getProductById(id: number): Product {

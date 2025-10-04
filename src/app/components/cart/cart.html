@@ -7,7 +7,7 @@
       <p-stepper [value]="activeStep" class="basis-[50rem]">
         <p-step-list>
           <p-step [value]="1">Carrinho</p-step>
-          @if (activeStep >= 2) {
+          @if (activeStep == 2) {
             <p-step [value]="2">Endereços</p-step>
           }
           @if (activeStep >= 3) {
@@ -31,54 +31,48 @@
 
                     <p-button icon="pi pi-trash" size="large" label="Remover todos os produto"/>
                   </div>
+                  @for (item of cartItems; track item.product) {
+                    <div style="width: 100%; display: flex;">
+                      <div style="width: 60%; max-width: 60%; display: flex; gap: 0.5rem; flex-direction: row;">
+                        <img
+                          src="{{item.product.images[0]}}"
+                          style="width: 120px; height: 120px; object-fit: cover; cursor: pointer; border: 2px solid transparent; border-radius: 5px; transition: border 0.2s;"
+                        />
 
-                  <div style="width: 100%; display: flex;">
-                    <div style="width: 60%; max-width: 60%; display: flex; gap: 0.5rem; flex-direction: row;">
-                      <img
-                        src="https://golden.vtexassets.com/arquivos/ids/2939097-800-800/Relogio-Masculino-Solar-Tech-Orient-Prata-MBSS1448-P2SX.jpg?v=638914216648270000"
-                        style="width: 120px; height: 120px; object-fit: cover; cursor: pointer; border: 2px solid transparent; border-radius: 5px; transition: border 0.2s;"
-                      />
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem; padding: 0.5rem">
+                          <div style="display: flex; flex-direction: column; gap: 0.3rem">
+                            <span>Orient</span>
+                            <span style="font-weight: bold">{{item.product.title}}</span>
+                          </div>
 
-                      <div style="display: flex; flex-direction: column; gap: 0.5rem; padding: 0.5rem">
-                        <div style="display: flex; flex-direction: column; gap: 0.3rem">
-                          <span>Orient</span>
-                          <span style="font-weight: bold">Titulo do produto</span>
-                        </div>
-
-                        <div style="display: flex; flex-direction: column">
-                          <span style="font-size: 12px">Com desconto à vista: <strong>R$ 444,99</strong></span>
-                          <span style="font-size: 12px">Parcelado no cartão sem juros: <strong>R$ 444,99</strong></span>
+                          <div style="display: flex; flex-direction: column">
+                            <span style="font-size: 12px">Com desconto à vista: <strong>R$ {{item.product.price}}</strong></span>
+                            <span style="font-size: 12px">Parcelado no cartão sem juros: <strong>R$ {{item.product.price}}</strong></span>
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <form style="width: 20%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0.5rem;" [formGroup]="cartFormGroup" >
-                      <span>Quant.</span>
-                      <p-select
-                        [options]="[
-                        {name: '1', value: '1'},
-                        {name: '2', value: '2'},
-                        {name: '3', value: '3'},
-                        {name: '4', value: '4'},
-                        {name: '5', value: '5'},
-                        {name: '6', value: '6'},
-                        {name: '7', value: '7'},
-                      ]"
-                        optionLabel="name"
-                        class="w-full md:w-56"
-                        [virtualScroll]="true"
-                        [virtualScrollItemSize]="7"
-                        formControlName="quantity"
-                        appendTo="body"
-                      />
-                      <p-button icon="pi pi-trash" size="small" label="Remover" variant="outlined" />
-                    </form>
+                      <form style="width: 20%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0.5rem;" [formGroup]="cartFormGroup" >
+                        <span>Quant.</span>
+                        <p-select
+                          [options]="quantityOptions"
+                          optionLabel="name"
+                          class="w-full md:w-56"
+                          [virtualScroll]="true"
+                          [virtualScrollItemSize]="7"
+                          (onChange)="onQuantityChange(item.product.id, $event)"
+                          formControlName="quantity"
+                          appendTo="body"
+                        />
+                        <p-button icon="pi pi-trash" size="small" label="Remover" variant="outlined" (onClick)="removerFromCart(item.product.id)"/>
+                      </form>
 
-                    <div style="width: 20%; display: flex; flex-direction: column; justify-content: center; align-items: end">
-                      <span>Preço à vista:</span>
-                      <span style="font-size: 16px; font-weight: bold">R$ 449,00</span>
+                      <div style="width: 20%; display: flex; flex-direction: column; justify-content: center; align-items: end">
+                        <span>Preço à vista:</span>
+                        <span style="font-size: 16px; font-weight: bold">{{item.product.price | currency:'BRL'}}</span>
+                      </div>
                     </div>
-                  </div>
+                  }
                 </div>
               </div>
             </ng-template>
@@ -209,7 +203,7 @@
 
       <div style="display: flex; flex-direction: row; justify-content: space-between">
         <span style="font-size: 14px">Valores dos produtos</span>
-        <span><strong>R$ 5589,99</strong></span>
+        <span><strong>{{ totalPrice$ | async | currency:'BRL' }}</strong></span>
       </div>
 
       <div style="width: 100%; display: flex; gap: 0.5rem; margin-top: 1rem; flex-direction: column; align-items: center">

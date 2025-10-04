@@ -5,8 +5,11 @@ import {Header} from '../../common/header/header';
 import {LineSession} from '../../common/line-session/line-session';
 import {Select} from 'primeng/select';
 import {RadioButton} from 'primeng/radiobutton';
-import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {CreditCard, CreditCardTypes} from '../../types/CreditCard';
+import {CartService} from '../../services/cart/cart.service';
+import {Observable} from 'rxjs';
+import {AsyncPipe, CurrencyPipe} from '@angular/common';
 
 @Component({
   selector: 'app-cart',
@@ -22,19 +25,31 @@ import {CreditCard, CreditCardTypes} from '../../types/CreditCard';
     Select,
     RadioButton,
     ReactiveFormsModule,
+    AsyncPipe,
+    CurrencyPipe,
   ],
   templateUrl: './cart.html',
   styleUrl: './cart.css'
 })
 export class Cart implements OnInit {
+  public cartForm!: FormGroup;
+  cartItems: CartItem[];
+  totalPrice$: Observable<number>;
   activeStep: number = 1;
   creditCards: CreditCard[] = [];
   addresses = [
     { id: 10, text: 'Rua A, 123 - São Paulo, SP', isMain: true },
     { id: 11, text: 'Av. B, 456 - Mogi das Cruzes, SP', isMain: false },
   ];
+  quantityOptions = Array.from({ length: 10 }, (_, i) => ({
+    name: `${i + 1}`,
+    value: i + 1
+  }));
 
-  constructor() {}
+  constructor(private cartService: CartService, private fb: FormBuilder) {
+    this.cartItems = [];
+    this.totalPrice$ = this.cartService.calculateTotalValue();
+  }
 
   ngOnInit(): void {
     this.creditCards = this.getAllCreditCards();
@@ -42,6 +57,24 @@ export class Cart implements OnInit {
     if (main) {
       this.addressFormGroup.patchValue({ address: main.id });
     }
+    this.getProductsFromLocalStorage()
+
+    this.cartForm = this.fb.group({
+      items: this.fb.array(
+        this.cartItems.map(item =>
+          this.fb.group({
+            productId: [item.product.id],
+            quantity: [this.getQuantityOption(item.quantity)]
+          })
+        )
+      )
+    });
+
+    this.cartForm.valueChanges.subscribe(value => {
+      value.items.forEach((item: any) => {
+        this.cartService.updateQuantity(item.productId, item.quantity.value);
+      });
+    });
   }
 
   cartFormGroup = new FormGroup({
@@ -93,8 +126,31 @@ export class Cart implements OnInit {
   protected readonly CreditCardTypes = CreditCardTypes;
 
   get primaryDisabled(): boolean {
-    if (this.activeStep === 1) return this.cartFormGroup.invalid;
+    console.log(this.cartItems.length < 0)
+    if (this.activeStep === 1) return this.cartFormGroup.invalid || this.cartItems.length === 0;
     if (this.activeStep === 2) return this.addressFormGroup.invalid;
     return this.cartFormGroup.invalid || this.addressFormGroup.invalid || this.paymentForm.invalid;
   }
+
+  private getProductsFromLocalStorage(): void
+  {
+    this.cartService.items$.subscribe(items => this.cartItems = items);
+  }
+
+  public removerFromCart(productId: number): void {
+    this.cartService.removeFromCart(productId);
+  }
+
+  public onQuantityChange(productId: number, event: any): void {
+    const newQuantity = event.value?.value;
+    if (!newQuantity || newQuantity < 1) {
+      return;
+    }
+    this.cartService.updateQuantity(productId, newQuantity);
+  }
+
+  private getQuantityOption(qty: number): { name: string; value: number } {
+    return this.quantityOptions.find(opt => opt.value === qty) ?? this.quantityOptions[0];
+  }
+
 }
