@@ -29,7 +29,7 @@
                       <span>Produto e Serviço</span>
                     </div>
 
-                    <p-button icon="pi pi-trash" size="large" label="Remover todos os produto"/>
+                    <p-button icon="pi pi-trash" size="large" label="Remover todos os produtos" (onClick)="clearCart()"/>
                   </div>
                   @for (item of cartItems; track item.product) {
                     <div style="width: 100%; display: flex;">

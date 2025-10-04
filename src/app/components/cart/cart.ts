@@ -153,4 +153,7 @@ export class Cart implements OnInit {
     return this.quantityOptions.find(opt => opt.value === qty) ?? this.quantityOptions[0];
   }
 
+  public clearCart(): void {
+    this.cartService.clearCart();
+  }
 }

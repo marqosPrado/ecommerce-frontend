@@ -72,4 +72,9 @@ export class CartService {
       this.saveCart();
     }
   }
+
+  public clearCart(): void {
+    this.itemsSubject.next([]);
+    this.saveCart();
+  }
 }
