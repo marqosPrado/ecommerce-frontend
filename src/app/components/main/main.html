@@ -10,6 +10,7 @@
       <p-carousel [value]="watches" [numVisible]="4" [circular]="false" style="max-width: 100%;">
         <ng-template pTemplate="item" let-watch>
           <app-product-card
+            [id]="watch.id"
             [title]="watch.title"
             [price]="watch.price"
           ></app-product-card>
