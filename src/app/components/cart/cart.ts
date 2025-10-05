@@ -18,6 +18,7 @@ import {AddressService} from '../../services/address/address.service';
 import {Address} from '../../types/Address';
 import {Checkbox} from 'primeng/checkbox';
 import {DatePicker} from 'primeng/datepicker';
+import {CreditCardService} from '../../services/credit-card/credit-card.service';
 
 @Component({
   selector: 'app-cart',
@@ -61,6 +62,9 @@ export class Cart implements OnInit {
   newAddressForm: FormGroup;
   addressFormGroup: FormGroup;
 
+  newCreditCardForm: FormGroup;
+  creditCardFormGroup: FormGroup;
+
   showAddressForm: boolean = false;
   showCreditCardForm: boolean = false;
   loading: boolean = false;
@@ -68,7 +72,8 @@ export class Cart implements OnInit {
   constructor(
     private cartService: CartService,
     private fb: FormBuilder,
-    private addressService: AddressService
+    private addressService: AddressService,
+    private creditCardService: CreditCardService,
   ) {
     this.totalPrice$ = this.cartService.calculateTotalValue();
     this.newAddressForm = this.fb.group({
@@ -87,6 +92,21 @@ export class Cart implements OnInit {
     this.addressFormGroup = this.fb.group({
       address: [null, Validators.required]
     });
+
+    this.newCreditCardForm = this.fb.group({
+      number: ['', Validators.required],
+      printedName: ['', Validators.required],
+      cpf: ['', Validators.required],
+      birthDate: ['', Validators.required],
+      surname: ['', Validators.required],
+      cardFlag: new FormControl<CreditCardTypes | null>(null, Validators.required),
+      securityCode: ['', Validators.required],
+      isMain: [false, Validators.required],
+    })
+
+    this.creditCardFormGroup = this.fb.group({
+      creditCard: [null, Validators.required],
+    })
   }
 
   ngOnInit(): void {
@@ -98,7 +118,13 @@ export class Cart implements OnInit {
       }
     });
 
-    this.creditCards = this.getAllCreditCards();
+    this.creditCardService.getCreditCards().subscribe(cards => {
+      this.creditCards = cards;
+      const main = this.creditCards.find(a => a.isMain) ?? this.creditCards[0];
+      if (main) {
+        this.creditCardFormGroup.patchValue({ creditCard: main.id });
+      }
+    })
 
     this.cartService.items$.subscribe(items => {
       this.cartItems = items;
@@ -125,9 +151,38 @@ export class Cart implements OnInit {
         this.loading = false;
         this.showAddressForm = false;
         this.addressFormGroup.patchValue({ address: created.id });
+        this.newAddressForm.reset();
       },
       error: (err) => {
         console.error('Erro ao cadastrar endereço:', err);
+        this.loading = false;
+      }
+    });
+  }
+
+  onSubmitNewCreditCard() {
+    if (this.newCreditCardForm.invalid) {
+      this.newCreditCardForm.markAllAsTouched();
+      return;
+    }
+
+    const newCreditCard: CreditCard = {
+      ...(this.newCreditCardForm.value as CreditCard),
+    }
+
+    this.loading = true;
+
+    this.creditCardService.registerCreditCard(newCreditCard).subscribe({
+      next: (created) => {
+        this.creditCards.push(created);
+        this.paymentForm.patchValue({ creditCardId: created.id });
+        this.newCreditCardForm.reset();
+        this.newCreditCardForm.patchValue({ isMain: false });
+        this.loading = false;
+        this.showCreditCardForm = false;
+      },
+      error: (err) => {
+        console.log('Erro ao cadastrar o cartão de crédito:', err);
         this.loading = false;
       }
     });
@@ -179,27 +234,6 @@ export class Cart implements OnInit {
     if (this.activeStep > 1) {
       this.activeStep--;
     }
-  }
-
-  getAllCreditCards(): CreditCard[] {
-    return [
-      {
-        id: 1,
-        number: '444* **** **** 4444',
-        printedName: 'MARCOS V F PRADO',
-        cardFlag: CreditCardTypes.MASTER_CARD,
-        securityCode: '336',
-        isMain: true,
-      },
-      {
-        id: 2,
-        number: '555* **** **** 7777',
-        printedName: 'MARCOS V F PRADO',
-        cardFlag: CreditCardTypes.VISA,
-        securityCode: '956',
-        isMain: false,
-      }
-    ]
   }
 
   protected readonly CreditCardTypes = CreditCardTypes;
