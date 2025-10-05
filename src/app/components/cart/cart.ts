@@ -10,6 +10,10 @@ import {CreditCard, CreditCardTypes} from '../../types/CreditCard';
 import {CartService} from '../../services/cart/cart.service';
 import {Observable} from 'rxjs';
 import {AsyncPipe, CurrencyPipe} from '@angular/common';
+import {Textarea} from 'primeng/textarea';
+import {FloatLabel} from 'primeng/floatlabel';
+import {InputText} from 'primeng/inputtext';
+import {InputMask} from 'primeng/inputmask';
 
 @Component({
   selector: 'app-cart',
@@ -27,6 +31,10 @@ import {AsyncPipe, CurrencyPipe} from '@angular/common';
     ReactiveFormsModule,
     AsyncPipe,
     CurrencyPipe,
+    Textarea,
+    FloatLabel,
+    InputText,
+    InputMask,
   ],
   templateUrl: './cart.html',
   styleUrl: './cart.css'
@@ -45,6 +53,8 @@ export class Cart implements OnInit {
     name: `${i + 1}`,
     value: i + 1
   }));
+  showAddressForm: boolean = false;
+  loading: boolean = false;
 
   constructor(private cartService: CartService, private fb: FormBuilder) {
     this.totalPrice$ = this.cartService.calculateTotalValue();
@@ -154,5 +164,10 @@ export class Cart implements OnInit {
 
   public clearCart(): void {
     this.cartService.clearCart();
+  }
+
+  public handleAddressForm(): void {
+    this.showAddressForm = !this.showAddressForm;
+    console.log(this.showAddressForm);
   }
 }

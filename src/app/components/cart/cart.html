@@ -37,8 +37,6 @@
                           style="display: flex; flex-direction: column; gap: 2rem; border: 1px solid var(--color-background); padding: 1.5rem; border-radius: 10px"
                           class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium"
                         >
-
-
                           <div style="width: 100%; display: flex;">
                             <div style="width: 60%; max-width: 60%; display: flex; gap: 0.5rem; flex-direction: row;">
                               <img
@@ -116,28 +114,278 @@
 
           <p-step-panel [value]="2">
             <ng-template #content>
-              <div class="flex flex-col h-48">
-                <div
-                  class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium"
-                >
-                  <form style="display: flex; flex-direction: column; gap: 1rem" [formGroup]="addressFormGroup">
-                    <span><strong>Selecione seu endereço:</strong></span>
+              <div style="display: flex; flex-direction: column; gap: 0.75rem">
+                @if (!showAddressForm) {
+                  <div class="flex flex-col h-48">
+                    <div
+                      class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium"
+                    >
+                      <form style="display: flex; flex-direction: column; gap: 1rem" [formGroup]="addressFormGroup">
+                        <span><strong>Selecione seu endereço:</strong></span>
 
-                    @for (addr of addresses; track addr.id) {
-                      <div style="display: flex; gap: 0.5rem; border: 1px solid var(--color-background); padding: 1.5rem; border-radius: 10px">
-                        <p-radiobutton
-                          name="address"
-                          [inputId]="'address' + addr.id"
-                          formControlName="address"
-                          [value]="addr.id"
-                        />
-                        <label [for]="'address' + addr.id" class="ml-2">{{ addr.text }}</label>
+                        @for (addr of addresses; track addr.id) {
+                          <div style="display: flex; gap: 0.5rem; border: 1px solid var(--color-background); padding: 1.5rem; border-radius: 10px">
+                            <p-radiobutton
+                              name="address"
+                              [inputId]="'address' + addr.id"
+                              formControlName="address"
+                              [value]="addr.id"
+                            />
+                            <label [for]="'address' + addr.id" class="ml-2">{{ addr.text }}</label>
+                          </div>
+                        }
+                      </form>
+                    </div>
+                  </div>
+                } @else {
+                  <div
+                    style="
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 4rem 2rem;
+                        border: 2px dashed var(--input-border);
+                        border-radius: 10px;
+                        text-align: center;
+                        gap: 1.5rem;
+                        color: var(--color-text-secondary);
+                        background-color: var(--color-surface-dark);
+                    ">
+                    <form style="display: flex; flex-direction: column; gap: 1rem; width: 100%">
+                      <div style="display: flex; flex-direction: row; width: 100%; gap: 8px">
+                        <div [style]="{'width': '45%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
+                          <p-floatlabel variant="on" [style]="{'width': '100%'}">
+                            <p-select
+                              [options]="[
+                                  { name: 'Casa', value: 'CASA' },
+                                  { name: 'Apartamento', value: 'APARTAMENTO' },
+                                ]"
+                              optionLabel="name"
+                              optionValue="value"
+                              inputId="typeResidence"
+                              [style]="{'width': '100%'}"
+                              size="large"
+                            />
+                            <label for="residenceType">Tipo de residência*</label>
+                          </p-floatlabel>
+                          <!--                        @if (newClientAddressForm.get('typeResidence')?.invalid && newClientAddressForm.get('typeResidence')?.touched) {-->
+                          <!--                          <div class="alert alert-danger">-->
+                          <!--                            @if (newClientAddressForm.get('typeResidence')?.hasError('required')) {-->
+                          <!--                              <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o tipo de residência.</div>-->
+                          <!--                            }-->
+                          <!--                          </div>-->
+                          <!--                        }-->
+                        </div>
+
+                        <div [style]="{'width': '55%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
+                          <p-select
+                            [options]="[
+                                {name: 'Rua', value: 'RUA'},
+                                {name: 'Avenida', value: 'AVENIDA'},
+                                {name: 'Rodovia', value: 'RODOVIA'}
+                              ]"
+                            optionLabel="name"
+                            placeholder="Tipo de Logradouro*"
+                            size="large"
+                            optionValue="value"
+                            aria-label="Selecione um tipo de logradouro"
+                            aria-required="true"
+                          />
+                          <!--                        @if (newClientAddressForm.get('typePlace')?.invalid && newClientAddressForm.get('typePlace')?.touched) {-->
+                          <!--                          <div class="alert alert-danger">-->
+                          <!--                            <div>É necessário selecionar o tipo de logradouro.</div>-->
+                          <!--                          </div>-->
+                          <!--                        }-->
+                        </div>
                       </div>
-                    }
 
-                    <span>Cadastrar novo endereço</span>
-                  </form>
-                </div>
+                      <div style="display: flex; flex-direction: column; width: 100%; gap: 8px">
+                        <div [style]="{'width': '100%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
+                          <p-floatlabel variant="on" [style]="{'width': '100%'}">
+                            <input
+                              pInputText
+                              style="width: 100%"
+                              id="street"
+                              pSize="large"
+                            />
+                            <label for="street">Logradouro*</label>
+                          </p-floatlabel>
+                          <!--                        @if (newClientAddressForm.get('street')?.invalid && newClientAddressForm.get('street')?.touched) {-->
+                          <!--                          <div class="alert alert-danger">-->
+                          <!--                            @if (newClientAddressForm.get('street')?.hasError('required')) {-->
+                          <!--                              <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o logradouro.</div>-->
+                          <!--                            }-->
+                          <!--                          </div>-->
+                          <!--                        }-->
+                        </div>
+                      </div>
+
+                      <div style="display: flex; flex-direction: row; width: 100%; gap: 8px">
+                        <div [style]="{'width': '60%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
+                          <p-floatlabel variant="on" [style]="{'width': '100%'}">
+                            <input
+                              pInputText
+                              id="district"
+                              pSize="large"
+                              style="width: 100%"
+                            />
+                            <label for="district">Bairro*</label>
+                          </p-floatlabel>
+                          <!--                        @if (newClientAddressForm.get('neighbourhood')?.invalid && newClientAddressForm.get('neighbourhood')?.touched) {-->
+                          <!--                          <div class="alert alert-danger">-->
+                          <!--                            @if (newClientAddressForm.get('neighbourhood')?.hasError('required')) {-->
+                          <!--                              <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o bairro.</div>-->
+                          <!--                            }-->
+                          <!--                          </div>-->
+                          <!--                        }-->
+                        </div>
+
+                        <div [style]="{'width': '40%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
+                          <p-floatlabel variant="on" [style]="{'width': '100%'}">
+                            <input
+                              pInputText
+                              id="number"
+                              pSize="large"
+                              style="width: 100%"
+                            />
+                            <label for="number">Número*</label>
+                          </p-floatlabel>
+                          <!--                        @if (newClientAddressForm.get('number')?.invalid && newClientAddressForm.get('number')?.touched) {-->
+                          <!--                          <div class="alert alert-danger">-->
+                          <!--                            @if (newClientAddressForm.get('number')?.hasError('required')) {-->
+                          <!--                              <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o número.</div>-->
+                          <!--                            }-->
+                          <!--                          </div>-->
+                          <!--                        }-->
+                        </div>
+                      </div>
+
+                      <div style="display: flex; flex-direction: row; width: 100%; gap: 8px">
+                        <div [style]="{'width': '30%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
+                          <p-floatlabel variant="on" [style]="{'width': '100%'}">
+                            <p-inputmask
+                              mask="99999-999"
+                              id="cep"
+                              size="large"
+                              [style]="{'width': '100%'}"
+                            ></p-inputmask>
+                            <label for="cep">CEP*</label>
+                          </p-floatlabel>
+                          <!--                        @if (newClientAddressForm.get('cep')?.invalid && newClientAddressForm.get('cep')?.touched) {-->
+                          <!--                          <div class="alert alert-danger">-->
+                          <!--                            @if (newClientAddressForm.get('cep')?.hasError('required')) {-->
+                          <!--                              <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o CEP.</div>-->
+                          <!--                            }-->
+                          <!--                          </div>-->
+                          <!--                        }-->
+                        </div>
+
+                        <div [style]="{'width': '70%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
+                          <p-floatlabel variant="on" [style]="{'width': '100%'}">
+                            <input
+                              pInputText
+                              id="city"
+                              style="width: 100%"
+                              pSize="large"
+                            />
+                            <label for="city">Cidade*</label>
+                          </p-floatlabel>
+                          <!--                        @if (newClientAddressForm.get('city')?.invalid && newClientAddressForm.get('city')?.touched) {-->
+                          <!--                          <div class="alert alert-danger">-->
+                          <!--                            @if (newClientAddressForm.get('city')?.hasError('required')) {-->
+                          <!--                              <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar a cidade.</div>-->
+                          <!--                            }-->
+                          <!--                          </div>-->
+                          <!--                        }-->
+                        </div>
+                      </div>
+
+                      <div style="display: flex; flex-direction: row; width: 100%; gap: 8px">
+                        <div [style]="{'width': '50%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
+                          <p-select
+                            [options]="[
+                                {name: 'São Paulo', value: 25},
+                                {name: 'Rio de Janeiro', value: 19}
+                              ]"
+                            optionLabel="name"
+                            optionValue="value"
+                            placeholder="Estado*"
+                            size="large"
+                            aria-label="Selecione um estado"
+                            aria-required="true"
+                          />
+                          <!--                        @if (newClientAddressForm.get('stateId')?.invalid && newClientAddressForm.get('stateId')?.touched) {-->
+                          <!--                          <div class="alert alert-danger">-->
+                          <!--                            @if (newClientAddressForm.get('country')?.hasError('required')) {-->
+                          <!--                              <div style="color: #a44b4c;font-size: 0.875rem;">É necessário selecionar um estado.</div>-->
+                          <!--                            }-->
+                          <!--                          </div>-->
+                          <!--                        }-->
+                        </div>
+
+                        <div [style]="{'width': '50%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
+                          <p-floatlabel variant="on" [style]="{'width': '100%'}">
+                            <input
+                              pInputText
+                              id="country"
+                              style="width: 100%"
+                              pSize="large"
+                            />
+                            <label for="country">País*</label>
+                          </p-floatlabel>
+                          <!--                        @if (newClientAddressForm.get('country')?.invalid && newClientAddressForm.get('country')?.touched) {-->
+                          <!--                          <div class="alert alert-danger">-->
+                          <!--                            @if (newClientAddressForm.get('country')?.hasError('required')) {-->
+                          <!--                              <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o país.</div>-->
+                          <!--                            }-->
+                          <!--                          </div>-->
+                          <!--                        }-->
+                        </div>
+                      </div>
+
+                      <p-floatlabel variant="on" [style]="{'width': '100%'}">
+                          <textarea
+                            pTextarea
+                            id="notes"
+                            rows="5"
+                            [autoResize]="false"
+                            style="width: 100%;resize: none"
+                          ></textarea>
+                        <label for="notes">Observações (opcional)</label>
+                      </p-floatlabel>
+
+
+                      <div style="width: 100%; display: flex; justify-content: center; align-items: center">
+                        <p-button
+                          severity="primary"
+                          size="large"
+                          label="Cadastrar endereço"
+                          [loading]="loading"
+                        />
+                      </div>
+                    </form>
+                  </div>
+                }
+
+                @if (showAddressForm) {
+                  <p-button
+                    variant="outlined"
+                    size="large"
+                    (click)="handleAddressForm()"
+                  >
+                    Cancelar
+                  </p-button>
+                } @else {
+                  <p-button
+                    variant="outlined"
+                    size="large"
+                    (click)="handleAddressForm()"
+                  >
+                    <i class="pi pi-plus"></i>
+                    Cadastrar novo endereço
+                  </p-button>
+                }
               </div>
             </ng-template>
           </p-step-panel>
@@ -153,8 +401,6 @@
                     <div style="width: 100%; display: flex; flex-direction: column; gap: 1rem">
                       @for (creditCard of creditCards; track creditCard.id) {
                         <div style="display: flex; flex-direction: column; gap: 0.5rem; padding: 0.5rem 0; border-bottom: 1px solid var(--color-background)">
-
-                          <!-- Linha com bandeira, dados e radio -->
                           <div style="display: flex; align-items: center; justify-content: space-between;">
                             <div style="display: flex; align-items: center; gap: 0.5rem">
                               @if (creditCard.cardFlag === CreditCardTypes.ELO) {
