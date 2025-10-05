@@ -14,6 +14,8 @@ import {Textarea} from 'primeng/textarea';
 import {FloatLabel} from 'primeng/floatlabel';
 import {InputText} from 'primeng/inputtext';
 import {InputMask} from 'primeng/inputmask';
+import {AddressService} from '../../services/address/address.service';
+import {Address} from '../../types/Address';
 
 @Component({
   selector: 'app-cart',
@@ -41,35 +43,88 @@ import {InputMask} from 'primeng/inputmask';
 })
 export class Cart implements OnInit {
   public cartForm!: FormGroup;
+  creditCards: CreditCard[] = [];
   cartItems: CartItem[] = [];
+  addresses: Address[] = [];
+
   totalPrice$: Observable<number>;
   activeStep: number = 1;
-  creditCards: CreditCard[] = [];
-  addresses = [
-    { id: 10, text: 'Rua A, 123 - São Paulo, SP', isMain: true },
-    { id: 11, text: 'Av. B, 456 - Mogi das Cruzes, SP', isMain: false },
-  ];
   quantityOptions = Array.from({ length: 10 }, (_, i) => ({
     name: `${i + 1}`,
     value: i + 1
   }));
+
+  newAddressForm: FormGroup;
+  addressFormGroup: FormGroup;
+
   showAddressForm: boolean = false;
   loading: boolean = false;
 
-  constructor(private cartService: CartService, private fb: FormBuilder) {
+  constructor(
+    private cartService: CartService,
+    private fb: FormBuilder,
+    private addressService: AddressService
+  ) {
     this.totalPrice$ = this.cartService.calculateTotalValue();
+    this.newAddressForm = this.fb.group({
+      typeResidence: [null, Validators.required],
+      typePlace: [null, Validators.required],
+      street: ['', Validators.required],
+      number: ['', Validators.required],
+      neighborhood: ['', Validators.required],
+      cep: ['', Validators.required],
+      city: ['', Validators.required],
+      stateId: [null, Validators.required],
+      country: ['', Validators.required],
+      observations: ['']
+    });
+
+    this.addressFormGroup = this.fb.group({
+      address: [null, Validators.required]
+    });
   }
 
   ngOnInit(): void {
+    this.addressService.getAddresses().subscribe(addresses => {
+      this.addresses = addresses;
+      const main = this.addresses.find(a => a.isMain) ?? this.addresses[0];
+      if (main) {
+        this.addressFormGroup.patchValue({ address: main.id });
+      }
+    });
+
     this.creditCards = this.getAllCreditCards();
-    const main = this.addresses.find(a => a.isMain) ?? this.addresses[0];
-    if (main) {
-      this.addressFormGroup.patchValue({ address: main.id });
-    }
 
     this.cartService.items$.subscribe(items => {
       this.cartItems = items;
       this.buildCartForm();
+    });
+  }
+
+  onSubmitNewAddress() {
+    if (this.newAddressForm.invalid) {
+      this.newAddressForm.markAllAsTouched();
+      return;
+    }
+
+    const newAddress: Address = {
+      ...(this.newAddressForm.value as Address),
+      isMain: false
+    };
+
+    this.loading = true;
+
+    this.addressService.registerAddress(newAddress).subscribe({
+      next: (created) => {
+        this.addresses.push(created);
+        this.loading = false;
+        this.showAddressForm = false;
+        this.addressFormGroup.patchValue({ address: created.id });
+      },
+      error: (err) => {
+        console.error('Erro ao cadastrar endereço:', err);
+        this.loading = false;
+      }
     });
   }
 
@@ -103,10 +158,6 @@ export class Cart implements OnInit {
   getItemFormGroup(index: number): FormGroup {
     return this.cartItemsFormArray.at(index) as FormGroup;
   }
-
-  addressFormGroup = new FormGroup({
-    address: new FormControl<number | null>(null, Validators.required),
-  })
 
   paymentForm = new FormGroup({
     creditCardId: new FormControl<number | null>(null, Validators.required),
