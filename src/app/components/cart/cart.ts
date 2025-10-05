@@ -19,6 +19,8 @@ import {Address} from '../../types/Address';
 import {Checkbox} from 'primeng/checkbox';
 import {DatePicker} from 'primeng/datepicker';
 import {CreditCardService} from '../../services/credit-card/credit-card.service';
+import {Purchase, PurchaseStatus} from '../../types/Purchase';
+import {Dialog} from 'primeng/dialog';
 
 @Component({
   selector: 'app-cart',
@@ -42,6 +44,7 @@ import {CreditCardService} from '../../services/credit-card/credit-card.service'
     InputMask,
     Checkbox,
     DatePicker,
+    Dialog,
   ],
   templateUrl: './cart.html',
   styleUrl: './cart.css'
@@ -68,6 +71,7 @@ export class Cart implements OnInit {
   showAddressForm: boolean = false;
   showCreditCardForm: boolean = false;
   loading: boolean = false;
+  showSuccessDialog: boolean = false;
 
   constructor(
     private cartService: CartService,
@@ -186,6 +190,39 @@ export class Cart implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  finalizePurchase(): void {
+    if (this.paymentForm.invalid) {
+      this.paymentForm.markAllAsTouched();
+      return;
+    }
+
+    const purchase: Purchase = {
+      id: `PED-${Date.now()}`,
+      date: new Date().toISOString(),
+      items: this.cartItems.map(item => ({
+        product: item.product,
+        quantity: item.quantity
+      })),
+      address: this.addresses.find(addr => addr.id === this.addressFormGroup.get('address')?.value)!,
+      creditCard: this.creditCards.find(card => card.id === this.paymentForm.get('creditCardId')?.value)!,
+      totalValue: this.cartItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0),
+      status: PurchaseStatus.PROCESSING
+    };
+
+    const existingPurchases: Purchase[] = JSON.parse(localStorage.getItem('purchases') || '[]');
+    existingPurchases.push(purchase);
+    localStorage.setItem('purchases', JSON.stringify(existingPurchases));
+
+    this.cartService.clearCart();
+    this.showSuccessDialog = true;
+  }
+
+  closeSuccessDialog(): void {
+    this.showSuccessDialog = false;
+    // Opcional: redirecionar para página inicial ou pedidos
+    // this.router.navigate(['/']);
   }
 
   private buildCartForm(): void {
