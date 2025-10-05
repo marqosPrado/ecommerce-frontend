@@ -17,67 +17,101 @@
 
         <p-step-panels>
           <p-step-panel [value]="1">
-            @for (item of cartItems; track item.product.id; let i = $index) {
               <ng-template #content>
-                <div class="flex flex-col h-48">
-                  <div
-                    style="display: flex; flex-direction: column; gap: 2rem; border: 1px solid var(--color-background); padding: 1.5rem; border-radius: 10px"
-                    class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium"
-                  >
-                    <div style="width: 100%; display: flex; justify-content: space-between; align-items: center">
-                      <div style="display: flex; gap: 0.5rem; align-items: center">
-                        <i class="pi pi-shopping-bag"></i>
-                        <span>Produto e Serviço</span>
-                      </div>
-
-                      <p-button icon="pi pi-trash" size="large" label="Remover todos os produtos" (onClick)="clearCart()"/>
+                <div style="display: flex; flex-direction: column; gap: 2rem">
+                  <div style="width: 100%; display: flex; justify-content: space-between; align-items: center">
+                    <div style="display: flex; gap: 1rem; align-items: center">
+                      <i style="font-size: 28px" class="pi pi-shopping-bag"></i>
+                      <h2>Produto e Serviço</h2>
                     </div>
 
-                      <div style="width: 100%; display: flex;">
-                        <div style="width: 60%; max-width: 60%; display: flex; gap: 0.5rem; flex-direction: row;">
-                          <img
-                            src="{{item.product.images[0]}}"
-                            style="width: 120px; height: 120px; object-fit: cover; cursor: pointer; border: 2px solid transparent; border-radius: 5px; transition: border 0.2s;"
-                          />
+                    @if (cartItems && cartItems.length > 0) {
+                      <p-button icon="pi pi-trash" size="large" label="Remover todos os produtos" (onClick)="clearCart()"/>
+                    }
+                  </div>
 
-                          <div style="display: flex; flex-direction: column; gap: 0.5rem; padding: 0.5rem">
-                            <div style="display: flex; flex-direction: column; gap: 0.3rem">
-                              <span>Orient</span>
-                              <span style="font-weight: bold">{{item.product.title}}</span>
+                  @if (cartItems && cartItems.length > 0) {
+                    @for (item of cartItems; track item.product.id; let i = $index) {
+                      <div class="flex flex-col h-48">
+                        <div
+                          style="display: flex; flex-direction: column; gap: 2rem; border: 1px solid var(--color-background); padding: 1.5rem; border-radius: 10px"
+                          class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium"
+                        >
+
+
+                          <div style="width: 100%; display: flex;">
+                            <div style="width: 60%; max-width: 60%; display: flex; gap: 0.5rem; flex-direction: row;">
+                              <img
+                                src="{{item.product.images[0]}}"
+                                style="width: 120px; height: 120px; object-fit: cover; cursor: pointer; border: 2px solid transparent; border-radius: 5px; transition: border 0.2s;"
+                              />
+
+                              <div style="display: flex; flex-direction: column; gap: 0.5rem; padding: 0.5rem">
+                                <div style="display: flex; flex-direction: column; gap: 0.3rem">
+                                  <span>Orient</span>
+                                  <span style="font-weight: bold">{{item.product.title}}</span>
+                                </div>
+
+                                <div style="display: flex; flex-direction: column">
+                                  <span style="font-size: 12px">Com desconto à vista: <strong>R$ {{item.product.price}}</strong></span>
+                                  <span style="font-size: 12px">Parcelado no cartão sem juros: <strong>R$ {{item.product.price}}</strong></span>
+                                </div>
+                              </div>
                             </div>
 
-                            <div style="display: flex; flex-direction: column">
-                              <span style="font-size: 12px">Com desconto à vista: <strong>R$ {{item.product.price}}</strong></span>
-                              <span style="font-size: 12px">Parcelado no cartão sem juros: <strong>R$ {{item.product.price}}</strong></span>
+                            <form
+                              style="width: 20%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0.5rem;"
+                              [formGroup]="getItemFormGroup(i)">
+                              <span>Quant.</span>
+                              <p-select
+                                [options]="quantityOptions"
+                                optionLabel="name"
+                                class="w-full md:w-56"
+                                [virtualScroll]="true"
+                                [virtualScrollItemSize]="7"
+                                formControlName="quantity"
+                                appendTo="body"
+                              />
+                              <p-button icon="pi pi-trash" size="small" label="Remover" variant="outlined" (onClick)="removerFromCart(item.product.id)"/>
+                            </form>
+
+                            <div style="width: 20%; display: flex; flex-direction: column; justify-content: center; align-items: end">
+                              <span>Preço à vista:</span>
+                              <span style="font-size: 16px; font-weight: bold">{{item.product.price | currency:'BRL'}}</span>
                             </div>
                           </div>
                         </div>
-
-                        <form
-                          style="width: 20%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0.5rem;"
-                          [formGroup]="getItemFormGroup(i)">
-                          <span>Quant.</span>
-                          <p-select
-                            [options]="quantityOptions"
-                            optionLabel="name"
-                            class="w-full md:w-56"
-                            [virtualScroll]="true"
-                            [virtualScrollItemSize]="7"
-                            formControlName="quantity"
-                            appendTo="body"
-                          />
-                          <p-button icon="pi pi-trash" size="small" label="Remover" variant="outlined" (onClick)="removerFromCart(item.product.id)"/>
-                        </form>
-
-                        <div style="width: 20%; display: flex; flex-direction: column; justify-content: center; align-items: end">
-                          <span>Preço à vista:</span>
-                          <span style="font-size: 16px; font-weight: bold">{{item.product.price | currency:'BRL'}}</span>
-                        </div>
                       </div>
-                  </div>
+                    }
+                  } @else {
+                    <div
+                      style="
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 4rem 2rem;
+                        border: 2px dashed var(--input-border);
+                        border-radius: 10px;
+                        text-align: center;
+                        gap: 1.5rem;
+                        color: var(--color-text-secondary);
+                        background-color: var(--color-surface-dark);
+                      "
+                    >
+                      <i class="pi pi-inbox" style="font-size: 4rem; color: var(--color-text-muted);"></i>
+                      <h2 style="color: var(--color-text-primary);">Seu carrinho está vazio!</h2>
+                      <p>Parece que você ainda não adicionou nenhum produto à sua sacola de compras.</p>
+                      <p-button
+                        label="Continuar Comprando"
+                        severity="contrast"
+                        size="large"
+                        icon="pi pi-arrow-left"
+                      />
+                    </div>
+                  }
                 </div>
               </ng-template>
-            }
           </p-step-panel>
 
           <p-step-panel [value]="2">
