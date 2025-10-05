@@ -10,4 +10,5 @@ export type Address = {
   stateId: number;
   country: string;
   observations?: string;
+  isMain?: boolean;
 };
