@@ -16,6 +16,8 @@ import {InputText} from 'primeng/inputtext';
 import {InputMask} from 'primeng/inputmask';
 import {AddressService} from '../../services/address/address.service';
 import {Address} from '../../types/Address';
+import {Checkbox} from 'primeng/checkbox';
+import {DatePicker} from 'primeng/datepicker';
 
 @Component({
   selector: 'app-cart',
@@ -37,6 +39,8 @@ import {Address} from '../../types/Address';
     FloatLabel,
     InputText,
     InputMask,
+    Checkbox,
+    DatePicker,
   ],
   templateUrl: './cart.html',
   styleUrl: './cart.css'
@@ -58,6 +62,7 @@ export class Cart implements OnInit {
   addressFormGroup: FormGroup;
 
   showAddressForm: boolean = false;
+  showCreditCardForm: boolean = false;
   loading: boolean = false;
 
   constructor(
@@ -220,5 +225,9 @@ export class Cart implements OnInit {
   public handleAddressForm(): void {
     this.showAddressForm = !this.showAddressForm;
     console.log(this.showAddressForm);
+  }
+
+  public handleCreditCardForm(): void {
+    this.showCreditCardForm = !this.showCreditCardForm;
   }
 }
