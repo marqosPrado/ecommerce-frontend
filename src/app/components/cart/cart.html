@@ -131,7 +131,7 @@
                               formControlName="address"
                               [value]="addr.id"
                             />
-                            <label [for]="'address' + addr.id" class="ml-2">{{ addr.text }}</label>
+                            <label [for]="'address' + addr.id" class="ml-2">{{ addr.street }}, {{ addr.number }} - {{ addr.city }}, {{ addr.stateId }}</label>
                           </div>
                         }
                       </form>
@@ -152,51 +152,47 @@
                         color: var(--color-text-secondary);
                         background-color: var(--color-surface-dark);
                     ">
-                    <form style="display: flex; flex-direction: column; gap: 1rem; width: 100%">
+                    <form style="display: flex; flex-direction: column; gap: 1rem; width: 100%" [formGroup]="newAddressForm">
                       <div style="display: flex; flex-direction: row; width: 100%; gap: 8px">
                         <div [style]="{'width': '45%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
                           <p-floatlabel variant="on" [style]="{'width': '100%'}">
                             <p-select
                               [options]="[
-                                  { name: 'Casa', value: 'CASA' },
-                                  { name: 'Apartamento', value: 'APARTAMENTO' },
-                                ]"
+                                { name: 'Casa', value: 'CASA' },
+                                { name: 'Apartamento', value: 'APARTAMENTO' },
+                              ]"
                               optionLabel="name"
                               optionValue="value"
                               inputId="typeResidence"
+                              formControlName="typeResidence"
                               [style]="{'width': '100%'}"
                               size="large"
                             />
-                            <label for="residenceType">Tipo de residência*</label>
+                            <label for="typeResidence">Tipo de residência*</label>
                           </p-floatlabel>
-                          <!--                        @if (newClientAddressForm.get('typeResidence')?.invalid && newClientAddressForm.get('typeResidence')?.touched) {-->
-                          <!--                          <div class="alert alert-danger">-->
-                          <!--                            @if (newClientAddressForm.get('typeResidence')?.hasError('required')) {-->
-                          <!--                              <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o tipo de residência.</div>-->
-                          <!--                            }-->
-                          <!--                          </div>-->
-                          <!--                        }-->
+                          @if (newAddressForm.get('typeResidence')?.invalid && newAddressForm.get('typeResidence')?.touched) {
+                            <div style="color: #a44b4c; font-size: 0.875rem;">É necessário informar o tipo de residência.</div>
+                          }
                         </div>
 
                         <div [style]="{'width': '55%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
                           <p-select
                             [options]="[
-                                {name: 'Rua', value: 'RUA'},
-                                {name: 'Avenida', value: 'AVENIDA'},
-                                {name: 'Rodovia', value: 'RODOVIA'}
-                              ]"
+                              {name: 'Rua', value: 'RUA'},
+                              {name: 'Avenida', value: 'AVENIDA'},
+                              {name: 'Rodovia', value: 'RODOVIA'}
+                            ]"
                             optionLabel="name"
                             placeholder="Tipo de Logradouro*"
                             size="large"
                             optionValue="value"
+                            formControlName="typePlace"
                             aria-label="Selecione um tipo de logradouro"
                             aria-required="true"
                           />
-                          <!--                        @if (newClientAddressForm.get('typePlace')?.invalid && newClientAddressForm.get('typePlace')?.touched) {-->
-                          <!--                          <div class="alert alert-danger">-->
-                          <!--                            <div>É necessário selecionar o tipo de logradouro.</div>-->
-                          <!--                          </div>-->
-                          <!--                        }-->
+                          @if (newAddressForm.get('typePlace')?.invalid && newAddressForm.get('typePlace')?.touched) {
+                            <div style="color: #a44b4c; font-size: 0.875rem;">É necessário selecionar o tipo de logradouro.</div>
+                          }
                         </div>
                       </div>
 
@@ -207,17 +203,14 @@
                               pInputText
                               style="width: 100%"
                               id="street"
+                              formControlName="street"
                               pSize="large"
                             />
                             <label for="street">Logradouro*</label>
                           </p-floatlabel>
-                          <!--                        @if (newClientAddressForm.get('street')?.invalid && newClientAddressForm.get('street')?.touched) {-->
-                          <!--                          <div class="alert alert-danger">-->
-                          <!--                            @if (newClientAddressForm.get('street')?.hasError('required')) {-->
-                          <!--                              <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o logradouro.</div>-->
-                          <!--                            }-->
-                          <!--                          </div>-->
-                          <!--                        }-->
+                          @if (newAddressForm.get('street')?.invalid && newAddressForm.get('street')?.touched) {
+                            <div style="color: #a44b4c; font-size: 0.875rem;">É necessário informar o logradouro.</div>
+                          }
                         </div>
                       </div>
 
@@ -227,18 +220,15 @@
                             <input
                               pInputText
                               id="district"
+                              formControlName="neighborhood"
                               pSize="large"
                               style="width: 100%"
                             />
                             <label for="district">Bairro*</label>
                           </p-floatlabel>
-                          <!--                        @if (newClientAddressForm.get('neighbourhood')?.invalid && newClientAddressForm.get('neighbourhood')?.touched) {-->
-                          <!--                          <div class="alert alert-danger">-->
-                          <!--                            @if (newClientAddressForm.get('neighbourhood')?.hasError('required')) {-->
-                          <!--                              <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o bairro.</div>-->
-                          <!--                            }-->
-                          <!--                          </div>-->
-                          <!--                        }-->
+                          @if (newAddressForm.get('neighborhood')?.invalid && newAddressForm.get('neighborhood')?.touched) {
+                            <div style="color: #a44b4c; font-size: 0.875rem;">É necessário informar o bairro.</div>
+                          }
                         </div>
 
                         <div [style]="{'width': '40%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
@@ -246,18 +236,15 @@
                             <input
                               pInputText
                               id="number"
+                              formControlName="number"
                               pSize="large"
                               style="width: 100%"
                             />
                             <label for="number">Número*</label>
                           </p-floatlabel>
-                          <!--                        @if (newClientAddressForm.get('number')?.invalid && newClientAddressForm.get('number')?.touched) {-->
-                          <!--                          <div class="alert alert-danger">-->
-                          <!--                            @if (newClientAddressForm.get('number')?.hasError('required')) {-->
-                          <!--                              <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o número.</div>-->
-                          <!--                            }-->
-                          <!--                          </div>-->
-                          <!--                        }-->
+                          @if (newAddressForm.get('number')?.invalid && newAddressForm.get('number')?.touched) {
+                            <div style="color: #a44b4c; font-size: 0.875rem;">É necessário informar o número.</div>
+                          }
                         </div>
                       </div>
 
@@ -267,18 +254,15 @@
                             <p-inputmask
                               mask="99999-999"
                               id="cep"
+                              formControlName="cep"
                               size="large"
                               [style]="{'width': '100%'}"
                             ></p-inputmask>
                             <label for="cep">CEP*</label>
                           </p-floatlabel>
-                          <!--                        @if (newClientAddressForm.get('cep')?.invalid && newClientAddressForm.get('cep')?.touched) {-->
-                          <!--                          <div class="alert alert-danger">-->
-                          <!--                            @if (newClientAddressForm.get('cep')?.hasError('required')) {-->
-                          <!--                              <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o CEP.</div>-->
-                          <!--                            }-->
-                          <!--                          </div>-->
-                          <!--                        }-->
+                          @if (newAddressForm.get('cep')?.invalid && newAddressForm.get('cep')?.touched) {
+                            <div style="color: #a44b4c; font-size: 0.875rem;">É necessário informar o CEP.</div>
+                          }
                         </div>
 
                         <div [style]="{'width': '70%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
@@ -286,18 +270,15 @@
                             <input
                               pInputText
                               id="city"
+                              formControlName="city"
                               style="width: 100%"
                               pSize="large"
                             />
                             <label for="city">Cidade*</label>
                           </p-floatlabel>
-                          <!--                        @if (newClientAddressForm.get('city')?.invalid && newClientAddressForm.get('city')?.touched) {-->
-                          <!--                          <div class="alert alert-danger">-->
-                          <!--                            @if (newClientAddressForm.get('city')?.hasError('required')) {-->
-                          <!--                              <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar a cidade.</div>-->
-                          <!--                            }-->
-                          <!--                          </div>-->
-                          <!--                        }-->
+                          @if (newAddressForm.get('city')?.invalid && newAddressForm.get('city')?.touched) {
+                            <div style="color: #a44b4c; font-size: 0.875rem;">É necessário informar a cidade.</div>
+                          }
                         </div>
                       </div>
 
@@ -305,23 +286,20 @@
                         <div [style]="{'width': '50%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
                           <p-select
                             [options]="[
-                                {name: 'São Paulo', value: 25},
-                                {name: 'Rio de Janeiro', value: 19}
-                              ]"
+                              {name: 'São Paulo', value: 25},
+                              {name: 'Rio de Janeiro', value: 19}
+                            ]"
                             optionLabel="name"
                             optionValue="value"
                             placeholder="Estado*"
+                            formControlName="stateId"
                             size="large"
                             aria-label="Selecione um estado"
                             aria-required="true"
                           />
-                          <!--                        @if (newClientAddressForm.get('stateId')?.invalid && newClientAddressForm.get('stateId')?.touched) {-->
-                          <!--                          <div class="alert alert-danger">-->
-                          <!--                            @if (newClientAddressForm.get('country')?.hasError('required')) {-->
-                          <!--                              <div style="color: #a44b4c;font-size: 0.875rem;">É necessário selecionar um estado.</div>-->
-                          <!--                            }-->
-                          <!--                          </div>-->
-                          <!--                        }-->
+                          @if (newAddressForm.get('stateId')?.invalid && newAddressForm.get('stateId')?.touched) {
+                            <div style="color: #a44b4c; font-size: 0.875rem;">É necessário selecionar um estado.</div>
+                          }
                         </div>
 
                         <div [style]="{'width': '50%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
@@ -329,32 +307,29 @@
                             <input
                               pInputText
                               id="country"
+                              formControlName="country"
                               style="width: 100%"
                               pSize="large"
                             />
                             <label for="country">País*</label>
                           </p-floatlabel>
-                          <!--                        @if (newClientAddressForm.get('country')?.invalid && newClientAddressForm.get('country')?.touched) {-->
-                          <!--                          <div class="alert alert-danger">-->
-                          <!--                            @if (newClientAddressForm.get('country')?.hasError('required')) {-->
-                          <!--                              <div style="color: #a44b4c;font-size: 0.875rem;">É necessário informar o país.</div>-->
-                          <!--                            }-->
-                          <!--                          </div>-->
-                          <!--                        }-->
+                          @if (newAddressForm.get('country')?.invalid && newAddressForm.get('country')?.touched) {
+                            <div style="color: #a44b4c; font-size: 0.875rem;">É necessário informar o país.</div>
+                          }
                         </div>
                       </div>
 
                       <p-floatlabel variant="on" [style]="{'width': '100%'}">
-                          <textarea
-                            pTextarea
-                            id="notes"
-                            rows="5"
-                            [autoResize]="false"
-                            style="width: 100%;resize: none"
-                          ></textarea>
+                        <textarea
+                          pTextarea
+                          id="notes"
+                          formControlName="observations"
+                          rows="5"
+                          [autoResize]="false"
+                          style="width: 100%; resize: none"
+                        ></textarea>
                         <label for="notes">Observações (opcional)</label>
                       </p-floatlabel>
-
 
                       <div style="width: 100%; display: flex; justify-content: center; align-items: center">
                         <p-button
@@ -362,6 +337,7 @@
                           size="large"
                           label="Cadastrar endereço"
                           [loading]="loading"
+                          (click)="onSubmitNewAddress()"
                         />
                       </div>
                     </form>
