@@ -382,7 +382,7 @@
                               <div style="display: flex; align-items: center; gap: 0.5rem">
                                 @if (creditCard.cardFlag === CreditCardTypes.ELO) {
                                   <img src="/assets/elo.png" width="32" height="32" />
-                                } @else if (creditCard.cardFlag === CreditCardTypes.MASTER_CARD) {
+                                } @else if (creditCard.cardFlag === CreditCardTypes.MASTERCARD) {
                                   <img src="/assets/mastercard.svg" width="32" height="32" alt="mastercard"/>
                                 } @else if (creditCard.cardFlag === CreditCardTypes.VISA) {
                                   <img src="/assets/visa.svg" width="32" height="32" alt="visa"/>
@@ -503,7 +503,7 @@
                               <p-select
                                 [options]="[
                                   { name: 'Visa', value: 'VISA' },
-                                  { name: 'Mastercard', value: 'MASTER_CARD' },
+                                  { name: 'Mastercard', value: 'MASTERCARD' },
                                   { name: 'American Express', value: 'AMERICAN_EXPRESS' },
                                   { name: 'Elo', value: 'ELO' },
                                   { name: 'Hipercard', value: 'HIPERCARD' }

@@ -1,5 +1,5 @@
 export enum CreditCardTypes {
-  MASTER_CARD = 'MASTERCARD',
+  MASTERCARD = 'MASTERCARD',
   VISA = 'VISA',
   ELO = 'ELO'
 }
