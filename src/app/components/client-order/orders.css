@@ -1,0 +1,88 @@
+/* Responsividade para tablets */
+@media (max-width: 768px) {
+  main {
+    padding: 2rem 1rem !important;
+  }
+
+  article > div {
+    flex-direction: column !important;
+  }
+
+  article > div > div:last-child {
+    align-items: flex-start !important;
+    width: 100%;
+  }
+
+  article > div > div:last-child button {
+    width: 100%;
+  }
+}
+
+/* Responsividade para mobile */
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.5rem !important;
+  }
+
+  .p-dialog {
+    width: 95vw !important;
+  }
+
+  article img {
+    width: 50px !important;
+    height: 50px !important;
+  }
+}
+
+/* Customização do Dialog do PrimeNG para tema dark */
+:host ::ng-deep .p-dialog {
+  background: var(--color-background);
+  border: 1px solid var(--input-border);
+  border-radius: 12px;
+}
+
+:host ::ng-deep .p-dialog .p-dialog-header {
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  border-bottom: 1px solid var(--input-border);
+  padding: 1.5rem;
+}
+
+:host ::ng-deep .p-dialog .p-dialog-content {
+  background: var(--color-background);
+  color: var(--color-text-primary);
+}
+
+:host ::ng-deep .p-dialog .p-dialog-footer {
+  background: var(--color-background);
+  border-top: 1px solid var(--input-border);
+}
+
+:host ::ng-deep .p-dialog .p-dialog-header-close {
+  color: var(--color-text-primary);
+}
+
+:host ::ng-deep .p-dialog .p-dialog-header-close:hover {
+  background: var(--color-surface-dark);
+}
+
+/* Customização do Divider */
+:host ::ng-deep .p-divider {
+  border-color: var(--input-border);
+}
+
+/* Customização das Tags */
+:host ::ng-deep .p-tag {
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+}
+
+/* Animação de hover suave */
+article {
+  transform: translateY(0);
+}
+
+article:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}

@@ -13,6 +13,7 @@ import {AdminClientManagement} from './components/admin-client-management/admin-
 import {AdminProductManagement} from './components/admin-product-management/admin-product-management';
 import {AdminAnalytics} from './components/admin-analytics/admin-analytics';
 import {ClientDashboard} from './components/client-dashboard/client-dashboard';
+import {Orders} from './components/client-order/Orders';
 
 export const routes: Routes = [
   {
@@ -71,6 +72,10 @@ export const routes: Routes = [
     path: 'admin/analises',
     component: AdminAnalytics
   },
+  {
+    path: 'meus-pedidos',
+    component: Orders
+  }
   // {
   //   path: 'admistrador/produto/cadastro'
   // }

@@ -1,0 +1,413 @@
+<app-header></app-header>
+<app-line-session></app-line-session>
+
+<main style="
+  width: 100%;
+  min-height: 100vh;
+  background: var(--color-surface-darker);
+  padding: 4rem 2rem;
+  box-sizing: border-box;
+">
+  <div style="
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  ">
+    <!-- Header -->
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem;">
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <p-button
+          icon="pi pi-arrow-left"
+          [style]="{
+            background: 'transparent',
+            border: '1px solid var(--input-border)',
+            color: 'var(--color-text-primary)'
+          }"
+          (onClick)="goBack()"
+        ></p-button>
+
+        <div>
+          <h1 style="
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin: 0;
+          ">
+            Meus Pedidos
+          </h1>
+          <p style="
+            color: var(--color-text-secondary);
+            font-size: 0.95rem;
+            margin: 0.5rem 0 0 0;
+          ">
+            Acompanhe o histórico das suas compras
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de Pedidos -->
+    @if (purchases && purchases.length > 0) {
+      <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        @for (purchase of purchases; track purchase.id) {
+          <article
+            style="
+              background: var(--color-background);
+              border: 1px solid var(--input-border);
+              border-radius: 12px;
+              padding: 1.5rem;
+              transition: all 0.3s ease;
+              cursor: pointer;
+            "
+            (click)="openDetails(purchase)"
+          >
+            <div style="display: flex; justify-content: space-between; align-items: start; gap: 2rem;">
+              <!-- Informações do Pedido -->
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 1rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                  <span style="
+                    font-weight: 700;
+                    font-size: 1.1rem;
+                    color: var(--color-text-primary);
+                  ">
+                    Pedido {{ purchase.id }}
+                  </span>
+
+                  <p-tag
+                    [value]="getStatusLabel(purchase.status)"
+                    [severity]="getStatusSeverity(purchase.status)"
+                  ></p-tag>
+                </div>
+
+                <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+                  <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="pi pi-calendar" style="color: var(--color-text-secondary); font-size: 0.875rem;"></i>
+                    <span style="color: var(--color-text-secondary); font-size: 0.95rem;">
+                      {{ formatDate(purchase.date) }}
+                    </span>
+                  </div>
+
+                  <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="pi pi-shopping-bag" style="color: var(--color-text-secondary); font-size: 0.875rem;"></i>
+                    <span style="color: var(--color-text-secondary); font-size: 0.95rem;">
+                      {{ getTotalItems(purchase) }} {{ getTotalItems(purchase) === 1 ? 'item' : 'itens' }}
+                    </span>
+                  </div>
+
+<!--                  <div style="display: flex; align-items: center; gap: 0.5rem;">-->
+<!--                    <i class="pi pi-credit-card" style="color: var(&#45;&#45;color-text-secondary); font-size: 0.875rem;"></i>-->
+<!--                    <span style="color: var(&#45;&#45;color-text-secondary); font-size: 0.95rem;">-->
+<!--                      {{ purchase.installments.name }}-->
+<!--                    </span>-->
+<!--                  </div>-->
+                </div>
+
+                <!-- Preview dos produtos -->
+                <div style="display: flex; gap: 0.75rem; margin-top: 0.5rem;">
+                  @for (item of purchase.items.slice(0, 3); track item.product.id) {
+                    <img
+                      [src]="item.product.images[0]"
+                      [alt]="item.product.title"
+                      style="
+                        width: 60px;
+                        height: 60px;
+                        object-fit: cover;
+                        border-radius: 8px;
+                        border: 1px solid var(--input-border);
+                      "
+                    />
+                  }
+                  @if (purchase.items.length > 3) {
+                    <div style="
+                      width: 60px;
+                      height: 60px;
+                      border-radius: 8px;
+                      background: var(--color-surface-dark);
+                      border: 1px solid var(--input-border);
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      font-size: 0.875rem;
+                      color: var(--color-text-secondary);
+                      font-weight: 600;
+                    ">
+                      +{{ purchase.items.length - 3 }}
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Valor Total -->
+              <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
+                <span style="
+                  color: var(--color-text-secondary);
+                  font-size: 0.875rem;
+                ">
+                  Total
+                </span>
+                <span style="
+                  font-size: 1.5rem;
+                  font-weight: 700;
+                  color: var(--color-blue);
+                ">
+                  {{ formatCurrency(purchase.totalValue) }}
+                </span>
+
+                <p-button
+                  label="Ver detalhes"
+                  icon="pi pi-arrow-right"
+                  iconPos="right"
+                  size="small"
+                  [style]="{
+                    background: 'transparent',
+                    border: '1px solid var(--input-border)',
+                    color: 'var(--color-text-primary)',
+                    marginTop: '0.5rem'
+                  }"
+                  (onClick)="openDetails(purchase); $event.stopPropagation()"
+                ></p-button>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+    } @else {
+      <!-- Estado Vazio -->
+      <div style="
+        background: var(--color-background);
+        border: 2px dashed var(--input-border);
+        border-radius: 12px;
+        padding: 4rem 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 1.5rem;
+      ">
+        <i class="pi pi-inbox" style="font-size: 4rem; color: var(--color-text-muted);"></i>
+        <div>
+          <h2 style="
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin: 0 0 0.5rem 0;
+          ">
+            Nenhum pedido encontrado
+          </h2>
+          <p style="
+            color: var(--color-text-secondary);
+            margin: 0;
+          ">
+            Você ainda não realizou nenhuma compra
+          </p>
+        </div>
+        <p-button
+          label="Começar a comprar"
+          icon="pi pi-shopping-cart"
+          [style]="{
+            background: 'var(--color-blue)',
+            border: 'none',
+            padding: '0.75rem 1.5rem'
+          }"
+        ></p-button>
+      </div>
+    }
+  </div>
+</main>
+
+<!-- Modal de Detalhes -->
+<p-dialog
+  [(visible)]="showDetailsDialog"
+  [modal]="true"
+  [closable]="true"
+  [style]="{width: '800px', maxWidth: '90vw'}"
+  [contentStyle]="{background: 'var(--color-background)', padding: '0'}"
+  [header]="'Detalhes do Pedido'"
+>
+  @if (selectedPurchase) {
+    <div style="display: flex; flex-direction: column; gap: 2rem; padding: 1.5rem;">
+      <!-- Header do Pedido -->
+      <div style="display: flex; justify-content: space-between; align-items: start;">
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <span style="
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--color-text-primary);
+          ">
+            {{ selectedPurchase.id }}
+          </span>
+          <span style="color: var(--color-text-secondary); font-size: 0.95rem;">
+            {{ formatDate(selectedPurchase.date) }}
+          </span>
+        </div>
+
+        <p-tag
+          [value]="getStatusLabel(selectedPurchase.status)"
+          [severity]="getStatusSeverity(selectedPurchase.status)"
+          [style]="{fontSize: '1rem', padding: '0.5rem 1rem'}"
+        ></p-tag>
+      </div>
+
+      <p-divider></p-divider>
+
+      <!-- Produtos -->
+      <div>
+        <h3 style="
+          font-size: 1.1rem;
+          font-weight: 600;
+          color: var(--color-text-primary);
+          margin: 0 0 1rem 0;
+        ">
+          Produtos
+        </h3>
+
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+          @for (item of selectedPurchase.items; track item.product.id) {
+            <div style="
+              display: flex;
+              gap: 1rem;
+              padding: 1rem;
+              background: var(--color-surface-dark);
+              border-radius: 8px;
+            ">
+              <img
+                [src]="item.product.images[0]"
+                [alt]="item.product.title"
+                style="
+                  width: 80px;
+                  height: 80px;
+                  object-fit: cover;
+                  border-radius: 8px;
+                "
+              />
+
+              <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 0.25rem;">
+                <span style="
+                  font-weight: 600;
+                  color: var(--color-text-primary);
+                ">
+                  {{ item.product.title }}
+                </span>
+                <span style="
+                  color: var(--color-text-secondary);
+                  font-size: 0.9rem;
+                ">
+                  {{ item.product.brand }}
+                </span>
+                <span style="
+                  color: var(--color-text-secondary);
+                  font-size: 0.9rem;
+                ">
+                  Quantidade: {{ item.quantity }}
+                </span>
+              </div>
+
+              <div style="display: flex; align-items: center;">
+                <span style="
+                  font-weight: 700;
+                  font-size: 1.1rem;
+                  color: var(--color-blue);
+                ">
+                  {{ formatCurrency(item.product.price * item.quantity) }}
+                </span>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <p-divider></p-divider>
+
+      <!-- Endereço de Entrega -->
+      <div>
+        <h3 style="
+          font-size: 1.1rem;
+          font-weight: 600;
+          color: var(--color-text-primary);
+          margin: 0 0 1rem 0;
+        ">
+          Endereço de Entrega
+        </h3>
+
+        <div style="
+          padding: 1rem;
+          background: var(--color-surface-dark);
+          border-radius: 8px;
+          color: var(--color-text-secondary);
+        ">
+          <p style="margin: 0; line-height: 1.6;">
+            {{ selectedPurchase.address.street }}, {{ selectedPurchase.address.number }}<br>
+            {{ selectedPurchase.address.neighborhood }} - {{ selectedPurchase.address.city }}<br>
+            CEP: {{ selectedPurchase.address.cep }}
+            @if (selectedPurchase.address.observations) {
+              <br><br>
+              <strong>Observações:</strong> {{ selectedPurchase.address.observations }}
+            }
+          </p>
+        </div>
+      </div>
+
+      <p-divider></p-divider>
+
+      <!-- Pagamento -->
+      <div>
+        <h3 style="
+          font-size: 1.1rem;
+          font-weight: 600;
+          color: var(--color-text-primary);
+          margin: 0 0 1rem 0;
+        ">
+          Pagamento
+        </h3>
+
+        <div style="
+          padding: 1rem;
+          background: var(--color-surface-dark);
+          border-radius: 8px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        ">
+          <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+            <span style="color: var(--color-text-secondary);">
+              {{ selectedPurchase.creditCard.printedName }}
+            </span>
+            <span style="color: var(--color-text-secondary); font-size: 0.9rem;">
+              {{ selectedPurchase.creditCard.number }}
+            </span>
+          </div>
+
+          <div style="text-align: right;">
+            <div style="color: var(--color-text-secondary); font-size: 0.9rem; margin-bottom: 0.25rem;">
+              Total
+            </div>
+            <div style="
+              font-weight: 700;
+              font-size: 1.5rem;
+              color: var(--color-blue);
+            ">
+              {{ formatCurrency(selectedPurchase.totalValue) }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <ng-template #footer>
+    <div style="display: flex; gap: 0.5rem; justify-content: flex-end; padding: 1rem 1.5rem;">
+      <p-button
+        label="Fechar"
+        icon="pi pi-times"
+        [style]="{
+          background: 'transparent',
+          border: '1px solid var(--input-border)',
+          color: 'var(--color-text-primary)'
+        }"
+        (onClick)="closeDetails()"
+      />
+    </div>
+  </ng-template>
+</p-dialog>

@@ -14,49 +14,13 @@ export class AddressService {
 
   // TODO: Implementar quando tiver o backend
   registerAddress(address: Address) {
-    // const url = `${this.baseUrl}/register`;
-    // return this.http.post<Address>(url, address)
-    const mockCreatedAddress: Address = {
-      ...address,
-      id: 99,
-      isMain: true
-    };
-
-    return of(mockCreatedAddress).pipe(delay(500));
+    const url = `${this.baseUrl}/client/1/new`;
+    return this.http.post<Address>(url, address)
   }
 
   // TODO: Implementar quando tiver o backend
   getAddresses(): Observable<Address[]> {
-    // const url = `${this.baseUrl}/`;
-    return of([
-      {
-        id: 1,
-        typeResidence: 'CASA',
-        typePlace: 'RUA',
-        street: 'Rua das Palmeiras',
-        number: 125,
-        neighborhood: 'Jardim das Flores',
-        cep: '04567-890',
-        city: 'São Paulo',
-        stateId: 25,
-        country: 'Brasil',
-        observations: 'Casa branca com portão azul',
-        isMain: true
-      },
-      {
-        id: 2,
-        typeResidence: 'APARTAMENTO',
-        typePlace: 'AVENIDA',
-        street: 'Avenida Atlântica',
-        number: 2300,
-        neighborhood: 'Copacabana',
-        cep: '22070-001',
-        city: 'Rio de Janeiro',
-        stateId: 19,
-        country: 'Brasil',
-        observations: 'Bloco B, apto 702, condomínio Atlântico',
-        isMain: false
-      }
-    ]);
+    const url = `${this.baseUrl}/client/1/get`;
+    return this.http.get<Address[]>(url)
   }
 }
