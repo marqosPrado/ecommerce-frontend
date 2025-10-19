@@ -32,7 +32,7 @@ export class Orders implements OnInit {
   loading: boolean = false;
 
   currentPage: number = 0;
-  pageSize: number = 5;
+  pageSize: number = 2;
   totalElements: number = 0;
   totalPages: number = 0;
 
