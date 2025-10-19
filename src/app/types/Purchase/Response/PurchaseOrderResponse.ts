@@ -6,11 +6,17 @@ import {PricingResponse} from '../../Pricing/Response/PricingResponse';
 export type PurchaseOrderResponse = {
   id: number,
   order_number: number,
-  order_status: string,
+  order_status: OrderStatusResponse,
   created_at: string,
   updated_at: string,
   items: OrderItemResponse[],
   shipping_address: ShippingAddressResponse,
   payment: PaymentResponse,
   pricing: PricingResponse
+}
+
+export type OrderStatusResponse = {
+  code: string,
+  displayName: string,
+  description: string,
 }

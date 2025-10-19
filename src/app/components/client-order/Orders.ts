@@ -7,7 +7,8 @@ import { Dialog } from 'primeng/dialog';
 import { Divider } from 'primeng/divider';
 import { Header } from '../../common/header/header';
 import { LineSession } from '../../common/line-session/line-session';
-import { Purchase, PurchaseStatus } from '../../types/Purchase/Purchase';
+import { PurchaseOrderService } from '../../services/purchase-order/purchase-order.service';
+import { PurchaseOrderResponse } from '../../types/Purchase/Response/PurchaseOrderResponse';
 
 @Component({
   selector: 'app-orders',
@@ -25,55 +26,69 @@ import { Purchase, PurchaseStatus } from '../../types/Purchase/Purchase';
   styleUrl: './orders.css'
 })
 export class Orders implements OnInit {
-  purchases: Purchase[] = [];
-  selectedPurchase: Purchase | null = null;
+  orders: PurchaseOrderResponse[] = [];
+  selectedOrder: PurchaseOrderResponse | null = null;
   showDetailsDialog: boolean = false;
+  loading: boolean = false;
 
-  constructor(private router: Router) {}
+  currentPage: number = 0;
+  pageSize: number = 5;
+  totalElements: number = 0;
+  totalPages: number = 0;
+
+  constructor(
+    private router: Router,
+    private purchaseOrderService: PurchaseOrderService
+  ) {}
 
   ngOnInit(): void {
-    this.loadPurchases();
+    this.loadOrders();
   }
 
-  loadPurchases(): void {
-    const storedPurchases = localStorage.getItem('purchases');
-    if (storedPurchases) {
-      this.purchases = JSON.parse(storedPurchases);
-      // Ordena por data (mais recente primeiro)
-      this.purchases.sort((a, b) =>
-        new Date(b.date).getTime() - new Date(a.date).getTime()
-      );
-    }
+  loadOrders(page: number = 0): void {
+    this.loading = true;
+    this.currentPage = page;
+
+    this.purchaseOrderService.getAllPurchaseOrders(page, this.pageSize).subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          this.orders = response.data.content;
+          this.totalElements = response.data.totalElements;
+          this.totalPages = response.data.totalPages;
+        }
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Erro ao carregar pedidos:', error);
+        this.loading = false;
+      }
+    });
   }
 
-  openDetails(purchase: Purchase): void {
-    this.selectedPurchase = purchase;
+  openDetails(order: PurchaseOrderResponse): void {
+    this.selectedOrder = order;
     this.showDetailsDialog = true;
   }
 
   closeDetails(): void {
     this.showDetailsDialog = false;
-    this.selectedPurchase = null;
+    this.selectedOrder = null;
   }
 
-  getStatusSeverity(status?: PurchaseStatus): 'success' | 'info' | 'warning' | 'danger' {
-    switch (status) {
-      case PurchaseStatus.DELIVERED:
+  getStatusSeverity(statusCode: string): 'success' | 'info' | 'warning' | 'danger' {
+    switch (statusCode) {
+      case 'DELIVERED':
         return 'success';
-      case PurchaseStatus.SHIPPED:
+      case 'SHIPPED':
         return 'info';
-      case PurchaseStatus.PROCESSING:
-      case PurchaseStatus.PENDING:
+      case 'PROCESSING':
+      case 'PENDING':
         return 'warning';
-      case PurchaseStatus.CANCELLED:
+      case 'CANCELLED':
         return 'danger';
       default:
         return 'info';
     }
-  }
-
-  getStatusLabel(status?: PurchaseStatus): string {
-    return status || PurchaseStatus.CONFIRMED;
   }
 
   formatDate(dateString: string): string {
@@ -85,18 +100,31 @@ export class Orders implements OnInit {
     });
   }
 
-  formatCurrency(value: number): string {
+  formatCurrency(value: string | number): string {
+    const numValue = typeof value === 'string' ? parseFloat(value) : value;
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
-    }).format(value);
+    }).format(numValue);
   }
 
   goBack(): void {
     this.router.navigate(['/minha-conta']);
   }
 
-  getTotalItems(purchase: Purchase): number {
-    return purchase.items.reduce((sum, item) => sum + item.quantity, 0);
+  getTotalItems(order: PurchaseOrderResponse): number {
+    return order.pricing.total_items;
+  }
+
+  loadNextPage(): void {
+    if (this.currentPage < this.totalPages - 1) {
+      this.loadOrders(this.currentPage + 1);
+    }
+  }
+
+  loadPreviousPage(): void {
+    if (this.currentPage > 0) {
+      this.loadOrders(this.currentPage - 1);
+    }
   }
 }

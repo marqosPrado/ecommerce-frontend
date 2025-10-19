@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
 import {PurchaseRequest} from '../../types/Purchase/Request/PurchaseRequest';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {ApiResponse} from '../../types/Api/ApiResponse';
 import {PurchaseOrderResponse} from '../../types/Purchase/Response/PurchaseOrderResponse';
 import {Observable} from 'rxjs';
+import {ContentPageable} from '../../types/Pagination/ContentPageable';
 
 @Injectable({
   providedIn: 'root'
@@ -16,5 +17,13 @@ export class PurchaseOrderService {
 
   registerNewPurchaseOrder(purchaseOrder: PurchaseRequest): Observable<ApiResponse<PurchaseOrderResponse>> {
     return this.http.post<ApiResponse<PurchaseOrderResponse>>(this.baseUrl, purchaseOrder);
+  }
+
+  getAllPurchaseOrders(page: number = 0, size: number = 10): Observable<ApiResponse<ContentPageable<PurchaseOrderResponse[]>>> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+
+    return this.http.get<ApiResponse<ContentPageable<PurchaseOrderResponse[]>>>(this.baseUrl, { params });
   }
 }
