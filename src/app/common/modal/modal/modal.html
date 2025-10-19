@@ -1,0 +1,39 @@
+<p-dialog
+  [(visible)]="visible"
+  (onHide)="onHide()"
+  [modal]="true"
+  [closable]="closable"
+  [style]="{width: '450px', maxWidth: '90vw'}"
+  [header]="header"
+  [draggable]="false"
+  [resizable]="false"
+  [dismissableMask]="closable"
+  [closeOnEscape]="closable"
+>
+  <div class="modal-content">
+    <i
+      [class]="iconClass"
+      [style.font-size.rem]="4"
+      [style.color]="iconColor"
+      class="modal-icon"
+    ></i>
+
+    <div class="modal-text">
+      <h3 class="modal-title">{{ title }}</h3>
+      <p class="modal-message">{{ message }}</p>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="modal-footer">
+      <p-button
+        *ngFor="let btn of buttons; trackBy: trackByLabel"
+        [label]="btn.label"
+        [icon]="btn.icon"
+        [severity]="btn.severity || 'primary'"
+        [style]="{minWidth: '120px'}"
+        (onClick)="executeAction(btn)"
+      />
+    </div>
+  </ng-template>
+</p-dialog>
