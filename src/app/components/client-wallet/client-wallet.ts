@@ -11,7 +11,7 @@ import {Checkbox} from 'primeng/checkbox';
 import {Toast} from 'primeng/toast';
 import {ClientService} from '../../services/client.service';
 import {ConfirmationService, MessageService} from 'primeng/api';
-import {CreditCard, CreditCardTypes} from '../../types/CreditCard';
+import {CreditCard, CreditCardTypes} from '../../types/Payment/CreditCard';
 import {Select} from 'primeng/select';
 import {Client} from '../../types/Client';
 import {MaskCard} from '../../utils/mask-card';

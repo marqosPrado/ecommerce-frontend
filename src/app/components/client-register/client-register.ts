@@ -14,7 +14,7 @@ import { Textarea } from 'primeng/textarea';
 import { InputMask } from 'primeng/inputmask';
 import { Client } from '../../types/Client';
 import { ClientService } from '../../services/client.service';
-import { CreditCardTypes } from '../../types/CreditCard';
+import { CreditCardTypes } from '../../types/Payment/CreditCard';
 
 @Component({
   selector: 'app-client-register',

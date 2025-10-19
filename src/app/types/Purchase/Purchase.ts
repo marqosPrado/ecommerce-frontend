@@ -1,5 +1,5 @@
-import {Address} from './Address';
-import {CreditCard} from './CreditCard';
+import {Address} from '../Address';
+import {CreditCard} from '../Payment/CreditCard';
 
 export type Purchase = {
   id?: string;

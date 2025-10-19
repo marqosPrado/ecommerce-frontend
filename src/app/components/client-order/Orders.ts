@@ -7,7 +7,7 @@ import { Dialog } from 'primeng/dialog';
 import { Divider } from 'primeng/divider';
 import { Header } from '../../common/header/header';
 import { LineSession } from '../../common/line-session/line-session';
-import { Purchase, PurchaseStatus } from '../../types/Purchase';
+import { Purchase, PurchaseStatus } from '../../types/Purchase/Purchase';
 
 @Component({
   selector: 'app-orders',

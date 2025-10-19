@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Client} from '../types/Client';
 import {Address} from '../types/Address';
-import {CreditCard} from '../types/CreditCard';
+import {CreditCard} from '../types/Payment/CreditCard';
 
 @Injectable({
   providedIn: 'root'

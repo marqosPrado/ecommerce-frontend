@@ -1,5 +1,5 @@
 import {Address} from './Address';
-import {CreditCard} from './CreditCard';
+import {CreditCard} from './Payment/CreditCard';
 
 export type Client = {
   id?: number;

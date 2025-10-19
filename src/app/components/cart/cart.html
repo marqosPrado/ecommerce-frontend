@@ -684,38 +684,14 @@
       </div>
     </div>
   </div>
-  <p-dialog
-    [(visible)]="showSuccessDialog"
-    [modal]="true"
-    [closable]="false"
-    [style]="{width: '450px'}"
-    header="Compra Realizada com Sucesso!"
-  >
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 1.5rem; padding: 1rem;">
-      <i class="pi pi-check-circle" style="font-size: 4rem; color: #22c55e;"></i>
-
-      <div style="text-align: center;">
-        <h3 style="margin: 0 0 0.5rem 0;">Pedido Confirmado!</h3>
-        <p style="margin: 0; color: var(--color-text-secondary);">
-          Seu pedido foi processado com sucesso e você receberá um e-mail de confirmação em breve.
-        </p>
-      </div>
-    </div>
-
-    <ng-template #footer>
-      <div style="display: flex; gap: 0.5rem; justify-content: center; width: 100%;">
-        <p-button
-          label="Ver Meus Pedidos"
-          icon="pi pi-shopping-bag"
-          severity="secondary"
-          (onClick)="closeSuccessDialog()"
-        />
-        <p-button
-          label="Continuar Comprando"
-          icon="pi pi-arrow-left"
-          (onClick)="closeSuccessDialog()"
-        />
-      </div>
-    </ng-template>
-  </p-dialog>
+  <app-modal
+    [(visible)]="showDialog"
+    [header]="dialogParams?.header || ''"
+    [iconClass]="dialogParams?.iconClass || 'pi pi-info-circle'"
+    [iconColor]="dialogParams?.iconColor || '#6366f1'"
+    [title]="dialogParams?.title || ''"
+    [message]="dialogParams?.message || ''"
+    [buttons]="dialogParams?.buttons || []"
+    (visibleChange)="onDialogClose()"
+  />
 </main>

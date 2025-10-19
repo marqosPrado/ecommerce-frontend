@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {CreditCard} from '../../types/CreditCard';
+import {CreditCard} from '../../types/Payment/CreditCard';
 import {Observable} from 'rxjs';
 
 @Injectable({
