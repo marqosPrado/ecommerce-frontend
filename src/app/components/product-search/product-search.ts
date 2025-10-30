@@ -21,17 +21,17 @@ import {ProductService} from '../../services/product/product.service';
   templateUrl: './product-search.html',
   styleUrl: './product-search.css'
 })
-export class ProductSearch implements OnInit {
+export class ProductSearch {
   products: Product[] = [];
 
   constructor(private productService: ProductService) {
   }
 
-  ngOnInit(): void {
-    this.products = this.getAllWatches();
-  }
-
-  getAllWatches(): Product[] {
-    return this.productService.getAll();
-  }
+  // ngOnInit(): void {
+  //   this.products = this.getAllWatches();
+  // }
+  //
+  // getAllWatches(): Product[] {
+  //   return this.productService.getAll();
+  // }
 }

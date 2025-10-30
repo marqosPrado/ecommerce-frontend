@@ -14,4 +14,5 @@ export class ProductCard {
   @Input() id!: number;
   @Input() title!: string;
   @Input() price!: number;
+  @Input() url!: string;
 }

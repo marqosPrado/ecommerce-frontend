@@ -30,28 +30,45 @@ import {ProductService} from '../../services/product/product.service';
   styleUrl: './product-details.css'
 })
 export class ProductDetails implements OnInit {
-  protected product!: Product | undefined;
+  protected product?: Product;
+  protected loading = true;
+  protected error = '';
+
   protected aiRecommendations!: Product[];
-  private productId!: number;
   private cartService: CartService = inject(CartService);
 
   constructor(
-    private route: ActivatedRoute,
     private productService: ProductService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.productId = Number(this.route.snapshot.paramMap.get('id')!);
-    this.product = this.getProductById(this.productId);
-    this.aiRecommendations = this.getAiRecommendations();
+    this.route.params.subscribe(params => {
+      const id = +params['id'];
+      if (id) {
+        this.getProductById(id);
+      }
+    });
+    // this.aiRecommendations = this.getAiRecommendations();
   }
 
   addToCart(product: Product): void {
-    this.cartService.addToCart(product)
+    this.cartService.addToCart(product);
   }
 
-  private getProductById(id: number): Product | undefined {
-    return this.productService.getById(id);
+  private getProductById(id: number): void {
+    this.loading = true;
+    this.productService.getById(id).subscribe({
+      next: response => {
+        this.product = response.data;
+        this.loading = false;
+      },
+      error: error => {
+        console.error('Erro ao buscar produto:', error);
+        this.error = 'Erro ao carregar produto';
+        this.loading = false;
+      }
+    });
   }
 
   private getAiRecommendations(): Product[] {
