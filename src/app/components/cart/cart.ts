@@ -1,6 +1,6 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {Step, StepList, StepPanel, StepPanels, Stepper} from 'primeng/stepper';
-import {Button} from 'primeng/button';
+import {Button, ButtonDirective, ButtonLabel} from 'primeng/button';
 import {Header} from '../../common/header/header';
 import {LineSession} from '../../common/line-session/line-session';
 import {Select} from 'primeng/select';
@@ -22,7 +22,8 @@ import {CreditCardService} from '../../services/credit-card/credit-card.service'
 import {PurchaseRequest} from '../../types/Purchase/Request/PurchaseRequest';
 import {PurchaseOrderService} from '../../services/purchase-order/purchase-order.service';
 import {DialogButton, DialogParams, Modal} from '../../common/modal/modal/modal';
-import {Router} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
+import {Authentication} from '../../services/authentication/authentication';
 
 @Component({
   selector: 'app-cart',
@@ -48,6 +49,9 @@ import {Router} from '@angular/router';
     Checkbox,
     DatePicker,
     Modal,
+    RouterLink,
+    ButtonDirective,
+    ButtonLabel,
   ],
   templateUrl: './cart.html',
   styleUrl: './cart.css'
@@ -75,6 +79,7 @@ export class Cart implements OnInit, OnDestroy {
   showCreditCardForm: boolean = false;
   loading: boolean = false;
   showDialog: boolean = false;
+  hasLogin: boolean = false;
   dialogParams?: DialogParams;
 
   private destroy$ = new Subject<void>();
@@ -85,7 +90,8 @@ export class Cart implements OnInit, OnDestroy {
     private addressService: AddressService,
     private creditCardService: CreditCardService,
     private purchaseOrderService: PurchaseOrderService,
-    private router: Router
+    private router: Router,
+    private authenticationService: Authentication
   ) {
     this.totalPrice$ = this.cartService.calculateTotalValue();
 
@@ -128,6 +134,8 @@ export class Cart implements OnInit, OnDestroy {
         Validators.required
       )
     });
+    console.log(this.isAuthenticated());
+    this.hasLogin = this.isAuthenticated();
   }
 
   ngOnInit(): void {
@@ -486,5 +494,9 @@ export class Cart implements OnInit, OnDestroy {
   public onDialogClose(): void {
     this.showDialog = false;
     this.dialogParams = undefined;
+  }
+
+  isAuthenticated(): boolean {
+    return this.authenticationService.isAuthenticated();
   }
 }

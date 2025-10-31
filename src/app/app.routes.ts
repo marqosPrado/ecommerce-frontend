@@ -75,6 +75,10 @@ export const routes: Routes = [
   {
     path: 'meus-pedidos',
     component: Orders
+  },
+  {
+    path: 'carrinho',
+    component: Cart
   }
   // {
   //   path: 'admistrador/produto/cadastro'

@@ -1,22 +1,29 @@
-import { Injectable } from '@angular/core';
-import {BehaviorSubject, map, Observable} from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { BehaviorSubject, map, Observable } from 'rxjs';
+import {StorageService} from '../storage-service/storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartService {
-  private itemsSubject: BehaviorSubject<CartItem[]> = new BehaviorSubject<CartItem[]>([])
+  private storage = inject(StorageService);
+  private itemsSubject: BehaviorSubject<CartItem[]> = new BehaviorSubject<CartItem[]>([]);
   public items$: Observable<CartItem[]> = this.itemsSubject.asObservable();
 
   constructor() {
-    const savedCart = localStorage.getItem('shoppingCart');
+    const savedCart = this.storage.getItem('shoppingCart');
     if (savedCart) {
-      this.itemsSubject.next(JSON.parse(savedCart));
+      try {
+        this.itemsSubject.next(JSON.parse(savedCart));
+      } catch (error) {
+        console.error('Error parsing saved cart:', error);
+        this.storage.removeItem('shoppingCart');
+      }
     }
   }
 
   public addToCart(product: Product): void {
-    const currentItems: CartItem[] = [...this.itemsSubject.getValue()]; // ✅ Cria nova array
+    const currentItems: CartItem[] = [...this.itemsSubject.getValue()];
 
     const itemIndex = currentItems.findIndex((item: CartItem) => item.product.id === product.id);
     if (itemIndex > -1) {
@@ -33,7 +40,7 @@ export class CartService {
   }
 
   private saveCart(): void {
-    localStorage.setItem('shoppingCart', JSON.stringify(this.itemsSubject.getValue()));
+    this.storage.setItem('shoppingCart', JSON.stringify(this.itemsSubject.getValue()));
   }
 
   public calculateTotalValue(): Observable<number> {
@@ -46,7 +53,7 @@ export class CartService {
 
   public removeFromCart(productId: number): void {
     const currentItems: CartItem[] = this.itemsSubject.getValue()
-      .filter((item: CartItem) => item.product.id !== productId)
+      .filter((item: CartItem) => item.product.id !== productId);
     this.itemsSubject.next(currentItems);
     this.saveCart();
   }
