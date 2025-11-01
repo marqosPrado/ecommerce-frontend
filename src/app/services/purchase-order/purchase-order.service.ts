@@ -20,6 +20,7 @@ export class PurchaseOrderService {
   }
 
   getAllPurchaseOrders(page: number = 0, size: number = 10): Observable<ApiResponse<ContentPageable<PurchaseOrderResponse[]>>> {
+    console.log(`page: ${page}`);
     const params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());

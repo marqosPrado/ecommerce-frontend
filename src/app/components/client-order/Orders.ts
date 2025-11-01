@@ -1,14 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { Button } from 'primeng/button';
-import { Tag } from 'primeng/tag';
-import { Dialog } from 'primeng/dialog';
-import { Divider } from 'primeng/divider';
-import { Header } from '../../common/header/header';
-import { LineSession } from '../../common/line-session/line-session';
-import { PurchaseOrderService } from '../../services/purchase-order/purchase-order.service';
-import { PurchaseOrderResponse } from '../../types/Purchase/Response/PurchaseOrderResponse';
+import {Component, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {Router} from '@angular/router';
+import {Button} from 'primeng/button';
+import {Tag} from 'primeng/tag';
+import {Dialog} from 'primeng/dialog';
+import {Divider} from 'primeng/divider';
+import {Header} from '../../common/header/header';
+import {LineSession} from '../../common/line-session/line-session';
+import {PurchaseOrderService} from '../../services/purchase-order/purchase-order.service';
+import {PurchaseOrderResponse} from '../../types/Purchase/Response/PurchaseOrderResponse';
 
 @Component({
   selector: 'app-orders',
@@ -59,7 +59,6 @@ export class Orders implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        console.error('Erro ao carregar pedidos:', error);
         this.loading = false;
       }
     });

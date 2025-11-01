@@ -5,7 +5,7 @@
   width: 100%;
   min-height: 100vh;
   background: var(--color-surface-darker);
-  padding: 4rem 2rem;
+  padding: 3rem 1.5rem;
   box-sizing: border-box;
 ">
   <div style="
@@ -13,17 +13,20 @@
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 2.5rem;
   ">
     <!-- Header -->
-    <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem;">
-      <div style="display: flex; align-items: center; gap: 1rem;">
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+      <div style="display: flex; align-items: center; gap: 1.25rem;">
         <p-button
           icon="pi pi-arrow-left"
           [style]="{
-            background: 'transparent',
+            background: 'var(--color-surface-dark)',
             border: '1px solid var(--input-border)',
-            color: 'var(--color-text-primary)'
+            color: 'var(--color-text-primary)',
+            borderRadius: '8px',
+            width: '44px',
+            height: '44px'
           }"
           (onClick)="goBack()"
         ></p-button>
@@ -42,10 +45,31 @@
             font-size: 0.95rem;
             margin: 0.5rem 0 0 0;
           ">
-            Acompanhe o histórico das suas compras
+            Acompanhe o histórico e status das suas compras
           </p>
         </div>
       </div>
+
+      @if (!loading && orders && orders.length > 0) {
+        <div style="
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          padding: 0.625rem 1rem;
+          background: var(--color-surface-dark);
+          border: 1px solid var(--input-border);
+          border-radius: 8px;
+        ">
+          <i class="pi pi-shopping-bag" style="color: var(--color-text-secondary); font-size: 0.95rem;"></i>
+          <span style="
+            color: var(--color-text-primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+          ">
+            {{ totalElements }} {{ totalElements === 1 ? 'pedido' : 'pedidos' }}
+          </span>
+        </div>
+      }
     </div>
 
     <!-- Loading -->
@@ -54,15 +78,25 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 3rem;
+        padding: 4rem;
       ">
-        <i class="pi pi-spin pi-spinner" style="font-size: 2rem; color: var(--color-blue);"></i>
+        <div style="
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 1.5rem;
+        ">
+          <i class="pi pi-spin pi-spinner" style="font-size: 2rem; color: var(--color-text-secondary);"></i>
+          <span style="color: var(--color-text-secondary); font-size: 0.9rem;">
+            Carregando pedidos...
+          </span>
+        </div>
       </div>
     }
 
     <!-- Lista de Pedidos -->
     @if (!loading && orders && orders.length > 0) {
-      <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
         @for (order of orders; track order.id) {
           <article
             style="
@@ -70,14 +104,14 @@
               border: 1px solid var(--input-border);
               border-radius: 12px;
               padding: 1.5rem;
-              transition: all 0.3s ease;
+              transition: all 0.2s ease;
               cursor: pointer;
             "
             (click)="openDetails(order)"
           >
-            <div style="display: flex; justify-content: space-between; align-items: start; gap: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: start; gap: 2rem; flex-wrap: wrap;">
               <!-- Informações do Pedido -->
-              <div style="flex: 1; display: flex; flex-direction: column; gap: 1rem;">
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 1rem; min-width: 300px;">
                 <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
                   <span style="
                     font-weight: 700;
@@ -90,44 +124,65 @@
                   <p-tag
                     [value]="order.order_status.displayName"
                     [severity]="getStatusSeverity(order.order_status.code)"
+                    [style]="{
+                      fontSize: '0.8rem',
+                      fontWeight: '500',
+                      padding: '0.375rem 0.75rem'
+                    }"
                   ></p-tag>
                 </div>
 
                 <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
                   <div style="display: flex; align-items: center; gap: 0.5rem;">
                     <i class="pi pi-calendar" style="color: var(--color-text-secondary); font-size: 0.875rem;"></i>
-                    <span style="color: var(--color-text-secondary); font-size: 0.95rem;">
-                      {{ formatDate(order.created_at) }}
-                    </span>
+                    <div style="display: flex; flex-direction: column; gap: 0.125rem;">
+                      <span style="color: var(--color-text-muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                        Data
+                      </span>
+                      <span style="color: var(--color-text-primary); font-size: 0.875rem; font-weight: 600;">
+                        {{ formatDate(order.created_at) }}
+                      </span>
+                    </div>
                   </div>
 
                   <div style="display: flex; align-items: center; gap: 0.5rem;">
                     <i class="pi pi-shopping-bag" style="color: var(--color-text-secondary); font-size: 0.875rem;"></i>
-                    <span style="color: var(--color-text-secondary); font-size: 0.95rem;">
-                      {{ getTotalItems(order) }} {{ getTotalItems(order) === 1 ? 'item' : 'itens' }}
-                    </span>
+                    <div style="display: flex; flex-direction: column; gap: 0.125rem;">
+                      <span style="color: var(--color-text-muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                        Itens
+                      </span>
+                      <span style="color: var(--color-text-primary); font-size: 0.875rem; font-weight: 600;">
+                        {{ getTotalItems(order) }} {{ getTotalItems(order) === 1 ? 'item' : 'itens' }}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
                 <!-- Preview dos produtos -->
-                <div style="display: flex; gap: 0.75rem; margin-top: 0.5rem;">
-                  @for (item of order.items.slice(0, 3); track item.id) {
-                    <img
-                      [src]="item.product.main_image"
-                      [alt]="item.product.title"
-                      style="
-                        width: 60px;
-                        height: 60px;
-                        object-fit: cover;
-                        border-radius: 8px;
-                        border: 1px solid var(--input-border);
-                      "
-                    />
-                  }
-                  @if (order.items.length > 3) {
+                <div style="display: flex; gap: 0.5rem; margin-top: 0.25rem;">
+                  @for (item of order.items.slice(0, 4); track item.id) {
                     <div style="
-                      width: 60px;
-                      height: 60px;
+                      width: 56px;
+                      height: 56px;
+                      border-radius: 8px;
+                      overflow: hidden;
+                      border: 1px solid var(--input-border);
+                    ">
+                      <img
+                        [src]="item.product.main_image"
+                        [alt]="item.product.title"
+                        style="
+                          width: 100%;
+                          height: 100%;
+                          object-fit: cover;
+                        "
+                      />
+                    </div>
+                  }
+                  @if (order.items.length > 4) {
+                    <div style="
+                      width: 56px;
+                      height: 56px;
                       border-radius: 8px;
                       background: var(--color-surface-dark);
                       border: 1px solid var(--input-border);
@@ -138,38 +193,52 @@
                       color: var(--color-text-secondary);
                       font-weight: 600;
                     ">
-                      +{{ order.items.length - 3 }}
+                      +{{ order.items.length - 4 }}
                     </div>
                   }
                 </div>
               </div>
 
-              <!-- Valor Total -->
-              <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
-                <span style="
-                  color: var(--color-text-secondary);
-                  font-size: 0.875rem;
-                ">
-                  Total
-                </span>
-                <span style="
-                  font-size: 1.5rem;
-                  font-weight: 700;
-                  color: var(--color-blue);
-                ">
-                  {{ formatCurrency(order.pricing.total) }}
-                </span>
+              <!-- Valor Total e Ação -->
+              <div style="
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 1rem;
+                min-width: 160px;
+              ">
+                <div style="text-align: right;">
+                  <span style="
+                    color: var(--color-text-muted);
+                    font-size: 0.75rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                    display: block;
+                    margin-bottom: 0.375rem;
+                  ">
+                    Total
+                  </span>
+                  <span style="
+                    font-size: 1.5rem;
+                    font-weight: 700;
+                    color: var(--color-text-primary);
+                  ">
+                    {{ formatCurrency(order.pricing.total) }}
+                  </span>
+                </div>
 
                 <p-button
                   label="Ver detalhes"
                   icon="pi pi-arrow-right"
                   iconPos="right"
-                  size="small"
                   [style]="{
                     background: 'transparent',
                     border: '1px solid var(--input-border)',
                     color: 'var(--color-text-primary)',
-                    marginTop: '0.5rem'
+                    borderRadius: '8px',
+                    padding: '0.5rem 1rem',
+                    fontSize: '0.875rem',
+                    fontWeight: '500'
                   }"
                   (onClick)="openDetails(order); $event.stopPropagation()"
                 ></p-button>
@@ -186,20 +255,29 @@
           justify-content: center;
           align-items: center;
           gap: 1rem;
-          margin-top: 2rem;
+          margin-top: 1.5rem;
         ">
           <p-button
             icon="pi pi-chevron-left"
             [disabled]="currentPage === 0 || loading"
             [style]="{
-              background: 'transparent',
+              background: 'var(--color-surface-dark)',
               border: '1px solid var(--input-border)',
-              color: 'var(--color-text-primary)'
+              color: 'var(--color-text-primary)',
+              borderRadius: '8px',
+              width: '40px',
+              height: '40px'
             }"
             (onClick)="loadPreviousPage()"
           ></p-button>
 
-          <span style="color: var(--color-text-secondary);">
+          <span style="
+            color: var(--color-text-primary);
+            font-weight: 600;
+            font-size: 0.95rem;
+            min-width: 100px;
+            text-align: center;
+          ">
             Página {{ currentPage + 1 }} de {{ totalPages }}
           </span>
 
@@ -207,9 +285,12 @@
             icon="pi pi-chevron-right"
             [disabled]="currentPage >= totalPages - 1 || loading"
             [style]="{
-              background: 'transparent',
+              background: 'var(--color-surface-dark)',
               border: '1px solid var(--input-border)',
-              color: 'var(--color-text-primary)'
+              color: 'var(--color-text-primary)',
+              borderRadius: '8px',
+              width: '40px',
+              height: '40px'
             }"
             (onClick)="loadNextPage()"
           ></p-button>
@@ -230,8 +311,8 @@
         text-align: center;
         gap: 1.5rem;
       ">
-        <i class="pi pi-inbox" style="font-size: 4rem; color: var(--color-text-muted);"></i>
-        <div>
+        <i class="pi pi-inbox" style="font-size: 3rem; color: var(--color-text-muted);"></i>
+        <div style="max-width: 400px;">
           <h2 style="
             font-size: 1.5rem;
             font-weight: 700;
@@ -243,6 +324,8 @@
           <p style="
             color: var(--color-text-secondary);
             margin: 0;
+            font-size: 0.95rem;
+            line-height: 1.5;
           ">
             Você ainda não realizou nenhuma compra
           </p>
@@ -253,7 +336,10 @@
           [style]="{
             background: 'var(--color-blue)',
             border: 'none',
-            padding: '0.75rem 1.5rem'
+            padding: '0.75rem 1.5rem',
+            fontSize: '0.95rem',
+            fontWeight: '600',
+            borderRadius: '8px'
           }"
         ></p-button>
       </div>
@@ -266,14 +352,25 @@
   [(visible)]="showDetailsDialog"
   [modal]="true"
   [closable]="true"
-  [style]="{width: '800px', maxWidth: '90vw'}"
-  [contentStyle]="{background: 'var(--color-background)', padding: '0'}"
+  [style]="{width: '900px', maxWidth: '95vw'}"
+  [contentStyle]="{
+    background: 'var(--color-background)',
+    padding: '0'
+  }"
   [header]="'Detalhes do Pedido'"
 >
   @if (selectedOrder) {
-    <div style="display: flex; flex-direction: column; gap: 2rem; padding: 1.5rem;">
+    <div style="display: flex; flex-direction: column; gap: 2rem; padding: 2rem;">
       <!-- Header do Pedido -->
-      <div style="display: flex; justify-content: space-between; align-items: start;">
+      <div style="
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        padding: 1.25rem;
+        background: var(--color-surface-dark);
+        border-radius: 8px;
+        border: 1px solid var(--input-border);
+      ">
         <div style="display: flex; flex-direction: column; gap: 0.5rem;">
           <span style="
             font-weight: 700;
@@ -282,15 +379,22 @@
           ">
             {{ selectedOrder.order_number }}
           </span>
-          <span style="color: var(--color-text-secondary); font-size: 0.95rem;">
-            {{ formatDate(selectedOrder.created_at) }}
-          </span>
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <i class="pi pi-calendar" style="color: var(--color-text-muted); font-size: 0.875rem;"></i>
+            <span style="color: var(--color-text-secondary); font-size: 0.9rem;">
+              {{ formatDate(selectedOrder.created_at) }}
+            </span>
+          </div>
         </div>
 
         <p-tag
           [value]="selectedOrder.order_status.displayName"
           [severity]="getStatusSeverity(selectedOrder.order_status.code)"
-          [style]="{fontSize: '1rem', padding: '0.5rem 1rem'}"
+          [style]="{
+            fontSize: '0.875rem',
+            padding: '0.5rem 1rem',
+            fontWeight: '500'
+          }"
         ></p-tag>
       </div>
 
@@ -307,7 +411,7 @@
           Produtos
         </h3>
 
-        <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
           @for (item of selectedOrder.items; track item.id) {
             <div style="
               display: flex;
@@ -315,34 +419,44 @@
               padding: 1rem;
               background: var(--color-surface-dark);
               border-radius: 8px;
+              border: 1px solid var(--input-border);
             ">
-              <img
-                [src]="item.product.main_image"
-                [alt]="item.product.title"
-                style="
-                  width: 80px;
-                  height: 80px;
-                  object-fit: cover;
-                  border-radius: 8px;
-                "
-              />
+              <div style="
+                width: 80px;
+                height: 80px;
+                border-radius: 8px;
+                overflow: hidden;
+                border: 1px solid var(--input-border);
+                flex-shrink: 0;
+              ">
+                <img
+                  [src]="item.product.main_image"
+                  [alt]="item.product.title"
+                  style="
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                  "
+                />
+              </div>
 
-              <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 0.25rem;">
+              <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 0.375rem;">
                 <span style="
                   font-weight: 600;
                   color: var(--color-text-primary);
+                  font-size: 0.95rem;
                 ">
                   {{ item.product.title }}
                 </span>
                 <span style="
                   color: var(--color-text-secondary);
-                  font-size: 0.9rem;
+                  font-size: 0.875rem;
                 ">
                   {{ item.product.brand }}
                 </span>
                 <span style="
-                  color: var(--color-text-secondary);
-                  font-size: 0.9rem;
+                  color: var(--color-text-muted);
+                  font-size: 0.875rem;
                 ">
                   Quantidade: {{ item.quantity }}
                 </span>
@@ -352,7 +466,7 @@
                 <span style="
                   font-weight: 700;
                   font-size: 1.1rem;
-                  color: var(--color-blue);
+                  color: var(--color-text-primary);
                 ">
                   {{ formatCurrency(item.subtotal) }}
                 </span>
@@ -376,17 +490,18 @@
         </h3>
 
         <div style="
-          padding: 1rem;
+          padding: 1.25rem;
           background: var(--color-surface-dark);
           border-radius: 8px;
           color: var(--color-text-secondary);
+          border: 1px solid var(--input-border);
         ">
-          <p style="margin: 0; line-height: 1.6;">
-            {{ selectedOrder.shipping_address.type_place }} {{ selectedOrder.shipping_address.street }}
-            , {{ selectedOrder.shipping_address.number }}<br>
-            {{ selectedOrder.shipping_address.neighborhood }} - {{ selectedOrder.shipping_address.city }}
-            /{{ selectedOrder.shipping_address.state }}<br>
-            CEP: {{ selectedOrder.shipping_address.cep }}
+          <p style="margin: 0; line-height: 1.6; font-size: 0.95rem;">
+            <strong style="color: var(--color-text-primary);">
+              {{ selectedOrder.shipping_address.type_place }} {{ selectedOrder.shipping_address.street }}, {{ selectedOrder.shipping_address.number }}
+            </strong><br>
+            {{ selectedOrder.shipping_address.neighborhood }} - {{ selectedOrder.shipping_address.city }}/{{ selectedOrder.shipping_address.state }}<br>
+            <strong>CEP:</strong> {{ selectedOrder.shipping_address.cep }}
             @if (selectedOrder.shipping_address.observations) {
               <br><br>
               <strong>Observações:</strong> {{ selectedOrder.shipping_address.observations }}
@@ -405,27 +520,28 @@
           color: var(--color-text-primary);
           margin: 0 0 1rem 0;
         ">
-          Pagamento
+          Resumo do Pagamento
         </h3>
 
         <div style="
-          padding: 1rem;
+          padding: 1.5rem;
           background: var(--color-surface-dark);
           border-radius: 8px;
           display: flex;
           flex-direction: column;
           gap: 1rem;
+          border: 1px solid var(--input-border);
         ">
-          <div style="display: flex; justify-content: space-between;">
-            <span style="color: var(--color-text-secondary);">Subtotal</span>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="color: var(--color-text-secondary); font-size: 0.95rem;">Subtotal</span>
             <span style="color: var(--color-text-primary); font-weight: 600;">
               {{ formatCurrency(selectedOrder.pricing.subtotal) }}
             </span>
           </div>
 
           @if (selectedOrder.payment.voucher) {
-            <div style="display: flex; justify-content: space-between;">
-              <span style="color: var(--color-text-secondary);">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="color: var(--color-text-secondary); font-size: 0.95rem;">
                 Desconto ({{ selectedOrder.payment.voucher.code }})
               </span>
               <span style="color: var(--color-green); font-weight: 600;">
@@ -434,8 +550,8 @@
             </div>
           }
 
-          <div style="display: flex; justify-content: space-between;">
-            <span style="color: var(--color-text-secondary);">Taxa de entrega</span>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="color: var(--color-text-secondary); font-size: 0.95rem;">Taxa de entrega</span>
             <span style="color: var(--color-text-primary); font-weight: 600;">
               {{ formatCurrency(selectedOrder.pricing.delivery_fee) }}
             </span>
@@ -443,28 +559,74 @@
 
           <p-divider></p-divider>
 
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <div>
-              <div style="color: var(--color-text-secondary); font-size: 0.9rem; margin-bottom: 0.25rem;">
-                {{ selectedOrder.payment.credit_card.card_flag }} •••• {{ selectedOrder.payment.credit_card.last_digits }}
-              </div>
-              <div style="color: var(--color-text-secondary); font-size: 0.875rem;">
-                {{ selectedOrder.payment.credit_card.printed_name }}
-              </div>
-            </div>
+          <!-- Cartões de Crédito -->
+          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <span style="
+              color: var(--color-text-primary);
+              font-size: 0.9rem;
+              font-weight: 600;
+            ">
+              {{ selectedOrder.payment.credit_card.length === 1 ? 'Cartão de Crédito' : 'Cartões de Crédito' }}
+            </span>
 
-            <div style="text-align: right;">
-              <div style="color: var(--color-text-secondary); font-size: 0.9rem; margin-bottom: 0.25rem;">
-                Total
-              </div>
+            @for (card of selectedOrder.payment.credit_card; track card.id) {
               <div style="
-                font-weight: 700;
-                font-size: 1.5rem;
-                color: var(--color-blue);
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                padding: 0.875rem 1rem;
+                background: var(--color-background);
+                border: 1px solid var(--input-border);
+                border-radius: 8px;
               ">
-                {{ formatCurrency(selectedOrder.pricing.total) }}
+                <i class="pi pi-credit-card" style="
+                  color: var(--color-text-secondary);
+                  font-size: 1.25rem;
+                "></i>
+
+                <div style="flex: 1;">
+                  <div style="
+                    color: var(--color-text-primary);
+                    font-size: 0.95rem;
+                    font-weight: 600;
+                    margin-bottom: 0.25rem;
+                  ">
+                    {{ card.card_flag }} •••• {{ card.last_digits }}
+                  </div>
+                  <div style="
+                    color: var(--color-text-secondary);
+                    font-size: 0.875rem;
+                  ">
+                    {{ card.printed_name }}
+                  </div>
+                </div>
               </div>
-            </div>
+            }
+          </div>
+
+          <p-divider></p-divider>
+
+          <!-- Total -->
+          <div style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 0.5rem;
+          ">
+            <span style="
+              color: var(--color-text-primary);
+              font-size: 1.05rem;
+              font-weight: 600;
+            ">
+              Total do Pedido
+            </span>
+            <span style="
+              font-weight: 700;
+              font-size: 1.5rem;
+              color: var(--color-text-primary);
+            ">
+              {{ formatCurrency(selectedOrder.pricing.total) }}
+            </span>
           </div>
         </div>
       </div>
@@ -472,14 +634,25 @@
   }
 
   <ng-template #footer>
-    <div style="display: flex; gap: 0.5rem; justify-content: flex-end; padding: 1rem 1.5rem;">
+    <div style="
+      display: flex;
+      gap: 0.75rem;
+      justify-content: flex-end;
+      padding: 1.25rem 2rem;
+      background: var(--color-surface-dark);
+      border-top: 1px solid var(--input-border);
+    ">
       <p-button
         label="Fechar"
         icon="pi pi-times"
         [style]="{
           background: 'transparent',
           border: '1px solid var(--input-border)',
-          color: 'var(--color-text-primary)'
+          color: 'var(--color-text-primary)',
+          borderRadius: '8px',
+          padding: '0.625rem 1.25rem',
+          fontSize: '0.9rem',
+          fontWeight: '500'
         }"
         (onClick)="closeDetails()"
       />
