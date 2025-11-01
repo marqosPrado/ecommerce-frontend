@@ -1,16 +1,21 @@
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, map, Observable } from 'rxjs';
 import {StorageService} from '../storage-service/storage.service';
+import {HttpClient, HttpParams} from '@angular/common/http';
+import {ApiResponse} from '../../types/Api/ApiResponse';
+import {VoucherSummaryResponse} from '../../types/Voucher/Response/VoucherSummaryResponse';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartService {
+  private baseUrl: string = 'http://localhost:8080/';
+
   private storage = inject(StorageService);
   private itemsSubject: BehaviorSubject<CartItem[]> = new BehaviorSubject<CartItem[]>([]);
   public items$: Observable<CartItem[]> = this.itemsSubject.asObservable();
 
-  constructor() {
+  constructor(private http: HttpClient) {
     const savedCart = this.storage.getItem('shoppingCart');
     if (savedCart) {
       try {
@@ -83,5 +88,12 @@ export class CartService {
   public clearCart(): void {
     this.itemsSubject.next([]);
     this.saveCart();
+  }
+
+  applyVoucher(voucher: string) {
+    const url = `${this.baseUrl}api/vouchers/get`
+    return this.http.get<ApiResponse<VoucherSummaryResponse>>(url, {
+      params: {voucherCode: voucher}
+    })
   }
 }

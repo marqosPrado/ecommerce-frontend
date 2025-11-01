@@ -31,6 +31,8 @@ import {DialogParams, Modal} from '../../common/modal/modal/modal';
 import {Router, RouterLink} from '@angular/router';
 import {Authentication} from '../../services/authentication/authentication';
 import {Checkbox} from 'primeng/checkbox';
+import {ApiResponse} from '../../types/Api/ApiResponse';
+import {VoucherSummaryResponse} from '../../types/Voucher/Response/VoucherSummaryResponse';
 
 @Component({
   selector: 'app-cart',
@@ -82,13 +84,26 @@ export class Cart implements OnInit, OnDestroy {
   newCreditCardForm: FormGroup;
   creditCardFormGroup: FormGroup;
 
+  paymentForm: FormGroup;
+  voucherForm: FormGroup;
+
   showAddressForm: boolean = false;
   showCreditCardForm: boolean = false;
   loading: boolean = false;
   showDialog: boolean = false;
-  hasLogin: boolean = false; // ⚠️ Inicializa como false
+  hasLogin: boolean = false;
+  voucherState = {
+    isApplied: false,
+    isLoading: false,
+    data: {
+      code: '',
+      discount_percentage: '0',
+      type: ''
+    },
+    error: ''
+  };
+
   dialogParams?: DialogParams;
-  paymentForm: FormGroup;
 
   private destroy$ = new Subject<void>();
 
@@ -130,6 +145,10 @@ export class Cart implements OnInit, OnDestroy {
       cardFlag: new FormControl<CreditCardTypes | null>(null, Validators.required),
       securityCode: ['', [Validators.required, Validators.pattern(/^\d{3,4}$/)]],
       isMain: [false, Validators.required],
+    });
+
+    this.voucherForm = this.fb.group({
+      code: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]]
     });
 
     this.creditCardFormGroup = this.fb.group({
@@ -390,7 +409,7 @@ export class Cart implements OnInit, OnDestroy {
       })),
       addressId: selectedAddressId,
       creditCardId: selectedCardIds, // ✅ Array de IDs
-      voucher: "DESC10"
+      voucher: this.voucherState.isApplied ? this.voucherState.data.code : undefined
     };
 
     console.log('📦 Purchase Order:', JSON.stringify(purchase, null, 2));
@@ -403,6 +422,7 @@ export class Cart implements OnInit, OnDestroy {
         next: (response) => {
           console.log('✅ Pedido realizado com sucesso:', response);
           this.cartService.clearCart();
+          this.removeVoucher();
 
           const orderNumber = String(response.data?.order_number || response.data?.id || 'N/A');
           this.setupDialogSuccess(orderNumber);
@@ -530,5 +550,55 @@ export class Cart implements OnInit, OnDestroy {
 
   isAuthenticated(): boolean {
     return this.authenticationService.isAuthenticated();
+  }
+
+  applyVoucher(): void {
+    const voucherCode = this.voucherForm.get('code')?.value?.trim().toUpperCase();
+    console.log(voucherCode);
+
+    if (!voucherCode || this.voucherForm.invalid) {
+      this.voucherState.error = 'Digite um código de voucher válido (6 caracteres)';
+      return;
+    }
+
+    this.voucherState.isLoading = true;
+    this.voucherState.error = '';
+
+    this.cartService.applyVoucher(voucherCode).subscribe({
+      next: (response: ApiResponse<VoucherSummaryResponse>) => {
+        if (response.success && response.data) {
+          this.voucherState.isApplied = true;
+          this.voucherState.data = {
+            code: response.data.code,
+            discount_percentage: response.data.discount_percentage,
+            type: response.data.type
+          };
+          this.voucherState.error = '';
+          this.voucherForm.disable();
+        }
+        this.voucherState.isLoading = false;
+      },
+      error: (error) => {
+        this.voucherState.isApplied = false;
+        this.voucherState.error = error.error?.message || 'Erro ao aplicar voucher. Tente novamente.';
+        this.voucherState.isLoading = false;
+      }
+    });
+  }
+
+  parseFloat(value: string): number {
+    return parseFloat(value);
+  }
+
+  removeVoucher(): void {
+    this.voucherState.isApplied = false;
+    this.voucherState.data = {
+      code: '',
+      discount_percentage: '0',
+      type: ''
+    };
+    this.voucherState.error = '';
+    this.voucherForm.reset();
+    this.voucherForm.enable();
   }
 }

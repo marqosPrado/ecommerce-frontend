@@ -20,23 +20,23 @@
             <ng-template #content>
               <div style="display: flex; flex-direction: column; gap: 2rem">
                 <div style="
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding-bottom: 1rem;
-        border-bottom: 2px solid var(--input-border);
-      ">
+                      width: 100%;
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      padding-bottom: 1rem;
+                      border-bottom: 2px solid var(--input-border);
+                    ">
                   <div style="display: flex; gap: 1rem; align-items: center">
                     <div style="
-            background: var(--color-blue);
-            width: 48px;
-            height: 48px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          ">
+                          background: var(--color-blue);
+                          width: 48px;
+                          height: 48px;
+                          border-radius: 8px;
+                          display: flex;
+                          align-items: center;
+                          justify-content: center;
+                        ">
                       <i style="font-size: 24px; color: white;" class="pi pi-shopping-bag"></i>
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 0.25rem;">
@@ -64,15 +64,15 @@
                   @for (item of cartItems; track item.product.id; let i = $index) {
                     <div class="flex flex-col h-48">
                       <div style="
-              display: flex;
-              flex-direction: column;
-              gap: 2rem;
-              border: 1px solid var(--input-border);
-              padding: 1.5rem;
-              border-radius: 10px;
-              background-color: var(--color-surface-dark);
-              transition: border-color 0.2s;
-            ">
+                            display: flex;
+                            flex-direction: column;
+                            gap: 2rem;
+                            border: 1px solid var(--input-border);
+                            padding: 1.5rem;
+                            border-radius: 10px;
+                            background-color: var(--color-surface-dark);
+                            transition: border-color 0.2s;
+                          ">
                         <div style="width: 100%; display: flex;">
                           <div style="width: 60%; max-width: 60%; display: flex; gap: 0.5rem; flex-direction: row;">
                             <img
@@ -88,14 +88,14 @@
                               </div>
 
                               <div style="display: flex; flex-direction: column; gap: 0.25rem;">
-                      <span style="font-size: 12px; color: var(--color-text-secondary);">
-                        Com desconto à vista:
-                        <strong style="color: var(--color-green);">R$ {{ item.product.price }}</strong>
-                      </span>
                                 <span style="font-size: 12px; color: var(--color-text-secondary);">
-                        Parcelado no cartão sem juros:
-                        <strong style="color: var(--color-text-primary);">R$ {{ item.product.price }}</strong>
-                      </span>
+                                  Com desconto à vista:
+                                  <strong style="color: var(--color-green);">R$ {{ item.product.price }}</strong>
+                                </span>
+                                <span style="font-size: 12px; color: var(--color-text-secondary);">
+                                  Parcelado no cartão sem juros:
+                                  <strong style="color: var(--color-text-primary);">R$ {{ item.product.price }}</strong>
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -127,8 +127,8 @@
                             style="width: 20%; display: flex; flex-direction: column; justify-content: center; align-items: end">
                             <span style="color: var(--color-text-secondary); font-size: 0.875rem;">Preço à vista:</span>
                             <span style="font-size: 16px; font-weight: bold; color: var(--color-green);">
-                    {{ item.product.price | currency:'BRL' }}
-                  </span>
+                              {{ item.product.price | currency:'BRL' }}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -136,18 +136,18 @@
                   }
                 } @else {
                   <div style="
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          padding: 4rem 2rem;
-          border: 2px dashed var(--input-border);
-          border-radius: 10px;
-          text-align: center;
-          gap: 1.5rem;
-          color: var(--color-text-secondary);
-          background-color: var(--color-surface-dark);
-        ">
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 4rem 2rem;
+                        border: 2px dashed var(--input-border);
+                        border-radius: 10px;
+                        text-align: center;
+                        gap: 1.5rem;
+                        color: var(--color-text-secondary);
+                        background-color: var(--color-surface-dark);
+                      ">
                     <i class="pi pi-inbox" style="font-size: 4rem; color: var(--color-text-muted);"></i>
                     <h2 style="color: var(--color-text-primary); margin: 0;">Seu carrinho está vazio!</h2>
                     <p style="color: var(--color-text-secondary); margin: 0;">
@@ -178,16 +178,16 @@
 
                         @for (addr of addresses; track addr.id) {
                           <div [style]="{
-                  'display': 'flex',
-                  'gap': '0.5rem',
-                  'border': '2px solid',
-                  'border-color': addressFormGroup.get('address')?.value === addr.id ? 'var(--color-blue)' : 'var(--input-border)',
-                  'padding': '1.5rem',
-                  'border-radius': '10px',
-                  'background-color': addressFormGroup.get('address')?.value === addr.id ? 'var(--color-background)' : 'transparent',
-                  'transition': 'all 0.2s',
-                  'cursor': 'pointer'
-                }">
+                                'display': 'flex',
+                                'gap': '0.5rem',
+                                'border': '2px solid',
+                                'border-color': addressFormGroup.get('address')?.value === addr.id ? 'var(--color-blue)' : 'var(--input-border)',
+                                'padding': '1.5rem',
+                                'border-radius': '10px',
+                                'background-color': addressFormGroup.get('address')?.value === addr.id ? 'var(--color-background)' : 'transparent',
+                                'transition': 'all 0.2s',
+                                'cursor': 'pointer'
+                              }">
                             <p-radiobutton
                               name="address"
                               [inputId]="'address' + addr.id"
@@ -205,17 +205,17 @@
                   </div>
                 } @else {
                   <div style="
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          padding: 4rem 2rem;
-          border: 2px dashed var(--input-border);
-          border-radius: 10px;
-          text-align: center;
-          gap: 1.5rem;
-          background-color: var(--color-surface-dark);
-        ">
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 4rem 2rem;
+                        border: 2px dashed var(--input-border);
+                        border-radius: 10px;
+                        text-align: center;
+                        gap: 1.5rem;
+                        background-color: var(--color-surface-dark);
+                      ">
                     <form style="display: flex; flex-direction: column; gap: 1rem; width: 100%"
                           [formGroup]="newAddressForm">
                       <div style="display: flex; flex-direction: row; width: 100%; gap: 8px">
@@ -223,9 +223,9 @@
                           <p-floatlabel variant="on" [style]="{'width': '100%'}">
                             <p-select
                               [options]="[
-                      { name: 'Casa', value: 'CASA' },
-                      { name: 'Apartamento', value: 'APARTAMENTO' },
-                    ]"
+                                { name: 'Casa', value: 'CASA' },
+                                { name: 'Apartamento', value: 'APARTAMENTO' },
+                              ]"
                               optionLabel="name"
                               optionValue="value"
                               inputId="typeResidence"
@@ -246,10 +246,10 @@
                         <div [style]="{'width': '55%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
                           <p-select
                             [options]="[
-                    {name: 'Rua', value: 'RUA'},
-                    {name: 'Avenida', value: 'AVENIDA'},
-                    {name: 'Rodovia', value: 'RODOVIA'}
-                  ]"
+                              {name: 'Rua', value: 'RUA'},
+                              {name: 'Avenida', value: 'AVENIDA'},
+                              {name: 'Rodovia', value: 'RODOVIA'}
+                            ]"
                             optionLabel="name"
                             placeholder="Tipo de Logradouro*"
                             size="large"
@@ -362,9 +362,9 @@
                         <div [style]="{'width': '50%', 'display': 'flex', 'flex-direction': 'column', 'gap': '8px'}">
                           <p-select
                             [options]="[
-                    {name: 'São Paulo', value: 25},
-                    {name: 'Rio de Janeiro', value: 19}
-                  ]"
+                              {name: 'São Paulo', value: 25},
+                              {name: 'Rio de Janeiro', value: 19}
+                            ]"
                             optionLabel="name"
                             optionValue="value"
                             placeholder="Estado*"
@@ -399,14 +399,14 @@
                       </div>
 
                       <p-floatlabel variant="on" [style]="{'width': '100%'}">
-              <textarea
-                pTextarea
-                id="notes"
-                formControlName="observations"
-                rows="5"
-                [autoResize]="false"
-                style="width: 100%; resize: none"
-              ></textarea>
+                        <textarea
+                          pTextarea
+                          id="notes"
+                          formControlName="observations"
+                          rows="5"
+                          [autoResize]="false"
+                          style="width: 100%; resize: none"
+                        ></textarea>
                         <label for="notes" style="color: var(--color-text-secondary);">Observações (opcional)</label>
                       </p-floatlabel>
 
@@ -458,26 +458,25 @@
                         <span
                           style="color: var(--color-text-primary);"><strong>Selecione os cartões de crédito:</strong></span>
                         <span style="color: var(--color-text-secondary); font-size: 0.875rem;">
-                {{ selectedCardIdsArray.length }} {{ selectedCardIdsArray.length === 1 ? 'cartão selecionado' : 'cartões selecionados' }}
-              </span>
+                          {{ selectedCardIdsArray.length }} {{ selectedCardIdsArray.length === 1 ? 'cartão selecionado' : 'cartões selecionados' }}
+                        </span>
                       </div>
 
                       <div style="width: 100%; display: flex; flex-direction: column; gap: 1rem">
                         @for (creditCard of creditCards; track creditCard.id) {
                           <div [style]="{
-                  'display': 'flex',
-                  'flex-direction': 'column',
-                  'gap': '0.5rem',
-                  'padding': '1rem',
-                  'border': '2px solid',
-                  'border-color': isCardSelected(creditCard.id) ? 'var(--color-blue)' : 'var(--input-border)',
-                  'border-radius': '8px',
-                  'background-color': isCardSelected(creditCard.id) ? 'var(--color-background)' : 'transparent',
-                  'transition': 'all 0.2s'
-                }">
+                                  'display': 'flex',
+                                  'flex-direction': 'column',
+                                  'gap': '0.5rem',
+                                  'padding': '1rem',
+                                  'border': '2px solid',
+                                  'border-color': isCardSelected(creditCard.id) ? 'var(--color-blue)' : 'var(--input-border)',
+                                  'border-radius': '8px',
+                                  'background-color': isCardSelected(creditCard.id) ? 'var(--color-background)' : 'transparent',
+                                  'transition': 'all 0.2s'
+                                }">
                             <div style="display: flex; align-items: center; justify-content: space-between;">
                               <div style="display: flex; align-items: center; gap: 1rem; flex: 1;">
-                                <!-- Checkbox para seleção -->
                                 <p-checkbox
                                   [value]="creditCard.id"
                                   (onChange)="onCardCheckboxChange(creditCard.id, $event.checked)"
@@ -486,7 +485,6 @@
                                   [ngModelOptions]="{standalone: true}">
                                 </p-checkbox>
 
-                                <!-- Bandeira do cartão -->
                                 @if (creditCard.cardFlag === CreditCardTypes.ELO) {
                                   <img src="/assets/elo.png" width="40" height="40"/>
                                 } @else if (creditCard.cardFlag === CreditCardTypes.MASTERCARD) {
@@ -495,7 +493,6 @@
                                   <img src="/assets/visa.svg" width="40" height="40" alt="visa"/>
                                 }
 
-                                <!-- Informações do cartão -->
                                 <div style="display: flex; flex-direction: column; gap: 0.25rem">
                                   <span
                                     style="font-weight: 600; color: var(--color-text-primary);">{{ creditCard.printedName }}</span>
@@ -503,14 +500,13 @@
                                     style="color: var(--color-text-secondary); font-size: 0.875rem;">{{ creditCard.number }}</span>
                                   @if (creditCard.isMain) {
                                     <span style="color: var(--color-yellow); font-size: 0.75rem; font-weight: 600;">
-                            <i class="pi pi-star-fill" style="font-size: 0.625rem;"></i> Cartão Principal
-                          </span>
+                                      <i class="pi pi-star-fill" style="font-size: 0.625rem;"></i> Cartão Principal
+                                    </span>
                                   }
                                 </div>
                               </div>
                             </div>
 
-                            <!-- Informações adicionais quando selecionado -->
                             @if (isCardSelected(creditCard.id)) {
                               <div
                                 style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--input-border);">
@@ -523,13 +519,13 @@
                                     <p-select
                                       id="installments-{{creditCard.id}}"
                                       [options]="[
-                              {name: '1x sem juros', value: '1'},
-                              {name: '2x sem juros', value: '2'},
-                              {name: '3x sem juros', value: '3'},
-                              {name: '4x sem juros', value: '4'},
-                              {name: '5x sem juros', value: '5'},
-                              {name: '6x sem juros', value: '6'}
-                            ]"
+                                        {name: '1x sem juros', value: '1'},
+                                        {name: '2x sem juros', value: '2'},
+                                        {name: '3x sem juros', value: '3'},
+                                        {name: '4x sem juros', value: '4'},
+                                        {name: '5x sem juros', value: '5'},
+                                        {name: '6x sem juros', value: '6'}
+                                      ]"
                                       optionLabel="name"
                                       formControlName="installments"
                                       appendTo="body"
@@ -544,11 +540,11 @@
                                         Valor a ser cobrado
                                       </label>
                                       <span style="font-size: 1.125rem; font-weight: 600; color: var(--color-green);">
-                              {{ (totalPrice$ | async)! / selectedCardIdsArray.length | currency:'BRL' }}
-                            </span>
+                                        {{ (totalPrice$ | async)! / selectedCardIdsArray.length | currency:'BRL' }}
+                                      </span>
                                       <span style="font-size: 0.75rem; color: var(--color-text-muted);">
-                              (Dividido igualmente)
-                            </span>
+                                        (Dividido igualmente)
+                                      </span>
                                     </div>
                                   }
                                 </div>
@@ -558,7 +554,6 @@
                         }
                       </div>
 
-                      <!-- Resumo da divisão -->
                       @if (selectedCardIdsArray.length > 1) {
                         <div
                           style="margin-top: 1.5rem; padding: 1rem; background: var(--color-background); border: 1px solid var(--input-border); border-radius: 8px;">
@@ -566,25 +561,23 @@
                             <div>
                               <span style="font-weight: 600; display: block; color: var(--color-text-primary);">Total da compra:</span>
                               <span style="font-size: 0.875rem; color: var(--color-text-secondary);">
-                      Será dividido em {{ selectedCardIdsArray.length }} cartões
-                    </span>
+                                Será dividido em {{ selectedCardIdsArray.length }} cartões
+                              </span>
                             </div>
                             <span style="font-size: 1.5rem; font-weight: 700; color: var(--color-green);">
-                    {{ totalPrice$ | async | currency:'BRL' }}
-                  </span>
+                              {{ totalPrice$ | async | currency:'BRL' }}
+                            </span>
                           </div>
                         </div>
                       }
                     </form>
                   } @else {
-                    <!-- Formulário de novo cartão -->
                     <div style="padding: 2rem; width: 100%; text-align: center;">
                       <p style="color: var(--color-text-secondary);">Formulário de cadastro de novo cartão aqui...</p>
                     </div>
                   }
                 </div>
 
-                <!-- Botões de ação -->
                 @if (showCreditCardForm) {
                   <p-button variant="outlined" size="large" (click)="handleCreditCardForm()">
                     Cancelar
@@ -602,26 +595,168 @@
       </p-stepper>
     </div>
 
-    <div style="width: 25%; padding: 1rem; display: flex; flex-direction: column; gap: 4rem">
+    <div style="width: 25%; padding: 1rem; display: flex; flex-direction: column; gap: 1.5rem">
       <div style="display: flex; gap: 0.5rem; align-items: center;">
-        <i class="pi pi-file" style="font-size: 22px"></i>
-        <h2>Resumo</h2>
+        <i class="pi pi-file" style="font-size: 22px; color: var(--color-text-primary);"></i>
+        <h2 style="color: var(--color-text-primary); margin: 0;">Resumo</h2>
       </div>
 
-      <div style="display: flex; flex-direction: row; justify-content: space-between">
-        <span style="font-size: 14px">Valores dos produtos</span>
-        <span><strong>{{ totalPrice$ | async | currency:'BRL' }}</strong></span>
+      <div style="
+            padding: 1rem;
+            background-color: var(--color-surface-dark);
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+          ">
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 14px; color: var(--color-text-secondary);">Subtotal</span>
+            <span style="color: var(--color-text-primary); font-weight: 600;">
+              {{ totalPrice$ | async | currency:'BRL' }}
+            </span>
+          </div>
+
+          @if (voucherState.isApplied) {
+            <div style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  padding-top: 0.75rem;
+                  border-top: 1px dashed var(--input-border);
+                ">
+              <span style="font-size: 14px; color: var(--color-green);">
+                <i class="pi pi-tag" style="font-size: 12px;"></i>
+                Desconto ({{ voucherState.data.discount_percentage }}%)
+              </span>
+              <span style="color: var(--color-green); font-weight: 600;">
+                - {{ ((totalPrice$ | async)! * parseFloat(voucherState.data.discount_percentage) / 100) | currency:'BRL' }}
+              </span>
+            </div>
+
+            <div style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  padding-top: 0.75rem;
+                  border-top: 1px dashed var(--input-border);
+                ">
+              <span style="font-size: 16px; color: var(--color-text-primary); font-weight: bold;">Total</span>
+              <span style="color: var(--color-green); font-weight: bold; font-size: 18px;">
+                {{ ((totalPrice$ | async)! * (1 - parseFloat(voucherState.data.discount_percentage) / 100)) | currency:'BRL' }}
+              </span>
+            </div>
+          } @else {
+            <div style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  padding-top: 0.75rem;
+                  border-top: 1px dashed var(--input-border);
+                ">
+              <span style="font-size: 16px; color: var(--color-text-primary); font-weight: bold;">Total</span>
+              <span style="color: var(--color-text-primary); font-weight: bold; font-size: 18px;">
+                {{ totalPrice$ | async | currency:'BRL' }}
+              </span>
+            </div>
+          }
+        </div>
       </div>
 
-      <div
-        style="width: 100%; display: flex; gap: 0.5rem; margin-top: 1rem; flex-direction: column; align-items: center">
+      @if (activeStep === 3) {
+        <div style="
+              padding: 1rem;
+              background-color: var(--color-surface-dark);
+              border: 1px solid var(--input-border);
+              border-radius: 8px;
+            ">
+          <form [formGroup]="voucherForm" style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <label style="font-size: 14px; color: var(--color-text-secondary); font-weight: 500;">
+              <i class="pi pi-ticket" style="font-size: 12px;"></i>
+              Cupom de desconto
+            </label>
+
+            @if (!voucherState.isApplied) {
+              <div style="display: flex; gap: 0.5rem;">
+                <input
+                  pInputText
+                  placeholder="Ex: ALAN50"
+                  style="flex: 1; text-transform: uppercase;"
+                  maxlength="6"
+                  formControlName="code"
+                  [disabled]="voucherState.isLoading"
+                />
+                <p-button
+                  label="Aplicar"
+                  [loading]="voucherState.isLoading"
+                  [disabled]="voucherForm.invalid || voucherState.isLoading"
+                  (onClick)="applyVoucher()"
+                  size="small"
+                />
+              </div>
+
+              @if (voucherState.error) {
+                <div style="
+                      display: flex;
+                      align-items: center;
+                      gap: 0.5rem;
+                      padding: 0.75rem;
+                      background-color: rgba(239, 68, 68, 0.1);
+                      border: 1px solid var(--color-red);
+                      border-radius: 6px;
+                    ">
+                  <i class="pi pi-exclamation-circle" style="color: var(--color-red); font-size: 14px;"></i>
+                  <span style="color: var(--color-red); font-size: 0.875rem;">
+                    {{ voucherState.error }}
+                  </span>
+                </div>
+              }
+            }
+
+            @if (voucherState.isApplied) {
+              <div style="
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.75rem;
+                    padding: 1rem;
+                    background-color: rgba(34, 197, 94, 0.1);
+                    border: 1px solid var(--color-green);
+                    border-radius: 6px;
+                  ">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <span style="color: var(--color-green); font-weight: 600; font-size: 0.875rem;">
+                      <i class="pi pi-check-circle" style="font-size: 12px;"></i>
+                      Cupom aplicado
+                    </span>
+                    <span style="color: var(--color-text-primary); font-weight: bold; font-size: 1rem;">
+                      {{ voucherState.data.code }}
+                    </span>
+                    <span style="color: var(--color-text-secondary); font-size: 0.75rem;">
+                      {{ voucherState.data.discount_percentage }}% de desconto
+                    </span>
+                  </div>
+                  <p-button
+                    icon="pi pi-times"
+                    [text]="true"
+                    severity="danger"
+                    size="small"
+                    (onClick)="removeVoucher()"
+                    styleClass="p-button-sm"
+                  />
+                </div>
+              </div>
+            }
+          </form>
+        </div>
+      }
+
+      <div style="width: 100%; display: flex; gap: 0.5rem; flex-direction: column; align-items: center">
         @if (!hasLogin) {
-          <a routerLink="/login" pButton>
+          <a routerLink="/login" pButton style="width: 100%;">
             <span pButtonLabel>Fazer login/Registrar-se</span>
           </a>
         } @else {
           <p-button
-            [label]="activeStep === 3 ? 'Finalizar' : 'Próximo'"
+            [label]="activeStep === 3 ? 'Finalizar Compra' : 'Próximo'"
             [icon]="activeStep === 3 ? 'pi pi-check' : 'pi pi-arrow-right'"
             iconPos="right"
             size="large"
