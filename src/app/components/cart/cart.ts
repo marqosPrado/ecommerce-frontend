@@ -1,11 +1,19 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {afterNextRender, Component, Injector, OnDestroy, OnInit} from '@angular/core';
 import {Step, StepList, StepPanel, StepPanels, Stepper} from 'primeng/stepper';
 import {Button, ButtonDirective, ButtonLabel} from 'primeng/button';
 import {Header} from '../../common/header/header';
 import {LineSession} from '../../common/line-session/line-session';
 import {Select} from 'primeng/select';
 import {RadioButton} from 'primeng/radiobutton';
-import {FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
 import {CreditCard, CreditCardTypes} from '../../types/Payment/CreditCard';
 import {CartService} from '../../services/cart/cart.service';
 import {Observable, Subject, takeUntil} from 'rxjs';
@@ -16,14 +24,13 @@ import {InputText} from 'primeng/inputtext';
 import {InputMask} from 'primeng/inputmask';
 import {AddressService} from '../../services/address/address.service';
 import {Address} from '../../types/Address';
-import {Checkbox} from 'primeng/checkbox';
-import {DatePicker} from 'primeng/datepicker';
 import {CreditCardService} from '../../services/credit-card/credit-card.service';
 import {PurchaseRequest} from '../../types/Purchase/Request/PurchaseRequest';
 import {PurchaseOrderService} from '../../services/purchase-order/purchase-order.service';
-import {DialogButton, DialogParams, Modal} from '../../common/modal/modal/modal';
+import {DialogParams, Modal} from '../../common/modal/modal/modal';
 import {Router, RouterLink} from '@angular/router';
 import {Authentication} from '../../services/authentication/authentication';
+import {Checkbox} from 'primeng/checkbox';
 
 @Component({
   selector: 'app-cart',
@@ -47,11 +54,11 @@ import {Authentication} from '../../services/authentication/authentication';
     InputText,
     InputMask,
     Checkbox,
-    DatePicker,
     Modal,
     RouterLink,
     ButtonDirective,
     ButtonLabel,
+    FormsModule,
   ],
   templateUrl: './cart.html',
   styleUrl: './cart.css'
@@ -79,8 +86,9 @@ export class Cart implements OnInit, OnDestroy {
   showCreditCardForm: boolean = false;
   loading: boolean = false;
   showDialog: boolean = false;
-  hasLogin: boolean = false;
+  hasLogin: boolean = false; // ⚠️ Inicializa como false
   dialogParams?: DialogParams;
+  paymentForm: FormGroup;
 
   private destroy$ = new Subject<void>();
 
@@ -91,7 +99,8 @@ export class Cart implements OnInit, OnDestroy {
     private creditCardService: CreditCardService,
     private purchaseOrderService: PurchaseOrderService,
     private router: Router,
-    private authenticationService: Authentication
+    private authenticationService: Authentication,
+    private injector: Injector // 👈 Necessário para afterNextRender
   ) {
     this.totalPrice$ = this.cartService.calculateTotalValue();
 
@@ -128,14 +137,44 @@ export class Cart implements OnInit, OnDestroy {
     });
 
     this.paymentForm = this.fb.group({
-      creditCardId: new FormControl<number | null>(null, Validators.required),
+      selectedCardIds: this.fb.array([], Validators.required),
       installments: new FormControl<{name: string, value: string} | null>(
         {name: '1x sem juros', value: '1'},
         Validators.required
       )
     });
-    console.log(this.isAuthenticated());
-    this.hasLogin = this.isAuthenticated();
+
+
+    afterNextRender(() => {
+      this.hasLogin = this.isAuthenticated();
+      console.log('Autenticado:', this.hasLogin);
+    }, { injector: this.injector });
+  }
+
+  get selectedCardIdsArray(): FormArray {
+    return this.paymentForm.get('selectedCardIds') as FormArray;
+  }
+
+  onCardCheckboxChange(cardId: number | undefined, checked: boolean): void {
+    if (!cardId) return;
+
+    const selectedIds = this.selectedCardIdsArray;
+
+    if (checked) {
+      selectedIds.push(this.fb.control(cardId));
+    } else {
+      const index = selectedIds.controls.findIndex(control => control.value === cardId);
+      if (index !== -1) {
+        selectedIds.removeAt(index);
+      }
+    }
+
+    console.log('Cartões selecionados:', selectedIds.value);
+  }
+
+  isCardSelected(cardId: number | undefined): boolean {
+    if (!cardId) return false;
+    return this.selectedCardIdsArray.value.includes(cardId);
   }
 
   ngOnInit(): void {
@@ -157,10 +196,12 @@ export class Cart implements OnInit, OnDestroy {
       .subscribe({
         next: (cards) => {
           this.creditCards = cards;
-          const main = this.creditCards.find(a => a.isMain) ?? this.creditCards[0];
-          if (main) {
-            this.creditCardFormGroup.patchValue({ creditCard: main.id });
-            this.paymentForm.patchValue({ creditCardId: main.id });
+          console.log('Cartões carregados:', this.creditCards);
+
+          const mainCard = this.creditCards.find(a => a.isMain) ?? this.creditCards[0];
+          if (mainCard) {
+            // ✅ Pré-seleciona o cartão principal
+            this.selectedCardIdsArray.push(this.fb.control(mainCard.id));
           }
         },
         error: (err) => console.error('Erro ao carregar cartões:', err)
@@ -325,9 +366,7 @@ export class Cart implements OnInit, OnDestroy {
     this.showDialog = true;
   }
 
-// Método melhorado de finalização de pedido
   finalizePurchase(): void {
-    // Validações
     if (this.paymentForm.invalid || this.addressFormGroup.invalid || !this.cartItems.length) {
       this.paymentForm.markAllAsTouched();
       this.addressFormGroup.markAllAsTouched();
@@ -336,22 +375,25 @@ export class Cart implements OnInit, OnDestroy {
     }
 
     const selectedAddressId = this.addressFormGroup.get('address')?.value;
-    const selectedCreditCardId = this.paymentForm.get('creditCardId')?.value;
+    const selectedCardIds = this.selectedCardIdsArray.value; // ✅ Pega o array de IDs
 
-    if (!selectedAddressId || !selectedCreditCardId) {
-      this.showErrorDialog('Selecione um endereço e um cartão de crédito.');
+    if (!selectedAddressId || selectedCardIds.length === 0) {
+      this.showErrorDialog('Selecione um endereço e pelo menos um cartão de crédito.');
       return;
     }
 
+    // ✅ Já é um array
     const purchase: PurchaseRequest = {
       orderItem: this.cartItems.map(item => ({
         productId: item.product.id,
         quantity: item.quantity
       })),
       addressId: selectedAddressId,
-      creditCardId: selectedCreditCardId,
+      creditCardId: selectedCardIds, // ✅ Array de IDs
       voucher: "DESC10"
     };
+
+    console.log('📦 Purchase Order:', JSON.stringify(purchase, null, 2));
 
     this.loading = true;
 
@@ -359,34 +401,23 @@ export class Cart implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
-          console.log('Pedido realizado com sucesso:', response);
-
+          console.log('✅ Pedido realizado com sucesso:', response);
           this.cartService.clearCart();
 
           const orderNumber = String(response.data?.order_number || response.data?.id || 'N/A');
           this.setupDialogSuccess(orderNumber);
           this.showDialog = true;
-
           this.loading = false;
         },
         error: (error) => {
-          console.error('Erro ao finalizar pedido:', error);
+          console.error('❌ Erro ao finalizar pedido:', error);
 
-          // Extrai mensagem de erro
           let errorMessage = 'Ocorreu um erro ao processar seu pedido.';
 
           if (error.error?.message) {
             errorMessage = error.error.message;
-          } else if (error.status === 0) {
-            errorMessage = 'Erro de conexão. Verifique sua internet e tente novamente.';
           } else if (error.status === 400) {
             errorMessage = 'Dados inválidos. Verifique as informações e tente novamente.';
-          } else if (error.status === 404) {
-            errorMessage = 'Produto não encontrado. Atualize o carrinho e tente novamente.';
-          } else if (error.status === 409) {
-            errorMessage = 'Conflito ao processar pedido. Alguns itens podem estar indisponíveis.';
-          } else if (error.status === 500) {
-            errorMessage = 'Erro no servidor. Tente novamente em alguns instantes.';
           }
 
           this.setupDialogError(errorMessage);
@@ -431,8 +462,6 @@ export class Cart implements OnInit, OnDestroy {
     return this.cartItemsFormArray.at(index) as FormGroup;
   }
 
-  paymentForm: FormGroup;
-
   nextStep(): void {
     if (this.activeStep === 1 && (!this.cartForm?.valid || this.cartItems.length === 0)) {
       this.cartForm?.markAllAsTouched();
@@ -460,7 +489,10 @@ export class Cart implements OnInit, OnDestroy {
   get primaryDisabled(): boolean {
     if (this.activeStep === 1) return !this.cartForm?.valid || this.cartItems.length === 0;
     if (this.activeStep === 2) return this.addressFormGroup.invalid;
-    return !this.cartForm?.valid || this.addressFormGroup.invalid || this.paymentForm.invalid;
+    if (this.activeStep === 3) {
+      return this.selectedCardIdsArray.length === 0 || this.paymentForm.invalid;
+    }
+    return true;
   }
 
   public removerFromCart(productId: number): void {

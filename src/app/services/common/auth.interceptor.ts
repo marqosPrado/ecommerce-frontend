@@ -1,30 +1,46 @@
-import { Injectable } from '@angular/core';
-import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { catchError, throwError } from 'rxjs';
 import {Authentication} from '../authentication/authentication';
-import {Observable, throwError} from 'rxjs';
-import {Router} from '@angular/router';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class AuthInterceptor implements HttpInterceptor {
-  constructor(
-    private authService: Authentication,
-    private router: Router
-  ) {}
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const token: string | null = this.authService.getToken();
-    if (!token) {
-      this.router.navigate(['/login']);
-      return throwError(() => new Error('Token ausente'));
-    }
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const authService = inject(Authentication);
+  const router = inject(Router);
+  const token = authService.getToken();
 
-    const cloned = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-    return next.handle(cloned);
+  const publicUrls = [
+    '/api/auth/login',
+    '/api/auth/register',
+    '/api/products'
+  ];
+
+  console.log(req.url)
+  const isPublicUrl = publicUrls.some(url => req.url.includes(url));
+
+  if (isPublicUrl || !token) {
+    return next(req);
   }
-}
+
+  const clonedRequest = req.clone({
+    setHeaders: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  console.log(`Cloned Request ${clonedRequest.headers}`)
+
+  return next(clonedRequest).pipe(
+    catchError((error: HttpErrorResponse) => {
+      // Se receber 401 (Unauthorized) ou 403 (Forbidden), redireciona para login
+      if (error.status === 401 || error.status === 403) {
+        console.warn('Token inválido ou expirado. Redirecionando para login...');
+        authService.logout();
+        router.navigate(['/login']);
+      }
+
+      return throwError(() => error);
+    })
+  );
+};

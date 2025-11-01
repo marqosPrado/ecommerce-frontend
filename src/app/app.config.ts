@@ -7,8 +7,8 @@ import {provideAnimationsAsync} from '@angular/platform-browser/animations/async
 import {providePrimeNG} from 'primeng/config';
 import {customPreset} from '../../custom.preset';
 import {MessageService} from 'primeng/api';
-import {HTTP_INTERCEPTORS, provideHttpClient, withFetch} from '@angular/common/http';
-import {AuthInterceptor} from './services/common/auth.interceptor';
+import {provideHttpClient, withFetch, withInterceptors} from '@angular/common/http';
+import {authInterceptor} from './services/common/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,7 +18,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes), provideClientHydration(withEventReplay()),
     provideAnimationsAsync(),
     providePrimeNG({ theme: { preset: customPreset } }),
-    provideHttpClient(withFetch()),
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
   ]
 };

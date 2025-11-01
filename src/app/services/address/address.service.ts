@@ -7,20 +7,20 @@ import {delay, Observable, of} from 'rxjs';
   providedIn: 'root'
 })
 export class AddressService {
-  private baseUrl: string = 'http://localhost:8080/address'
+  private baseUrl: string = 'http://localhost:8080/api/address'
 
   constructor(private http: HttpClient) {
   }
 
   // TODO: Implementar quando tiver o backend
   registerAddress(address: Address) {
-    const url = `${this.baseUrl}/client/1/new`;
+    const url = `${this.baseUrl}/client/new`;
     return this.http.post<Address>(url, address)
   }
 
   // TODO: Implementar quando tiver o backend
   getAddresses(): Observable<Address[]> {
-    const url = `${this.baseUrl}/client/1/get`;
+    const url = `${this.baseUrl}/client/get`;
     return this.http.get<Address[]>(url)
   }
 }
