@@ -679,7 +679,7 @@
                 <input
                   pInputText
                   placeholder="Ex: ALAN50"
-                  style="flex: 1; text-transform: uppercase;"
+                  style="width: 80%; text-transform: uppercase;"
                   maxlength="6"
                   formControlName="code"
                   [disabled]="voucherState.isLoading"
@@ -689,7 +689,7 @@
                   [loading]="voucherState.isLoading"
                   [disabled]="voucherForm.invalid || voucherState.isLoading"
                   (onClick)="applyVoucher()"
-                  size="small"
+                  size="large"
                 />
               </div>
 
