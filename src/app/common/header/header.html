@@ -1,14 +1,142 @@
 <header class="header-container">
   <div class="header-principal">
-    <a href="/" style="text-decoration: none"><h1 class="main-title">Times</h1></a>
+    <a href="/" style="text-decoration: none">
+      <h1 class="main-title">Times</h1>
+    </a>
 
     <div class="header-buttons">
-      <a [routerLink]="['/minha-conta']" aria-label="Minha conta" class="header-icon" title="Minha conta">
-        <i class="pi pi-cog"></i>
-      </a>
-      <a [routerLink]="['/carrinho']" aria-label="Carrinho" class="header-icon" title="Carrinho">
-        <i class="pi pi-shopping-cart"></i>
-      </a>
+      @if (isAuthenticated) {
+        @if (isAdmin) {
+          <a
+            [routerLink]="['/admin/dashboard']"
+            aria-label="Painel Admin"
+            class="header-icon admin-badge"
+            title="Painel Administrativo"
+          >
+            <i class="pi pi-shield"></i>
+          </a>
+        }
+
+        <a
+          [routerLink]="['/minha-conta']"
+          aria-label="Minha conta"
+          class="header-icon"
+          title="Minha conta"
+        >
+          <i class="pi pi-cog"></i>
+        </a>
+
+        <a
+          [routerLink]="['/carrinho']"
+          aria-label="Carrinho"
+          class="header-icon"
+          title="Carrinho"
+        >
+          <i class="pi pi-shopping-cart"></i>
+        </a>
+
+        <div class="user-menu-container">
+          <button
+            class="user-avatar-button"
+            (click)="toggleUserMenu()"
+            [attr.aria-expanded]="showUserMenu"
+            aria-label="Menu do usuário"
+            title="{{ userName }}"
+          >
+            <span class="user-initials">{{ userInitials }}</span>
+          </button>
+
+          @if (showUserMenu) {
+            <div class="user-dropdown" (click)="$event.stopPropagation()">
+              <div class="user-info">
+                <div class="user-avatar-large">
+                  <span>{{ userInitials }}</span>
+                </div>
+                <div class="user-details">
+                  <strong>{{ userName }}</strong>
+                  <small>{{ userEmail }}</small>
+                  @if (isAdmin) {
+                    <span class="admin-label">
+                      <i class="pi pi-shield"></i> Administrador
+                    </span>
+                  }
+                </div>
+              </div>
+
+              <div class="dropdown-divider"></div>
+
+              <nav class="user-menu-nav">
+                @if (isAdmin) {
+                  <a
+                    [routerLink]="['/admin/dashboard']"
+                    class="menu-item admin-item"
+                    (click)="showUserMenu = false"
+                  >
+                    <i class="pi pi-shield"></i>
+                    <span>Painel Admin</span>
+                  </a>
+                }
+
+                <a
+                  [routerLink]="['/minha-conta']"
+                  class="menu-item"
+                  (click)="showUserMenu = false"
+                >
+                  <i class="pi pi-user"></i>
+                  <span>Minha Conta</span>
+                </a>
+
+                <a
+                  [routerLink]="['/pedidos']"
+                  class="menu-item"
+                  (click)="showUserMenu = false"
+                >
+                  <i class="pi pi-shopping-bag"></i>
+                  <span>Meus Pedidos</span>
+                </a>
+
+                <a
+                  [routerLink]="['/carrinho']"
+                  class="menu-item"
+                  (click)="showUserMenu = false"
+                >
+                  <i class="pi pi-shopping-cart"></i>
+                  <span>Carrinho</span>
+                </a>
+              </nav>
+
+              <div class="dropdown-divider"></div>
+
+              <button class="menu-item logout-item" (click)="logout()">
+                <i class="pi pi-sign-out"></i>
+                <span>Sair</span>
+              </button>
+            </div>
+          }
+        </div>
+      } @else {
+        <a
+          [routerLink]="['/login']"
+          aria-label="Entrar"
+          class="header-icon"
+          title="Entrar"
+        >
+          <i class="pi pi-sign-in"></i>
+        </a>
+
+        <a
+          [routerLink]="['/register']"
+          aria-label="Cadastrar"
+          class="header-button"
+          title="Cadastrar"
+        >
+          Cadastrar
+        </a>
+      }
     </div>
   </div>
 </header>
+
+@if (showUserMenu) {
+  <div class="overlay" (click)="showUserMenu = false"></div>
+}

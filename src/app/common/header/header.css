@@ -1,24 +1,318 @@
 .header-container {
-  padding: 10px;
-  background-color: var(--color-surface-darker);
+  width: 100%;
+  background: var(--color-background);
+  border-bottom: 1px solid var(--input-border);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .header-principal {
-  height: 6rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
   align-items: center;
-  padding: 10px 30px 10px 30px;
+  justify-content: space-between;
 }
 
 .main-title {
-  font-family: 'Montserrat', sans-serif;
-  color: white;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+  transition: color 0.2s;
+}
+
+.main-title:hover {
+  color: var(--color-blue);
 }
 
 .header-buttons {
   display: flex;
-  flex-direction: row;
-  gap: 20px;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.header-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: var(--color-surface-dark);
+  border: 1px solid var(--input-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-primary);
+  font-size: 1.25rem;
+  transition: all 0.2s;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.header-icon:hover {
+  background: var(--color-surface-darker);
+  border-color: var(--color-blue);
+  color: var(--color-blue);
+  transform: translateY(-2px);
+}
+
+.header-icon.admin-badge {
+  background: rgba(220, 38, 38, 0.1);
+  border-color: rgba(220, 38, 38, 0.3);
+  color: #dc2626;
+}
+
+.header-icon.admin-badge:hover {
+  background: rgba(220, 38, 38, 0.15);
+  border-color: #dc2626;
+  transform: translateY(-2px);
+}
+
+.header-button {
+  padding: 0.625rem 1.25rem;
+  background: var(--color-blue);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.header-button:hover {
+  background: var(--color-blue);
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+/* User Menu */
+.user-menu-container {
+  position: relative;
+}
+
+.user-avatar-button {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-blue), var(--color-purple));
+  border: 2px solid var(--color-background);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.user-avatar-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.user-initials {
+  color: white;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+}
+
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  width: 280px;
+  background: var(--color-background);
+  border: 1px solid var(--input-border);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  animation: slideDown 0.2s ease;
+  z-index: 1001;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.user-info {
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--color-surface-dark);
+}
+
+.user-avatar-large {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-blue), var(--color-purple));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.user-avatar-large span {
+  color: white;
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: 0.5px;
+}
+
+.user-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  overflow: hidden;
+}
+
+.user-details strong {
+  color: var(--color-text-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-details small {
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  border-radius: 6px;
+  color: #dc2626;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: 0.25rem;
+  width: fit-content;
+}
+
+.admin-label i {
+  font-size: 0.7rem;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: var(--input-border);
+}
+
+.user-menu-nav {
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  color: var(--color-text-primary);
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+
+.menu-item:hover {
+  background: var(--color-surface-dark);
+}
+
+.menu-item i {
+  font-size: 1.125rem;
+  color: var(--color-text-secondary);
+}
+
+.menu-item.admin-item {
+  background: rgba(220, 38, 38, 0.05);
+  color: #dc2626;
+}
+
+.menu-item.admin-item i {
+  color: #dc2626;
+}
+
+.menu-item.admin-item:hover {
+  background: rgba(220, 38, 38, 0.1);
+}
+
+.logout-item {
+  color: #dc2626;
+  margin: 0.5rem;
+}
+
+.logout-item i {
+  color: #dc2626;
+}
+
+.logout-item:hover {
+  background: rgba(220, 38, 38, 0.1);
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  z-index: 999;
+}
+
+
+@media (max-width: 768px) {
+  .header-principal {
+    padding: 1rem;
+  }
+
+  .main-title {
+    font-size: 1.5rem;
+  }
+
+  .header-buttons {
+    gap: 0.5rem;
+  }
+
+  .header-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .user-dropdown {
+    width: 260px;
+  }
 }

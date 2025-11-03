@@ -11,11 +11,10 @@ import {Toast} from 'primeng/toast';
 import {Header} from '../../common/header/header';
 import {LineSession} from '../../common/line-session/line-session';
 import {PurchaseOrderService} from '../../services/purchase-order/purchase-order.service';
-import {ExchangeRequestService, ExchangeRequestResponse} from '../../services/exchange-request/exchange-request.service';
+import {ExchangeRequestService} from '../../services/exchange-request/exchange-request.service';
 import {PurchaseOrderResponse} from '../../types/Purchase/Response/PurchaseOrderResponse';
 import {MessageService} from 'primeng/api';
 import {FormsModule} from '@angular/forms';
-import {ApiResponse} from '../../types/Api/ApiResponse';
 
 interface ExchangeRequestPayload {
   purchaseOrder: number;
