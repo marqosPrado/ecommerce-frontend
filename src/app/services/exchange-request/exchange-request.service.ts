@@ -90,4 +90,15 @@ export class ExchangeRequestService {
       {}
     );
   }
+
+  createExchangeRequest(payload: {
+    purchaseOrder: number;
+    orderItensId: number[];
+    exchangeType: 'EXCHANGE' | 'RETURN';
+  }): Observable<ApiResponse<ExchangeRequestResponse>> {
+    return this.http.post<ApiResponse<ExchangeRequestResponse>>(
+      this.baseUrl,
+      payload
+    );
+  }
 }

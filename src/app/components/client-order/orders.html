@@ -105,9 +105,7 @@
               border-radius: 12px;
               padding: 1.5rem;
               transition: all 0.2s ease;
-              cursor: pointer;
             "
-            (click)="openDetails(order)"
           >
             <div style="display: flex; justify-content: space-between; align-items: start; gap: 2rem; flex-wrap: wrap;">
               <!-- Informações do Pedido -->
@@ -199,7 +197,7 @@
                 </div>
               </div>
 
-              <!-- Valor Total e Ação -->
+              <!-- Valor Total e Ações -->
               <div style="
                 display: flex;
                 flex-direction: column;
@@ -227,21 +225,41 @@
                   </span>
                 </div>
 
-                <p-button
-                  label="Ver detalhes"
-                  icon="pi pi-arrow-right"
-                  iconPos="right"
-                  [style]="{
-                    background: 'transparent',
-                    border: '1px solid var(--input-border)',
-                    color: 'var(--color-text-primary)',
-                    borderRadius: '8px',
-                    padding: '0.5rem 1rem',
-                    fontSize: '0.875rem',
-                    fontWeight: '500'
-                  }"
-                  (onClick)="openDetails(order); $event.stopPropagation()"
-                ></p-button>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem; width: 100%;">
+                  <p-button
+                    label="Ver detalhes"
+                    icon="pi pi-eye"
+                    [style]="{
+                      background: 'transparent',
+                      border: '1px solid var(--input-border)',
+                      color: 'var(--color-text-primary)',
+                      borderRadius: '8px',
+                      padding: '0.5rem 1rem',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      width: '100%'
+                    }"
+                    (onClick)="openDetails(order)"
+                  ></p-button>
+
+                  @if (canRequestExchange(order)) {
+                    <p-button
+                      label="Solicitar troca"
+                      icon="pi pi-refresh"
+                      [style]="{
+                        background: 'var(--color-blue)',
+                        border: 'none',
+                        color: 'white',
+                        borderRadius: '8px',
+                        padding: '0.5rem 1rem',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        width: '100%'
+                      }"
+                      (onClick)="openExchangeDialog(order)"
+                    ></p-button>
+                  }
+                </div>
               </div>
             </div>
           </article>
@@ -659,3 +677,306 @@
     </div>
   </ng-template>
 </p-dialog>
+
+<!-- Modal de Solicitação de Troca/Devolução -->
+<p-dialog
+  [(visible)]="showExchangeDialog"
+  [modal]="true"
+  [closable]="true"
+  [style]="{width: '800px', maxWidth: '95vw'}"
+  [contentStyle]="{
+    background: 'var(--color-background)',
+    padding: '0'
+  }"
+>
+  <ng-template pTemplate="header">
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+      <i class="pi pi-refresh" style="color: var(--color-blue); font-size: 1.25rem;"></i>
+      <span style="font-weight: 700; font-size: 1.125rem;">Solicitar Troca ou Devolução</span>
+    </div>
+  </ng-template>
+
+  @if (selectedOrder) {
+    <div style="display: flex; flex-direction: column; gap: 2rem; padding: 2rem;">
+      <!-- Tipo de Solicitação -->
+      <div>
+        <h3 style="
+          font-size: 1rem;
+          font-weight: 600;
+          color: var(--color-text-primary);
+          margin: 0 0 1rem 0;
+        ">
+          Tipo de Solicitação
+        </h3>
+
+        <div style="display: flex; gap: 1rem;">
+          <div style="
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid;
+            border-color: var(--input-border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+          "
+               [style.border-color]="exchangeType === 'EXCHANGE' ? 'var(--color-blue)' : 'var(--input-border)'"
+               [style.background]="exchangeType === 'EXCHANGE' ? 'rgba(59, 130, 246, 0.05)' : 'transparent'"
+               (click)="exchangeType = 'EXCHANGE'"
+          >
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+              <p-radioButton
+                name="exchangeType"
+                value="EXCHANGE"
+                [(ngModel)]="exchangeType"
+              ></p-radioButton>
+              <i class="pi pi-refresh" style="color: var(--color-blue); font-size: 1.25rem;"></i>
+              <strong style="color: var(--color-text-primary);">Trocar Produto</strong>
+            </div>
+            <p style="
+              margin: 0;
+              color: var(--color-text-secondary);
+              font-size: 0.875rem;
+              line-height: 1.5;
+              padding-left: 2.5rem;
+            ">
+              Receba um cupom para comprar outro produto
+            </p>
+          </div>
+
+          <div style="
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid;
+            border-color: var(--input-border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+          "
+               [style.border-color]="exchangeType === 'RETURN' ? 'var(--color-blue)' : 'var(--input-border)'"
+               [style.background]="exchangeType === 'RETURN' ? 'rgba(59, 130, 246, 0.05)' : 'transparent'"
+               (click)="exchangeType = 'RETURN'"
+          >
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+              <p-radioButton
+                name="exchangeType"
+                value="RETURN"
+                [(ngModel)]="exchangeType"
+              ></p-radioButton>
+              <i class="pi pi-undo" style="color: var(--color-blue); font-size: 1.25rem;"></i>
+              <strong style="color: var(--color-text-primary);">Devolver Produto</strong>
+            </div>
+            <p style="
+              margin: 0;
+              color: var(--color-text-secondary);
+              font-size: 0.875rem;
+              line-height: 1.5;
+              padding-left: 2.5rem;
+            ">
+              Receba um cupom de reembolso
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <p-divider></p-divider>
+
+      <!-- Seleção de Itens -->
+      <div>
+        <h3 style="
+          font-size: 1rem;
+          font-weight: 600;
+          color: var(--color-text-primary);
+          margin: 0 0 1rem 0;
+        ">
+          Selecione os Itens
+        </h3>
+
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          @for (item of selectedOrder.items; track item.id) {
+            <div
+              style="
+                display: flex;
+                gap: 1rem;
+                padding: 1rem;
+                background: var(--color-surface-dark);
+                border: 2px solid;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: all 0.2s;
+              "
+              [style.border-color]="isItemSelected(item.id) ? 'var(--color-blue)' : 'var(--input-border)'"
+              [style.background]="isItemSelected(item.id) ? 'rgba(59, 130, 246, 0.05)' : 'var(--color-surface-dark)'"
+              (click)="toggleItemSelection(item.id)"
+            >
+              <p-checkbox
+                [binary]="true"
+                [ngModel]="isItemSelected(item.id)"
+                (ngModelChange)="toggleItemSelection(item.id)"
+                (click)="$event.stopPropagation()"
+              ></p-checkbox>
+
+              <div style="
+                width: 60px;
+                height: 60px;
+                border-radius: 8px;
+                overflow: hidden;
+                border: 1px solid var(--input-border);
+                flex-shrink: 0;
+              ">
+                <img
+                  [src]="item.product.main_image"
+                  [alt]="item.product.title"
+                  style="
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                  "
+                />
+              </div>
+
+              <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 0.25rem;">
+                <span style="
+                  font-weight: 600;
+                  color: var(--color-text-primary);
+                  font-size: 0.95rem;
+                ">
+                  {{ item.product.title }}
+                </span>
+                <span style="
+                  color: var(--color-text-muted);
+                  font-size: 0.85rem;
+                ">
+                  Quantidade: {{ item.quantity }}
+                </span>
+              </div>
+
+              <div style="display: flex; align-items: center;">
+                <span style="
+                  font-weight: 700;
+                  font-size: 1rem;
+                  color: var(--color-text-primary);
+                ">
+                  {{ formatCurrency(item.subtotal) }}
+                </span>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <p-divider></p-divider>
+
+      <!-- Resumo -->
+      <div style="
+        padding: 1.25rem;
+        background: var(--color-surface-dark);
+        border-radius: 8px;
+        border: 1px solid var(--input-border);
+      ">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+          <span style="color: var(--color-text-secondary); font-size: 0.95rem;">
+            Itens selecionados
+          </span>
+          <span style="color: var(--color-text-primary); font-weight: 600;">
+            {{ selectedItems.length }}
+          </span>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 0.75rem; border-top: 1px solid var(--input-border);">
+          <span style="
+            color: var(--color-text-primary);
+            font-size: 1rem;
+            font-weight: 600;
+          ">
+            Valor do cupom
+          </span>
+          <span style="
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--color-green);
+          ">
+            {{ formatCurrency(getSelectedItemsTotal()) }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Informação -->
+      <div style="
+        padding: 1rem;
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid var(--color-blue);
+        border-radius: 8px;
+        display: flex;
+        gap: 0.75rem;
+      ">
+        <i class="pi pi-info-circle" style="color: var(--color-blue); font-size: 1.25rem; flex-shrink: 0;"></i>
+        <div style="flex: 1;">
+          <p style="
+            margin: 0 0 0.5rem 0;
+            color: var(--color-text-primary);
+            font-weight: 600;
+            font-size: 0.95rem;
+          ">
+            Como funciona?
+          </p>
+          <p style="
+            margin: 0;
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.6;
+          ">
+            Após a aprovação da sua solicitação, você receberá instruções para devolução.
+            Quando recebermos e validarmos os produtos, um cupom será gerado automaticamente
+            com o valor total dos itens selecionados.
+          </p>
+        </div>
+      </div>
+    </div>
+  }
+
+  <ng-template pTemplate="footer">
+    <div style="
+      display: flex;
+      gap: 0.75rem;
+      justify-content: flex-end;
+      padding: 1.25rem 2rem;
+      background: var(--color-surface-dark);
+      border-top: 1px solid var(--input-border);
+    ">
+      <p-button
+        label="Cancelar"
+        icon="pi pi-times"
+        [style]="{
+          background: 'transparent',
+          border: '1px solid var(--input-border)',
+          color: 'var(--color-text-primary)',
+          borderRadius: '8px',
+          padding: '0.625rem 1.25rem',
+          fontSize: '0.9rem',
+          fontWeight: '500'
+        }"
+        (onClick)="closeExchangeDialog()"
+        [disabled]="submittingExchange"
+      />
+
+      <p-button
+        [label]="submittingExchange ? 'Enviando...' : 'Enviar Solicitação'"
+        icon="pi pi-check"
+        [style]="{
+          background: 'var(--color-blue)',
+          border: 'none',
+          color: 'white',
+          borderRadius: '8px',
+          padding: '0.625rem 1.25rem',
+          fontSize: '0.9rem',
+          fontWeight: '600'
+        }"
+        (onClick)="submitExchangeRequest()"
+        [disabled]="selectedItems.length === 0 || submittingExchange"
+        [loading]="submittingExchange"
+      />
+    </div>
+  </ng-template>
+</p-dialog>
+
+<p-toast position="top-right" />

@@ -5,10 +5,23 @@ import {Button} from 'primeng/button';
 import {Tag} from 'primeng/tag';
 import {Dialog} from 'primeng/dialog';
 import {Divider} from 'primeng/divider';
+import {CheckboxModule} from 'primeng/checkbox';
+import {RadioButtonModule} from 'primeng/radiobutton';
+import {Toast} from 'primeng/toast';
 import {Header} from '../../common/header/header';
 import {LineSession} from '../../common/line-session/line-session';
 import {PurchaseOrderService} from '../../services/purchase-order/purchase-order.service';
+import {ExchangeRequestService, ExchangeRequestResponse} from '../../services/exchange-request/exchange-request.service';
 import {PurchaseOrderResponse} from '../../types/Purchase/Response/PurchaseOrderResponse';
+import {MessageService} from 'primeng/api';
+import {FormsModule} from '@angular/forms';
+import {ApiResponse} from '../../types/Api/ApiResponse';
+
+interface ExchangeRequestPayload {
+  purchaseOrder: number;
+  orderItensId: number[];
+  exchangeType: 'EXCHANGE' | 'RETURN';
+}
 
 @Component({
   selector: 'app-orders',
@@ -19,9 +32,14 @@ import {PurchaseOrderResponse} from '../../types/Purchase/Response/PurchaseOrder
     Tag,
     Dialog,
     Divider,
+    CheckboxModule,
+    RadioButtonModule,
+    Toast,
+    FormsModule,
     Header,
     LineSession
   ],
+  providers: [MessageService],
   templateUrl: './orders.html',
   styleUrl: './orders.css'
 })
@@ -29,7 +47,13 @@ export class Orders implements OnInit {
   orders: PurchaseOrderResponse[] = [];
   selectedOrder: PurchaseOrderResponse | null = null;
   showDetailsDialog: boolean = false;
+  showExchangeDialog: boolean = false;
   loading: boolean = false;
+  submittingExchange: boolean = false;
+
+  // Controles de troca/devolução
+  selectedItems: number[] = [];
+  exchangeType: 'EXCHANGE' | 'RETURN' = 'EXCHANGE';
 
   currentPage: number = 0;
   pageSize: number = 2;
@@ -38,7 +62,9 @@ export class Orders implements OnInit {
 
   constructor(
     private router: Router,
-    private purchaseOrderService: PurchaseOrderService
+    private purchaseOrderService: PurchaseOrderService,
+    private exchangeRequestService: ExchangeRequestService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
@@ -60,6 +86,12 @@ export class Orders implements OnInit {
       },
       error: (error) => {
         this.loading = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Não foi possível carregar os pedidos',
+          life: 3000
+        });
       }
     });
   }
@@ -72,6 +104,90 @@ export class Orders implements OnInit {
   closeDetails(): void {
     this.showDetailsDialog = false;
     this.selectedOrder = null;
+  }
+
+  openExchangeDialog(order: PurchaseOrderResponse): void {
+    this.selectedOrder = order;
+    this.selectedItems = [];
+    this.exchangeType = 'EXCHANGE';
+    this.showExchangeDialog = true;
+  }
+
+  closeExchangeDialog(): void {
+    this.showExchangeDialog = false;
+    this.selectedOrder = null;
+    this.selectedItems = [];
+    this.exchangeType = 'EXCHANGE';
+  }
+
+  toggleItemSelection(itemId: number): void {
+    const index = this.selectedItems.indexOf(itemId);
+    if (index > -1) {
+      this.selectedItems.splice(index, 1);
+    } else {
+      this.selectedItems.push(itemId);
+    }
+  }
+
+  isItemSelected(itemId: number): boolean {
+    return this.selectedItems.includes(itemId);
+  }
+
+  canRequestExchange(order: PurchaseOrderResponse): boolean {
+    // Só pode solicitar troca se o pedido foi entregue
+    return order.order_status.code === 'DELIVERED';
+  }
+
+  submitExchangeRequest(): void {
+    if (!this.selectedOrder || this.selectedItems.length === 0) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Atenção',
+        detail: 'Selecione pelo menos um item para a solicitação',
+        life: 3000
+      });
+      return;
+    }
+
+    this.submittingExchange = true;
+
+    const payload: ExchangeRequestPayload = {
+      purchaseOrder: this.selectedOrder.id,
+      orderItensId: this.selectedItems,
+      exchangeType: this.exchangeType
+    };
+
+    this.exchangeRequestService.createExchangeRequest(payload).subscribe({
+      next: (response) => {
+        this.submittingExchange = false;
+        if (response.success) {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Solicitação Enviada!',
+            detail: `Sua solicitação ${response.data.exchangeNumber} foi registrada com sucesso`,
+            life: 5000
+          });
+          this.closeExchangeDialog();
+        }
+      },
+      error: (error) => {
+        this.submittingExchange = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Não foi possível enviar a solicitação. Tente novamente.',
+          life: 3000
+        });
+      }
+    });
+  }
+
+  getSelectedItemsTotal(): number {
+    if (!this.selectedOrder) return 0;
+
+    return this.selectedOrder.items
+      .filter(item => this.selectedItems.includes(item.id))
+      .reduce((sum, item) => sum + parseFloat(item.subtotal.toString()), 0);
   }
 
   getStatusSeverity(statusCode: string): 'success' | 'info' | 'warning' | 'danger' {
