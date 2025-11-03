@@ -1,0 +1,373 @@
+<app-header></app-header>
+<app-line-session></app-line-session>
+
+<main style="
+  width: 100%;
+  min-height: 100vh;
+  background: var(--color-surface-darker);
+  padding: 4rem 2rem;
+  box-sizing: border-box;
+">
+  <div style="
+    max-width: 1600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  ">
+    <!-- Cabeçalho -->
+    <section style="
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    ">
+      <div>
+        <h1 style="
+          font-size: 1.75rem;
+          font-weight: 700;
+          color: var(--color-text-primary);
+          margin: 0 0 0.5rem 0;
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+        ">
+          <i class="pi pi-shopping-cart" style="color: var(--color-purple);"></i>
+          Gerenciamento de Pedidos
+        </h1>
+        <p style="
+          margin: 0;
+          color: var(--color-text-secondary);
+          font-size: 0.95rem;
+        ">
+          Aprove pagamentos, atualize status e gerencie entregas
+        </p>
+      </div>
+
+      <p-button
+        label="Voltar ao Dashboard"
+        icon="pi pi-arrow-left"
+        [style]="{
+          background: 'transparent',
+          border: '1px solid var(--input-border)',
+          color: 'var(--color-text-primary)'
+        }"
+        [routerLink]="['/admin/dashboard']"
+      ></p-button>
+    </section>
+
+    <!-- Filtros Rápidos -->
+    <section style="
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    ">
+      <p-button
+        [label]="'Todos (' + totalRecords + ')'"
+        [outlined]="selectedStatus !== null"
+        (click)="filterByStatus(null)"
+        icon="pi pi-list"
+      ></p-button>
+
+      <p-button
+        label="Processando"
+        [outlined]="selectedStatus !== 'PROCESSING'"
+        (click)="filterByStatus('PROCESSING')"
+        icon="pi pi-clock"
+        severity="danger"
+      ></p-button>
+
+      <p-button
+        label="Aprovados"
+        [outlined]="selectedStatus !== 'APPROVED'"
+        (click)="filterByStatus('APPROVED')"
+        icon="pi pi-check"
+        severity="success"
+      ></p-button>
+
+      <p-button
+        label="Em Trânsito"
+        [outlined]="selectedStatus !== 'IN_TRANSIT'"
+        (click)="filterByStatus('IN_TRANSIT')"
+        icon="pi pi-truck"
+        severity="info"
+      ></p-button>
+
+      <p-button
+        label="Entregues"
+        [outlined]="selectedStatus !== 'DELIVERED'"
+        (click)="filterByStatus('DELIVERED')"
+        icon="pi pi-check-circle"
+        severity="success"
+      ></p-button>
+    </section>
+
+    <!-- Card Principal -->
+    <p-card [style]="{
+      background: 'var(--color-background)',
+      border: '1px solid var(--input-border)',
+      borderRadius: '12px'
+    }">
+      <!-- Tabela -->
+      <p-table
+        #dt
+        [value]="orders"
+        dataKey="id"
+        [paginator]="true"
+        [rows]="10"
+        [rowsPerPageOptions]="[10, 20, 50]"
+        [totalRecords]="totalRecords"
+        [loading]="loading"
+        (onLazyLoad)="loadOrders($event)"
+        lazy="true"
+        [tableStyle]="{ 'min-width': '80rem' }"
+        styleClass="p-datatable-striped"
+      >
+        <ng-template pTemplate="header">
+          <tr style="background: var(--color-surface-darker);">
+            <th style="font-weight: 600; width: 12rem;">Número do Pedido</th>
+            <th style="font-weight: 600;">Cliente</th>
+            <th style="font-weight: 600; width: 10rem;">Data</th>
+            <th style="font-weight: 600; text-align: right; width: 10rem;">Total</th>
+            <th style="font-weight: 600; width: 8rem;">Itens</th>
+            <th style="font-weight: 600; width: 12rem;">Status</th>
+            <th style="font-weight: 600; text-align: center; width: 18rem;">Ações</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-order>
+          <tr>
+            <td>
+              <strong style="font-family: monospace; color: var(--color-blue);">
+                {{ order.order_number }}
+              </strong>
+            </td>
+            <td>
+              <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <strong>Cliente #{{ order.id }}</strong>
+                <small style="color: var(--color-text-secondary);">
+                  {{ order.shipping_address?.city }}, {{ order.shipping_address?.state }}
+                </small>
+              </div>
+            </td>
+            <td>
+              <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <span>{{ formatDate(order.created_at) }}</span>
+                <small style="color: var(--color-text-secondary);">
+                  {{ formatTime(order.created_at) }}
+                </small>
+              </div>
+            </td>
+            <td style="text-align: right;">
+              <strong style="color: var(--color-green); font-size: 1.05rem;">
+                {{ formatCurrency(order.pricing.total) }}
+              </strong>
+            </td>
+            <td style="text-align: center;">
+              <p-tag
+                [value]="order.pricing.total_items + ' item(s)'"
+                severity="info"
+                [style]="{ fontSize: '0.875rem' }"
+              ></p-tag>
+            </td>
+            <td>
+              <p-tag
+                [severity]="getStatusSeverity(order.order_status.code)"
+                [value]="order.order_status.displayName"
+                [icon]="getStatusIcon(order.order_status.code)"
+                [style]="{ fontSize: '0.875rem' }"
+              ></p-tag>
+            </td>
+            <td>
+              <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+                <!-- Aprovar Pagamento -->
+                <p-button
+                  *ngIf="order.order_status.code === 'PROCESSING'"
+                  icon="pi pi-check"
+                  severity="success"
+                  size="small"
+                  pTooltip="Aprovar Pagamento"
+                  tooltipPosition="top"
+                  (click)="confirmApprove(order)"
+                  [style]="{ minWidth: '2.5rem' }"
+                />
+
+                <!-- Marcar Em Trânsito -->
+                <p-button
+                  *ngIf="order.order_status.code === 'APPROVED'"
+                  icon="pi pi-truck"
+                  severity="info"
+                  size="small"
+                  pTooltip="Marcar Em Trânsito"
+                  tooltipPosition="top"
+                  (click)="confirmInTransit(order)"
+                  [style]="{ minWidth: '2.5rem' }"
+                />
+
+                <!-- Confirmar Entrega -->
+                <p-button
+                  *ngIf="order.order_status.code === 'IN_TRANSIT'"
+                  icon="pi pi-check-circle"
+                  severity="success"
+                  size="small"
+                  pTooltip="Confirmar Entrega"
+                  tooltipPosition="top"
+                  (click)="confirmDelivery(order)"
+                  [style]="{ minWidth: '2.5rem' }"
+                />
+
+                <!-- Ver Detalhes -->
+                <p-button
+                  icon="pi pi-eye"
+                  severity="secondary"
+                  size="small"
+                  pTooltip="Ver Detalhes"
+                  tooltipPosition="top"
+                  (click)="showOrderDetails(order)"
+                  [style]="{ minWidth: '2.5rem' }"
+                />
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="7" style="text-align: center; padding: 3rem;">
+              <div style="
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+                color: var(--color-text-secondary);
+              ">
+                <i class="pi pi-shopping-cart" style="font-size: 3rem; opacity: 0.5;"></i>
+                <div>
+                  <p style="margin: 0; font-size: 1.125rem; font-weight: 600;">Nenhum pedido encontrado</p>
+                  <p style="margin: 0.25rem 0 0 0; font-size: 0.875rem;">
+                    Não há pedidos para o filtro selecionado
+                  </p>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-card>
+  </div>
+</main>
+
+<!-- Dialog de Detalhes do Pedido -->
+<p-dialog
+  [(visible)]="displayOrderDetails"
+  [modal]="true"
+  [style]="{ width: '50vw', maxWidth: '800px' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <ng-template pTemplate="header">
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+      <i class="pi pi-shopping-cart" style="color: var(--color-purple);"></i>
+      <span style="font-weight: 700;">Detalhes do Pedido</span>
+    </div>
+  </ng-template>
+
+  <div *ngIf="selectedOrder" style="display: flex; flex-direction: column; gap: 1.5rem;">
+    <!-- Info do Pedido -->
+    <div style="
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      padding: 1rem;
+      background: var(--color-surface-darker);
+      border-radius: 8px;
+    ">
+      <div>
+        <small style="color: var(--color-text-secondary); display: block; margin-bottom: 0.25rem;">
+          Número do Pedido
+        </small>
+        <strong style="font-family: monospace;">{{ selectedOrder.order_number }}</strong>
+      </div>
+      <div>
+        <small style="color: var(--color-text-secondary); display: block; margin-bottom: 0.25rem;">
+          Status
+        </small>
+        <p-tag
+          [severity]="getStatusSeverity(selectedOrder.order_status.code)"
+          [value]="selectedOrder.order_status.displayName"
+        ></p-tag>
+      </div>
+      <div>
+        <small style="color: var(--color-text-secondary); display: block; margin-bottom: 0.25rem;">
+          Data do Pedido
+        </small>
+        <span>{{ formatDate(selectedOrder.created_at) }}</span>
+      </div>
+      <div>
+        <small style="color: var(--color-text-secondary); display: block; margin-bottom: 0.25rem;">
+          Total
+        </small>
+        <strong style="color: var(--color-green); font-size: 1.125rem;">
+          {{ formatCurrency(selectedOrder.pricing.total) }}
+        </strong>
+      </div>
+    </div>
+
+    <!-- Itens do Pedido -->
+    <div>
+      <h3 style="margin: 0 0 1rem 0; font-size: 1.125rem;">Itens do Pedido</h3>
+      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <div
+          *ngFor="let item of selectedOrder.items"
+          style="
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+          ">
+          <img
+            [src]="item.product.main_image"
+            [alt]="item.product.title"
+            style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px;"
+          />
+          <div style="flex: 1;">
+            <strong style="display: block;">{{ item.product.title }}</strong>
+            <small style="color: var(--color-text-secondary);">
+              {{ item.quantity }}x {{ formatCurrency(item.unit_price) }}
+            </small>
+          </div>
+          <strong style="color: var(--color-green);">
+            {{ formatCurrency(item.subtotal) }}
+          </strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Endereço de Entrega -->
+    <div>
+      <h3 style="margin: 0 0 1rem 0; font-size: 1.125rem;">Endereço de Entrega</h3>
+      <div style="
+        padding: 1rem;
+        background: var(--color-surface-darker);
+        border-radius: 8px;
+      ">
+        <p style="margin: 0; line-height: 1.6;">
+          {{ selectedOrder.shipping_address.street }}, {{ selectedOrder.shipping_address.number }}<br/>
+          {{ selectedOrder.shipping_address.neighborhood }}<br/>
+          {{ selectedOrder.shipping_address.city }} - {{ selectedOrder.shipping_address.state }}<br/>
+          CEP: {{ selectedOrder.shipping_address.cep }}
+        </p>
+      </div>
+    </div>
+  </div>
+</p-dialog>
+
+<p-confirmDialog
+  acceptLabel="Confirmar"
+  rejectLabel="Cancelar"
+/>
+
+<p-toast position="top-right" />

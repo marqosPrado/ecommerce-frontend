@@ -1,0 +1,557 @@
+<app-header></app-header>
+<app-line-session></app-line-session>
+
+<main style="
+  width: 100%;
+  min-height: 100vh;
+  background: var(--color-surface-darker);
+  padding: 4rem 2rem;
+  box-sizing: border-box;
+">
+  <div style="
+    max-width: 1600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  ">
+    <!-- Cabeçalho -->
+    <section style="
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    ">
+      <div>
+        <h1 style="
+          font-size: 1.75rem;
+          font-weight: 700;
+          color: var(--color-text-primary);
+          margin: 0 0 0.5rem 0;
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+        ">
+          <i class="pi pi-refresh" style="color: #f59e0b;"></i>
+          Gerenciamento de Trocas e Devoluções
+        </h1>
+        <p style="
+          margin: 0;
+          color: var(--color-text-secondary);
+          font-size: 0.95rem;
+        ">
+          Aprove, recuse e processe solicitações de troca e devolução
+        </p>
+      </div>
+
+      <p-button
+        label="Voltar ao Dashboard"
+        icon="pi pi-arrow-left"
+        [style]="{
+          background: 'transparent',
+          border: '1px solid var(--input-border)',
+          color: 'var(--color-text-primary)'
+        }"
+        [routerLink]="['/admin/dashboard']"
+      ></p-button>
+    </section>
+
+    <!-- Filtros Rápidos -->
+    <section style="
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    ">
+      <p-button
+        label="Pendentes"
+        [outlined]="selectedStatus !== 'PENDING'"
+        (click)="filterByStatus('PENDING')"
+        icon="pi pi-clock"
+        severity="danger"
+        [badge]="getPendingCount().toString()"
+        badgeClass="p-badge-danger"
+      ></p-button>
+
+      <p-button
+        label="Aprovadas"
+        [outlined]="selectedStatus !== 'APPROVED'"
+        (click)="filterByStatus('APPROVED')"
+        icon="pi pi-check"
+        severity="success"
+      ></p-button>
+
+      <p-button
+        label="Em Trânsito"
+        [outlined]="selectedStatus !== 'IN_TRANSIT'"
+        (click)="filterByStatus('IN_TRANSIT')"
+        icon="pi pi-truck"
+        severity="info"
+      ></p-button>
+
+      <p-button
+        label="Recebidas"
+        [outlined]="selectedStatus !== 'ITEMS_RECEIVED'"
+        (click)="filterByStatus('ITEMS_RECEIVED')"
+        icon="pi pi-inbox"
+        severity="info"
+      ></p-button>
+
+      <p-button
+        label="Concluídas"
+        [outlined]="selectedStatus !== 'COMPLETED'"
+        (click)="filterByStatus('COMPLETED')"
+        icon="pi pi-check-circle"
+        severity="success"
+      ></p-button>
+
+      <p-button
+        label="Rejeitadas"
+        [outlined]="selectedStatus !== 'REJECTED'"
+        (click)="filterByStatus('REJECTED')"
+        icon="pi pi-times"
+        severity="danger"
+      ></p-button>
+
+      <p-button
+        [label]="'Todas (' + totalRecords + ')'"
+        [outlined]="selectedStatus !== null"
+        (click)="filterByStatus(null)"
+        icon="pi pi-list"
+      ></p-button>
+    </section>
+
+    <!-- Card Principal -->
+    <p-card [style]="{
+      background: 'var(--color-background)',
+      border: '1px solid var(--input-border)',
+      borderRadius: '12px'
+    }">
+      <!-- Tabela -->
+      <p-table
+        #dt
+        [value]="exchanges"
+        dataKey="id"
+        [paginator]="true"
+        [rows]="10"
+        [rowsPerPageOptions]="[10, 20, 50]"
+        [totalRecords]="totalRecords"
+        [loading]="loading"
+        (onLazyLoad)="loadExchanges($event)"
+        lazy="true"
+        [tableStyle]="{ 'min-width': '90rem' }"
+        styleClass="p-datatable-striped"
+      >
+        <ng-template pTemplate="header">
+          <tr style="background: var(--color-surface-darker);">
+            <th style="font-weight: 600; width: 12rem;">Número Troca</th>
+            <th style="font-weight: 600; width: 12rem;">Pedido Original</th>
+            <th style="font-weight: 600;">Cliente</th>
+            <th style="font-weight: 600; width: 8rem;">Tipo</th>
+            <th style="font-weight: 600; width: 10rem;">Data Solicitação</th>
+            <th style="font-weight: 600; text-align: right; width: 10rem;">Valor</th>
+            <th style="font-weight: 600; width: 12rem;">Status</th>
+            <th style="font-weight: 600; text-align: center; width: 20rem;">Ações</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-exchange>
+          <tr>
+            <td>
+              <strong style="font-family: monospace; color: #f59e0b;">
+                {{ exchange.exchangeNumber }}
+              </strong>
+            </td>
+            <td>
+              <span style="font-family: monospace; color: var(--color-blue);">
+                {{ exchange.purchaseOrderNumber }}
+              </span>
+            </td>
+            <td>
+              <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <strong>{{ exchange.clientName }}</strong>
+                <small style="color: var(--color-text-secondary);">
+                  ID: {{ exchange.clientId }}
+                </small>
+              </div>
+            </td>
+            <td>
+              <p-tag
+                [value]="exchange.exchangeType === 'EXCHANGE' ? 'Troca' : 'Devolução'"
+                [severity]="exchange.exchangeType === 'EXCHANGE' ? 'info' : 'warning'"
+                [icon]="exchange.exchangeType === 'EXCHANGE' ? 'pi pi-refresh' : 'pi pi-undo'"
+              ></p-tag>
+            </td>
+            <td>
+              <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <span>{{ exchange.requestedAt ? formatDate(exchange.requestedAt) : '-' }}</span>
+                <small style="color: var(--color-text-secondary);">
+                  {{ exchange.requestedAt ? formatTime(exchange.requestedAt) : '-' }}
+                </small>
+              </div>
+            </td>
+            <td style="text-align: right;">
+              <strong style="color: var(--color-green);">
+                {{ formatCurrency(exchange.exchangeValue) }}
+              </strong>
+            </td>
+            <td>
+              <p-tag
+                [severity]="getStatusSeverity(exchange.exchangeStatus)"
+                [value]="getStatusLabel(exchange.exchangeStatus)"
+                [icon]="getStatusIcon(exchange.exchangeStatus)"
+              ></p-tag>
+            </td>
+            <td>
+              <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+                <!-- Aprovar -->
+                <p-button
+                  *ngIf="exchange.exchangeStatus === 'PENDING'"
+                  icon="pi pi-check"
+                  severity="success"
+                  size="small"
+                  pTooltip="Aprovar Solicitação"
+                  tooltipPosition="top"
+                  (click)="confirmApprove(exchange)"
+                  [style]="{ minWidth: '2.5rem' }"
+                />
+
+                <!-- Rejeitar -->
+                <p-button
+                  *ngIf="exchange.exchangeStatus === 'PENDING'"
+                  icon="pi pi-times"
+                  severity="danger"
+                  size="small"
+                  pTooltip="Rejeitar Solicitação"
+                  tooltipPosition="top"
+                  (click)="confirmReject(exchange)"
+                  [style]="{ minWidth: '2.5rem' }"
+                />
+
+                <!-- Marcar Em Trânsito -->
+                <p-button
+                  *ngIf="exchange.exchangeStatus === 'APPROVED'"
+                  icon="pi pi-truck"
+                  severity="info"
+                  size="small"
+                  pTooltip="Produto Voltando"
+                  tooltipPosition="top"
+                  (click)="confirmInTransit(exchange)"
+                  [style]="{ minWidth: '2.5rem' }"
+                />
+
+                <!-- Confirmar Recebimento -->
+                <p-button
+                  *ngIf="exchange.exchangeStatus === 'IN_TRANSIT'"
+                  icon="pi pi-inbox"
+                  severity="info"
+                  size="small"
+                  pTooltip="Confirmar Recebimento"
+                  tooltipPosition="top"
+                  (click)="confirmReceived(exchange)"
+                  [style]="{ minWidth: '2.5rem' }"
+                />
+
+                <!-- Gerar Cupom e Finalizar -->
+                <p-button
+                  *ngIf="exchange.exchangeStatus === 'ITEMS_RECEIVED'"
+                  icon="pi pi-ticket"
+                  severity="success"
+                  size="small"
+                  pTooltip="Gerar Cupom e Finalizar"
+                  tooltipPosition="top"
+                  (click)="confirmComplete(exchange)"
+                  [style]="{ minWidth: '2.5rem' }"
+                />
+
+                <!-- Ver Detalhes -->
+                <p-button
+                  icon="pi pi-eye"
+                  severity="secondary"
+                  size="small"
+                  pTooltip="Ver Detalhes"
+                  tooltipPosition="top"
+                  (click)="showExchangeDetails(exchange)"
+                  [style]="{ minWidth: '2.5rem' }"
+                />
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="8" style="text-align: center; padding: 3rem;">
+              <div style="
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+                color: var(--color-text-secondary);
+              ">
+                <i class="pi pi-refresh" style="font-size: 3rem; opacity: 0.5;"></i>
+                <div>
+                  <p style="margin: 0; font-size: 1.125rem; font-weight: 600;">
+                    Nenhuma solicitação encontrada
+                  </p>
+                  <p style="margin: 0.25rem 0 0 0; font-size: 0.875rem;">
+                    Não há solicitações de troca/devolução para o filtro selecionado
+                  </p>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-card>
+  </div>
+</main>
+
+<!-- Dialog de Detalhes da Troca -->
+<p-dialog
+  [(visible)]="displayExchangeDetails"
+  [modal]="true"
+  [style]="{ width: '60vw', maxWidth: '900px' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <ng-template pTemplate="header">
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+      <i class="pi pi-refresh" style="color: #f59e0b;"></i>
+      <span style="font-weight: 700;">Detalhes da Solicitação de Troca</span>
+    </div>
+  </ng-template>
+
+  <div *ngIf="selectedExchange" style="display: flex; flex-direction: column; gap: 1.5rem;">
+    <!-- Info da Troca -->
+    <div style="
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      padding: 1rem;
+      background: var(--color-surface-darker);
+      border-radius: 8px;
+    ">
+      <div>
+        <small style="color: var(--color-text-secondary); display: block; margin-bottom: 0.25rem;">
+          Número da Troca
+        </small>
+        <strong style="font-family: monospace;">{{ selectedExchange.exchangeNumber }}</strong>
+      </div>
+      <div>
+        <small style="color: var(--color-text-secondary); display: block; margin-bottom: 0.25rem;">
+          Pedido Original
+        </small>
+        <span style="font-family: monospace; color: var(--color-blue);">
+          {{ selectedExchange.purchaseOrderNumber }}
+        </span>
+      </div>
+      <div>
+        <small style="color: var(--color-text-secondary); display: block; margin-bottom: 0.25rem;">
+          Cliente
+        </small>
+        <strong>{{ selectedExchange.clientName }}</strong>
+      </div>
+      <div>
+        <small style="color: var(--color-text-secondary); display: block; margin-bottom: 0.25rem;">
+          Tipo
+        </small>
+        <p-tag
+          [value]="selectedExchange.exchangeType === 'EXCHANGE' ? 'Troca' : 'Devolução'"
+          [severity]="selectedExchange.exchangeType === 'EXCHANGE' ? 'info' : 'warning'"
+        ></p-tag>
+      </div>
+      <div>
+        <small style="color: var(--color-text-secondary); display: block; margin-bottom: 0.25rem;">
+          Status
+        </small>
+        <p-tag
+          [severity]="getStatusSeverity(selectedExchange.exchangeStatus)"
+          [value]="getStatusLabel(selectedExchange.exchangeStatus)"
+        ></p-tag>
+      </div>
+      <div>
+        <small style="color: var(--color-text-secondary); display: block; margin-bottom: 0.25rem;">
+          Valor da Troca
+        </small>
+        <strong style="color: var(--color-green); font-size: 1.125rem;">
+          {{ formatCurrency(selectedExchange.exchangeValue) }}
+        </strong>
+      </div>
+    </div>
+
+    <!-- Motivo -->
+    <div *ngIf="selectedExchange.reason">
+      <h3 style="margin: 0 0 0.75rem 0; font-size: 1.125rem;">Motivo da Solicitação</h3>
+      <div style="
+        padding: 1rem;
+        background: var(--color-surface-darker);
+        border-radius: 8px;
+        border-left: 4px solid #f59e0b;
+      ">
+        <p style="margin: 0; line-height: 1.6; color: var(--color-text-primary);">
+          {{ selectedExchange.reason }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Itens -->
+    <div>
+      <h3 style="margin: 0 0 1rem 0; font-size: 1.125rem;">Itens Solicitados para Troca</h3>
+      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <div
+          *ngFor="let item of selectedExchange.items"
+          style="
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+          ">
+          <div style="flex: 1;">
+            <strong style="display: block;">{{ item.productName }}</strong>
+            <small style="color: var(--color-text-secondary);">
+              {{ item.quantity }}x {{ formatCurrency(item.unitPrice) }}
+            </small>
+          </div>
+          <strong style="color: var(--color-green);">
+            {{ formatCurrency(item.subTotal) }}
+          </strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cupom Gerado -->
+    <div *ngIf="selectedExchange.voucherGenerated" style="
+      padding: 1.5rem;
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.1));
+      border: 2px dashed var(--color-green);
+      border-radius: 8px;
+      text-align: center;
+    ">
+      <div style="display: flex; flex-direction: column; gap: 0.5rem; align-items: center;">
+        <i class="pi pi-ticket" style="font-size: 2rem; color: var(--color-green);"></i>
+        <strong style="font-size: 1.125rem; color: var(--color-green);">Cupom Gerado</strong>
+        <code style="
+          background: var(--color-background);
+          padding: 0.5rem 1rem;
+          border-radius: 6px;
+          font-size: 1.25rem;
+          font-weight: 700;
+          letter-spacing: 0.1em;
+          color: var(--color-green);
+        ">
+          {{ selectedExchange.voucherGenerated }}
+        </code>
+      </div>
+    </div>
+
+    <!-- Observações Admin -->
+    <div *ngIf="selectedExchange.adminNotes">
+      <h3 style="margin: 0 0 0.75rem 0; font-size: 1.125rem;">Observações do Administrador</h3>
+      <div style="
+        padding: 1rem;
+        background: var(--color-surface-darker);
+        border-radius: 8px;
+      ">
+        <p style="margin: 0; line-height: 1.6;">
+          {{ selectedExchange.adminNotes }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div>
+      <h3 style="margin: 0 0 1rem 0; font-size: 1.125rem;">Histórico</h3>
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <div style="display: flex; gap: 1rem; align-items: start;">
+          <div style="
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--color-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+          ">
+            <i class="pi pi-plus" style="color: white;"></i>
+          </div>
+          <div>
+            <strong style="display: block;">Solicitação Criada</strong>
+            <small style="color: var(--color-text-secondary);">
+              {{ selectedExchange.requestedAt ? formatDate(selectedExchange.requestedAt) + ' às ' + formatTime(selectedExchange.requestedAt) : '-' }}
+            </small>
+          </div>
+        </div>
+
+        <div *ngIf="selectedExchange.processedAt" style="display: flex; gap: 1rem; align-items: start;">
+          <div style="
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--color-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+          ">
+            <i class="pi pi-check" style="color: white;"></i>
+          </div>
+          <div>
+            <strong style="display: block;">Processada</strong>
+            <small style="color: var(--color-text-secondary);">
+              {{ formatDate(selectedExchange.processedAt) }} às {{ formatTime(selectedExchange.processedAt) }}
+            </small>
+          </div>
+        </div>
+
+        <div *ngIf="selectedExchange.itemsReceivedAt" style="display: flex; gap: 1rem; align-items: start;">
+          <div style="
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--color-purple);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+          ">
+            <i class="pi pi-inbox" style="color: white;"></i>
+          </div>
+          <div>
+            <strong style="display: block;">Itens Recebidos</strong>
+            <small style="color: var(--color-text-secondary);">
+              {{ formatDate(selectedExchange.itemsReceivedAt) }} às {{ formatTime(selectedExchange.itemsReceivedAt) }}
+            </small>
+          </div>
+        </div>
+
+        <div *ngIf="selectedExchange.completedAt" style="display: flex; gap: 1rem; align-items: start;">
+          <div style="
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--color-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+          ">
+            <i class="pi pi-check-circle" style="color: white;"></i>
+          </div>
+          <div>
+            <strong style="display: block;">Concluída</strong>
+            <small style="color: var(--color-text-secondary);">
+              {{ formatDate(selectedExchange.completedAt) }} às {{ formatTime(selectedExchange.completedAt) }}
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</p-dialog>
+
+<p-confirmDialog acceptLabel="Confirmar" rejectLabel="Cancelar" />
+<p-toast position="top-right" />

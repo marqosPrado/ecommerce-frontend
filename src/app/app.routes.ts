@@ -14,6 +14,10 @@ import {AdminProductManagement} from './components/admin-product-management/admi
 import {AdminAnalytics} from './components/admin-analytics/admin-analytics';
 import {ClientDashboard} from './components/client-dashboard/client-dashboard';
 import {Orders} from './components/client-order/Orders';
+import {AdminDashboard} from './components/admin-dashboard/admin-dashboard';
+import {adminGuard} from './services/common/guards/admin/admin.guard';
+import {AdminOrdersManagement} from './components/admin-orders-management/admin-orders-management';
+import {AdminExchangesManagement} from './components/admin-exchange-management/admin-exchange-management';
 
 export const routes: Routes = [
   {
@@ -58,7 +62,13 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    component: Admin
+    canActivate: [adminGuard],
+    children: [
+      { path: 'dashboard', component: AdminDashboard },
+      { path: 'clients', component: AdminClientManagement },
+      { path: 'orders', component: AdminOrdersManagement },
+      { path: 'exchanges', component: AdminExchangesManagement }
+    ]
   },
   {
     path: 'admin/clientes',

@@ -33,7 +33,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(clonedRequest).pipe(
     catchError((error: HttpErrorResponse) => {
-      // Se receber 401 (Unauthorized) ou 403 (Forbidden), redireciona para login
       if (error.status === 401 || error.status === 403) {
         console.warn('Token inválido ou expirado. Redirecionando para login...');
         authService.logout();

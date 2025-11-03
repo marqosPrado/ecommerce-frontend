@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+ import { Component } from '@angular/core';
 import { TableModule, Table } from 'primeng/table';
 import { Tag } from 'primeng/tag';
 import { InputText } from 'primeng/inputtext';

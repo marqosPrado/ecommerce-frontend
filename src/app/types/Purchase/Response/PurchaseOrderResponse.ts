@@ -15,6 +15,15 @@ export type PurchaseOrderResponse = {
   pricing: PricingResponse
 }
 
+export type PurchaseOrderSummaryResponse = {
+  id: number,
+  order_number: string,
+  order_status: OrderStatusResponse,
+  created_at: string,
+  updated_at: string,
+  client_name: string,
+}
+
 export type OrderStatusResponse = {
   code: string,
   displayName: string,
