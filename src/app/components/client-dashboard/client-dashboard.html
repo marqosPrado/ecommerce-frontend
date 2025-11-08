@@ -62,16 +62,11 @@
         </div>
       </div>
 
-      <p-button
-        label="Editar Perfil"
-        icon="pi pi-user-edit"
-        [style]="{
+      <p-button label="Editar Perfil" icon="pi pi-user-edit" [style]="{
           background: 'var(--color-blue)',
           border: 'none',
           padding: '0.75rem 1.5rem'
-        }"
-        [routerLink]="['/client/edit', 1]"
-      ></p-button>
+        }" [routerLink]="['/client/edit', 1]"></p-button>
     </section>
 
     <!-- Seção de Atalhos -->
@@ -101,9 +96,8 @@
         gap: 1rem;
         transition: all 0.3s ease;
         cursor: pointer;
-      "
-               onmouseover="this.style.borderColor='var(--color-blue)'; this.style.transform='translateY(-4px)'"
-               onmouseout="this.style.borderColor='var(--input-border)'; this.style.transform='translateY(0)'">
+      " onmouseover="this.style.borderColor='var(--color-blue)'; this.style.transform='translateY(-4px)'"
+        onmouseout="this.style.borderColor='var(--input-border)'; this.style.transform='translateY(0)'">
 
         <div style="
           width: 56px;
@@ -136,19 +130,13 @@
           </p>
         </div>
 
-        <p-button
-          label="Acessar"
-          icon="pi pi-arrow-right"
-          iconPos="right"
-          [style]="{
+        <p-button label="Acessar" icon="pi pi-arrow-right" iconPos="right" [style]="{
             width: '100%',
             background: 'transparent',
             border: '1px solid var(--input-border)',
             color: 'var(--color-text-primary)',
             marginTop: 'auto'
-          }"
-          [routerLink]="['/meus-pedidos']"
-        ></p-button>
+          }" [routerLink]="['/meus-pedidos']"></p-button>
       </article>
 
       <!-- Card: Meus Dados -->
@@ -162,9 +150,8 @@
         gap: 1rem;
         transition: all 0.3s ease;
         cursor: pointer;
-      "
-               onmouseover="this.style.borderColor='var(--color-purple)'; this.style.transform='translateY(-4px)'"
-               onmouseout="this.style.borderColor='var(--input-border)'; this.style.transform='translateY(0)'">
+      " onmouseover="this.style.borderColor='var(--color-purple)'; this.style.transform='translateY(-4px)'"
+        onmouseout="this.style.borderColor='var(--input-border)'; this.style.transform='translateY(0)'">
 
         <div style="
           width: 56px;
@@ -197,19 +184,13 @@
           </p>
         </div>
 
-        <p-button
-          label="Editar"
-          icon="pi pi-arrow-right"
-          iconPos="right"
-          [style]="{
+        <p-button label="Editar" icon="pi pi-arrow-right" iconPos="right" [style]="{
             width: '100%',
             background: 'transparent',
             border: '1px solid var(--input-border)',
             color: 'var(--color-text-primary)',
             marginTop: 'auto'
-          }"
-          [routerLink]="['/client/edit', 1]"
-        ></p-button>
+          }" [routerLink]="['/client/edit', 1]"></p-button>
       </article>
 
       <!-- Card: Carteira -->
@@ -223,9 +204,8 @@
         gap: 1rem;
         transition: all 0.3s ease;
         cursor: pointer;
-      "
-               onmouseover="this.style.borderColor='var(--color-green)'; this.style.transform='translateY(-4px)'"
-               onmouseout="this.style.borderColor='var(--input-border)'; this.style.transform='translateY(0)'">
+      " onmouseover="this.style.borderColor='var(--color-green)'; this.style.transform='translateY(-4px)'"
+        onmouseout="this.style.borderColor='var(--input-border)'; this.style.transform='translateY(0)'">
 
         <div style="
           width: 56px;
@@ -258,20 +238,68 @@
           </p>
         </div>
 
-        <p-button
-          label="Abrir"
-          icon="pi pi-arrow-right"
-          iconPos="right"
-          [style]="{
+        <p-button label="Abrir" icon="pi pi-arrow-right" iconPos="right" [style]="{
             width: '100%',
             background: 'transparent',
             border: '1px solid var(--input-border)',
             color: 'var(--color-text-primary)',
             marginTop: 'auto'
-          }"
-          [routerLink]="['/minha-conta/carteira']"
-        ></p-button>
+          }" [routerLink]="['/minha-conta/carteira']"></p-button>
       </article>
     </section>
+
+    <!-- Seção de Cupons de Troca -->
+    <article style="
+      background: var(--color-background);
+      border: 1px solid var(--input-border);
+      border-radius: 12px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    " onmouseover="this.style.borderColor='var(--color-yellow)'; this.style.transform='translateY(-4px)'"
+      onmouseout="this.style.borderColor='var(--input-border)'; this.style.transform='translateY(0)'">
+
+      <div style="
+        width: 56px;
+        height: 56px;
+        background: rgba(255, 215, 0, 0.1);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      ">
+        <i class="pi pi-ticket" style="font-size: 1.75rem; color: var(--color-yellow);"></i>
+      </div>
+
+      <div>
+        <h3 style="
+          font-size: 1.25rem;
+          font-weight: 700;
+          color: var(--color-text-primary);
+          margin: 0 0 0.5rem 0;
+        ">
+          Cupons de Troca
+        </h3>
+        <p style="
+          color: var(--color-text-secondary);
+          font-size: 0.95rem;
+          margin: 0;
+          line-height: 1.5;
+        ">
+          Gerencie todos seus cupons de troca.
+        </p>
+      </div>
+
+      <p-button label="Abrir" icon="pi pi-arrow-right" iconPos="right" [style]="{
+          width: '100%',
+          background: 'transparent',
+          border: '1px solid var(--input-border)',
+          color: 'var(--color-text-primary)',
+          marginTop: 'auto'
+        }" [routerLink]="['/minha-conta/cupons-troca']"></p-button>
+    </article>
   </div>
 </main>
