@@ -1,331 +1,273 @@
 import { Component, OnInit } from '@angular/core';
-import { Card } from 'primeng/card';
-import { Button } from 'primeng/button';
-import { Select } from 'primeng/select';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ChartModule } from 'primeng/chart';
-import {FormsModule} from '@angular/forms';
-import {DecimalPipe} from '@angular/common';
+import { DatePicker } from 'primeng/datepicker';
+import { Select } from 'primeng/select';
+import { ButtonDirective } from 'primeng/button';
+import {Analytics} from '../../services/analytics/analytics';
+import {SalesChartResponse} from '../../types/Analytics/sales-chart-response.type';
+import {Header} from '../../common/header/header';
+import {RouterLink} from '@angular/router';
+import {LineSession} from '../../common/line-session/line-session';
 
-type Period = 'daily' | 'weekly' | 'monthly';
+interface FilterOption {
+  label: string;
+  value: string;
+}
 
 @Component({
   selector: 'app-admin-analytics',
   standalone: true,
-  imports: [Card, Button, Select, ChartModule, FormsModule, DecimalPipe],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ChartModule,
+    RouterLink,
+    DatePicker,
+    Select,
+    ButtonDirective,
+    Header,
+    LineSession
+  ],
   templateUrl: './admin-analytics.html',
   styleUrl: './admin-analytics.css'
 })
 export class AdminAnalytics implements OnInit {
-  periodOptions = [
-    { name: 'Diário', value: 'daily' as Period },
-    { name: 'Semanal', value: 'weekly' as Period },
-    { name: 'Mensal', value: 'monthly' as Period },
-  ];
-  categoryOptions = [
-    { name: 'Todos', value: 'all' },
-    { name: 'Eletrônicos', value: 'electronics' },
-    { name: 'Moda', value: 'fashion' },
-    { name: 'Casa & Jardim', value: 'home' },
-    { name: 'Esportes', value: 'sports' },
-  ];
-  regionOptions = [
-    { name: 'Todas', value: 'all' },
-    { name: 'Sudeste', value: 'southeast' },
-    { name: 'Sul', value: 'south' },
-    { name: 'Centro-Oeste', value: 'midwest' },
-    { name: 'Nordeste', value: 'northeast' },
-    { name: 'Norte', value: 'north' },
+  // Dados do gráfico
+  salesChartData: any;
+  salesChartOptions: any;
+
+  // Filtros
+  startDate: Date;
+  endDate: Date;
+  maxDate: Date = new Date(); // ← ADICIONE ESTA LINHA
+  selectedFilter: string = 'BRAND';
+
+  filterOptions: FilterOption[] = [
+    { label: 'Por Produto', value: 'PRODUCT' },
+    { label: 'Por Marca', value: 'BRAND' },
+    { label: 'Por Linha', value: 'LINE' },
+    { label: 'Por Estilo', value: 'STYLE' },
+    { label: 'Por Mecanismo', value: 'MECHANISM' },
+    { label: 'Por Gênero', value: 'GENDER' }
   ];
 
-  selectedPeriod: Period = 'monthly';
-  selectedCategory = 'all';
-  selectedRegion = 'all';
+  // Estado
+  loading: boolean = false;
+  hasData: boolean = false;
 
-  overview = {
-    totalPurchases: 0,
-    avgTicket: 0,
-    activeCustomers: 0,
-    repurchaseRate: 0
-  };
+  // Cores para as linhas do gráfico
+  private chartColors: string[] = [
+    '#2563eb', // Azul
+    '#22c55e', // Verde
+    '#f43f5e', // Vermelho
+    '#fb923c', // Laranja
+    '#8b5cf6', // Roxo
+    '#3b82f6', // Azul claro
+    '#facc15', // Amarelo
+    '#4ade80', // Verde claro
+  ];
 
-  salesLineData: any;
-  salesLineOptions: any;
-
-  categoryDoughnutData: any;
-  categoryDoughnutOptions: any;
-
-  customerProfileBarData: any;
-  customerProfileBarOptions: any;
-
-  trendsStackedAreaData: any;
-  trendsStackedAreaOptions: any;
-
-  behaviorRadarData: any;
-  behaviorRadarOptions: any;
-
-  funnelBarData: any;
-  funnelBarOptions: any;
-
-  textColor = '';
-  textColorSecondary = '';
-  surfaceBorder = '';
-  gridColor = '';
+  constructor(private analyticsService: Analytics) {
+    // Define período padrão (últimos 90 dias)
+    this.endDate = new Date();
+    this.startDate = new Date();
+    this.startDate.setDate(this.startDate.getDate() - 90);
+  }
 
   ngOnInit(): void {
-    this.resolveThemeColors();
-    this.buildAll();
+    this.configureChartOptions();
+    this.loadSalesData();
   }
 
-  onFiltersChanged(): void {
-    this.buildAll();
-  }
+  loadSalesData(): void {
+    if (!this.startDate || !this.endDate) {
+      return;
+    }
 
-  private resolveThemeColors() {
-    const docStyle = getComputedStyle(document.documentElement);
-    this.textColor = docStyle.getPropertyValue('--text-color').trim() || '#111827';
-    this.textColorSecondary = docStyle.getPropertyValue('--text-color-secondary').trim() || '#6b7280';
-    this.surfaceBorder = docStyle.getPropertyValue('--surface-border').trim() || '#e5e7eb';
-    this.gridColor = docStyle.getPropertyValue('--surface-400').trim() || 'rgba(0,0,0,0.08)';
-  }
+    this.loading = true;
+    this.hasData = false;
 
-  private buildAll() {
-    const labels = this.getLabels(this.selectedPeriod);
+    const startDateStr = this.formatDate(this.startDate);
+    const endDateStr = this.formatDate(this.endDate);
 
-    this.updateOverview();
-
-    const sales = this.generateSeries(labels.length, 300, 2000);
-    this.salesLineData = {
-      labels,
-      datasets: [
-        {
-          label: 'Vendas',
-          data: sales,
-          borderColor: '#3b82f6',
-          backgroundColor: 'rgba(59,130,246,0.15)',
-          tension: 0.35,
-          fill: true,
+    this.analyticsService
+      .getSalesVolume(startDateStr, endDateStr, this.selectedFilter)
+      .subscribe({
+        next: (response) => {
+          if (response.success && response.data) {
+            this.buildChartData(response.data);
+            this.hasData = response.data.series.length > 0;
+          }
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('Erro ao carregar dados de vendas:', error);
+          this.loading = false;
         }
-      ]
-    };
-    this.salesLineOptions = this.baseLineOptions('Volume de vendas no período');
-
-    const catData = this.mockCategoryDistribution();
-    this.categoryDoughnutData = {
-      labels: ['Eletrônicos', 'Moda', 'Casa & Jardim', 'Esportes'],
-      datasets: [
-        {
-          data: catData,
-          backgroundColor: ['#6366f1', '#06b6d4', '#22c55e', '#f59e0b'],
-          hoverBackgroundColor: ['#4f46e5', '#0891b2', '#16a34a', '#d97706']
-        }
-      ]
-    };
-    this.categoryDoughnutOptions = this.basePieOptions();
-
-    const ages = ['18-24','25-34','35-44','45-54','55+'];
-    const male = this.generateSeries(ages.length, 20, 200);
-    const female = this.generateSeries(ages.length, 20, 220);
-    this.customerProfileBarData = {
-      labels: ages,
-      datasets: [
-        { label: 'Masculino', data: male, backgroundColor: '#3b82f6' },
-        { label: 'Feminino',  data: female, backgroundColor: '#ef4444' }
-      ]
-    };
-    this.customerProfileBarOptions = this.baseBarOptions('Volume de compras por faixa etária e gênero');
-
-    const prodA = this.generateSeries(labels.length, 50, 300);
-    const prodB = this.generateSeries(labels.length, 30, 240);
-    const prodC = this.generateSeries(labels.length, 20, 200);
-    this.trendsStackedAreaData = {
-      labels,
-      datasets: [
-        { label: 'Produto A', data: prodA, borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.25)', tension: 0.35, fill: true, stack: 'stack1' },
-        { label: 'Produto B', data: prodB, borderColor: '#06b6d4', backgroundColor: 'rgba(6,182,212,0.25)',  tension: 0.35, fill: true, stack: 'stack1' },
-        { label: 'Produto C', data: prodC, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.25)', tension: 0.35, fill: true, stack: 'stack1' },
-      ]
-    };
-    this.trendsStackedAreaOptions = this.baseLineOptions('Produtos mais vendidos (área empilhada)', true);
-
-    const behaviorLabels = ['Freq. Compras', 'Valor Médio', 'Variedade', 'Fidelidade', 'Carrinhos Abandonados', 'Devoluções'];
-    this.behaviorRadarData = {
-      labels: behaviorLabels,
-      datasets: [
-        {
-          label: 'Perfil Geral',
-          data: this.generateSeries(behaviorLabels.length, 20, 100),
-          backgroundColor: 'rgba(99,102,241,0.25)',
-          borderColor: '#6366f1',
-          pointBackgroundColor: '#6366f1'
-        }
-      ]
-    };
-    this.behaviorRadarOptions = this.baseRadarOptions();
-
-    const funnelStages = ['Visitantes', 'Carrinho', 'Checkout', 'Compra'];
-    const funnelValues = this.mockFunnelData();
-    this.funnelBarData = {
-      labels: funnelStages,
-      datasets: [
-        {
-          label: 'Etapas do funil',
-          data: funnelValues,
-          backgroundColor: ['#6366f1','#06b6d4','#22c55e','#3b82f6']
-        }
-      ]
-    };
-    this.funnelBarOptions = this.baseHorizontalBarOptions('Taxa de conversão por etapa');
-  }
-
-  private getLabels(period: Period): string[] {
-    const now = new Date();
-    if (period === 'daily') {
-      return Array.from({ length: 14 }, (_, i) => {
-        const d = new Date(now);
-        d.setDate(now.getDate() - (13 - i));
-        return d.toLocaleDateString();
       });
-    }
-    if (period === 'weekly') {
-      return Array.from({ length: 8 }, (_, i) => `Sem ${i + 1}`);
-    }
-    return ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
   }
 
-  private generateSeries(n: number, min: number, max: number) {
-    const arr = [] as number[];
-    for (let i = 0; i < n; i++) {
-      arr.push(Math.floor(min + Math.random() * (max - min)));
-    }
-    return arr;
-  }
-
-  private mockCategoryDistribution() {
-    const base = [35, 25, 20, 20];
-    if (this.selectedCategory !== 'all') {
-      const map: any = { electronics: 0, fashion: 1, home: 2, sports: 3 };
-      const idx = map[this.selectedCategory] ?? 0;
-      base[idx] = base[idx] + 10;
-    }
-    return base;
-  }
-
-  private mockFunnelData() {
-    const visitors = 10000;
-    const cart = Math.round(visitors * 0.35);
-    const checkout = Math.round(cart * 0.60);
-    const purchase = Math.round(checkout * 0.85);
-    return [visitors, cart, checkout, purchase];
-  }
-
-  private updateOverview() {
-    const mult = this.selectedPeriod === 'daily' ? 1 : this.selectedPeriod === 'weekly' ? 5 : 22;
-    this.overview = {
-      totalPurchases: 4200 * mult,
-      avgTicket: 278.45,
-      activeCustomers: 860 * mult,
-      repurchaseRate: 23.4
+  buildChartData(data: SalesChartResponse): void {
+    this.salesChartData = {
+      labels: data.dates,
+      datasets: data.series.map((serie, index) => ({
+        label: serie.name,
+        data: serie.values,
+        borderColor: this.chartColors[index % this.chartColors.length],
+        backgroundColor: this.addAlphaToColor(
+          this.chartColors[index % this.chartColors.length],
+          0.1
+        ),
+        tension: 0.4,
+        fill: false,
+        pointRadius: 3,
+        pointHoverRadius: 6,
+        pointBackgroundColor: this.chartColors[index % this.chartColors.length],
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2
+      }))
     };
   }
 
-  private baseLineOptions(title?: string, stacked = false) {
-    return {
+  configureChartOptions(): void {
+    this.salesChartOptions = {
       responsive: true,
       maintainAspectRatio: false,
+      interaction: {
+        mode: 'index',
+        intersect: false
+      },
       plugins: {
-        legend: { labels: { color: this.textColor } },
-        tooltip: { enabled: true },
-        title: title ? { display: true, text: title, color: this.textColor } : undefined
+        legend: {
+          display: true,
+          position: 'top',
+          labels: {
+            usePointStyle: true,
+            padding: 15,
+            color: '#e0e0e0',
+            font: {
+              size: 13,
+              weight: '500',
+              family: 'Inter'
+            }
+          }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(18, 18, 18, 0.95)',
+          titleColor: '#e0e0e0',
+          bodyColor: '#e0e0e0',
+          borderColor: '#3f3f46',
+          borderWidth: 1,
+          padding: 12,
+          cornerRadius: 8,
+          displayColors: true,
+          callbacks: {
+            label: (context: any) => {
+              const label = context.dataset.label || '';
+              const value = context.parsed.y;
+              return `${label}: ${value} ${value === 1 ? 'unidade' : 'unidades'}`;
+            }
+          }
+        }
       },
       scales: {
         x: {
-          ticks: { color: this.textColorSecondary },
-          grid: { color: this.gridColor }
+          display: true,
+          title: {
+            display: true,
+            text: 'Período',
+            color: '#e0e0e0',
+            font: {
+              size: 14,
+              weight: '600',
+              family: 'Inter'
+            }
+          },
+          ticks: {
+            color: '#a0a0a0',
+            maxRotation: 45,
+            minRotation: 0,
+            font: {
+              family: 'Inter'
+            }
+          },
+          grid: {
+            display: false
+          }
         },
         y: {
-          stacked,
-          ticks: { color: this.textColorSecondary },
-          grid: { color: this.gridColor }
+          display: true,
+          title: {
+            display: true,
+            text: 'Volume de Vendas',
+            color: '#e0e0e0',
+            font: {
+              size: 14,
+              weight: '600',
+              family: 'Inter'
+            }
+          },
+          beginAtZero: true,
+          ticks: {
+            color: '#a0a0a0',
+            font: {
+              family: 'Inter'
+            },
+            callback: (value: any) => {
+              return value.toLocaleString('pt-BR');
+            }
+          },
+          grid: {
+            color: '#3f3f46',
+            drawBorder: false
+          }
         }
       }
     };
   }
 
-  private basePieOptions() {
-    return {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { labels: { color: this.textColor } },
-        tooltip: { enabled: true }
-      }
-    };
+  formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
-  private baseBarOptions(title?: string) {
-    return {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { labels: { color: this.textColor } },
-        tooltip: { enabled: true },
-        title: title ? { display: true, text: title, color: this.textColor } : undefined
-      },
-      scales: {
-        x: {
-          ticks: { color: this.textColorSecondary },
-          grid: { color: this.gridColor }
-        },
-        y: {
-          ticks: { color: this.textColorSecondary },
-          grid: { color: this.gridColor }
-        }
-      }
-    };
+  addAlphaToColor(color: string, alpha: number): string {
+    const hex = color.replace('#', '');
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
   }
 
-  private baseHorizontalBarOptions(title?: string) {
-    const opt = this.baseBarOptions(title);
-    return {
-      ...opt,
-      indexAxis: 'y' as const
-    };
+  setLastMonth(): void {
+    this.endDate = new Date();
+    this.startDate = new Date();
+    this.startDate.setMonth(this.startDate.getMonth() - 1);
+    this.loadSalesData();
   }
 
-  private baseRadarOptions() {
-    return {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { labels: { color: this.textColor } },
-        tooltip: { enabled: true }
-      },
-      scales: {
-        r: {
-          grid: { color: this.gridColor },
-          pointLabels: { color: this.textColorSecondary },
-          angleLines: { color: this.gridColor }
-        }
-      }
-    };
+  setLast3Months(): void {
+    this.endDate = new Date();
+    this.startDate = new Date();
+    this.startDate.setMonth(this.startDate.getMonth() - 3);
+    this.loadSalesData();
   }
 
-  exportSalesCSV() {
-    const rows = [['Período', 'Vendas']];
-    this.salesLineData?.labels?.forEach((label: string, i: number) => {
-      rows.push([label, this.salesLineData.datasets[0].data[i]]);
-    });
-    const csv = rows.map(r => r.join(',')).join('\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = 'vendas_por_periodo.csv'; a.click();
-    URL.revokeObjectURL(url);
+  setLast6Months(): void {
+    this.endDate = new Date();
+    this.startDate = new Date();
+    this.startDate.setMonth(this.startDate.getMonth() - 6);
+    this.loadSalesData();
   }
 
-  get insightMessage(): string {
-    return this.selectedCategory === 'electronics'
-      ? 'Aumento de 20% nas vendas de eletrônicos na última semana.'
-      : 'Tendência estável nas últimas 2 semanas.';
+  setLastYear(): void {
+    this.endDate = new Date();
+    this.startDate = new Date();
+    this.startDate.setFullYear(this.startDate.getFullYear() - 1);
+    this.loadSalesData();
   }
 }

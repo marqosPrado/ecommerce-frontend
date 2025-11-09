@@ -1,229 +1,374 @@
-<main style="width: 100%; min-height: 100vh; display: flex; flex-direction: column; padding: 6rem;">
-  <!-- Header -->
-  <header style="padding: 0 0 1rem 0;">
-    <h2 style="margin: 0; display: flex; align-items: center; gap: .5rem;">
-      <i class="pi pi-chart-line" style="font-size: 20px;"></i>
-      Análises de Vendas
-    </h2>
-    <p style="margin: .25rem 0 0 0; color: var(#6b7280);">
-      Dashboard com indicadores, gráficos e filtros interativos.
-    </p>
-  </header>
+<app-header></app-header>
+<app-line-session></app-line-session>
 
-  <section style="display: flex; gap: .75rem; flex-wrap: wrap; margin-bottom: 1rem;">
-    <p-select
-      [options]="periodOptions"
-      optionLabel="name"
-      optionValue="value"
-      [ngModel]="selectedPeriod"
-      (ngModelChange)="selectedPeriod = $event; onFiltersChanged()"
-      styleClass="w-14rem"
-      appendTo="body"
-      placeholder="Período">
-    </p-select>
+<main style="
+  width: 100%;
+  min-height: 100vh;
+  background: var(--color-surface-darker);
+  padding: 4rem 2rem;
+  box-sizing: border-box;
+">
+  <div style="
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  ">
+    <!-- Cabeçalho -->
+    <section style="
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    ">
+      <div>
+        <h1 style="
+          font-size: 1.75rem;
+          font-weight: 700;
+          color: var(--color-text-primary);
+          margin: 0 0 0.5rem 0;
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+        ">
+          <i class="pi pi-chart-line" style="color: var(--color-green);"></i>
+          Análise de Vendas
+        </h1>
+        <p style="
+          margin: 0;
+          color: var(--color-text-secondary);
+          font-size: 0.95rem;
+        ">
+          Visualize o volume de vendas por período e categoria
+        </p>
+      </div>
 
-    <p-select
-      [options]="categoryOptions"
-      optionLabel="name"
-      optionValue="value"
-      [ngModel]="selectedCategory"
-      (ngModelChange)="selectedCategory = $event; onFiltersChanged()"
-      styleClass="w-16rem"
-      appendTo="body"
-      placeholder="Categoria">
-    </p-select>
+      <button
+        pButton
+        type="button"
+        label="Voltar ao Dashboard"
+        icon="pi pi-arrow-left"
+        [style]="{
+          background: 'transparent',
+          border: '1px solid var(--input-border)',
+          color: 'var(--color-text-primary)'
+        }"
+        [routerLink]="['/admin/dashboard']"
+      ></button>
+    </section>
 
-    <p-select
-      [options]="regionOptions"
-      optionLabel="name"
-      optionValue="value"
-      [ngModel]="selectedRegion"
-      (ngModelChange)="selectedRegion = $event; onFiltersChanged()"
-      styleClass="w-14rem"
-      appendTo="body"
-      placeholder="Região">
-    </p-select>
+    <!-- Filtros -->
+    <section style="
+      background: var(--color-background);
+      border: 1px solid var(--input-border);
+      border-radius: 12px;
+      padding: 2rem;
+    ">
+      <h3 style="
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--color-text-primary);
+        margin: 0 0 1.5rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      ">
+        <i class="pi pi-filter" style="color: var(--color-blue);"></i>
+        Filtros
+      </h3>
 
-    <span style="flex: 1 1 auto;"></span>
+      <div style="
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+      ">
+        <!-- Data Inicial -->
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <label for="startDate" style="
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+          ">
+            Data Inicial
+          </label>
+          <p-datepicker
+            inputId="startDate"
+            [(ngModel)]="startDate"
+            dateFormat="dd/mm/yy"
+            [showIcon]="true"
+            placeholder="Selecione a data inicial"
+            [maxDate]="endDate"
+            [style]="{width: '100%'}"
+          />
+        </div>
 
-    <p-button
-      icon="pi pi-download"
-      label="Exportar Vendas (CSV)"
-      [severity]="'secondary'"
-      (onClick)="exportSalesCSV()">
-    </p-button>
-  </section>
+        <!-- Data Final -->
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <label for="endDate" style="
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+          ">
+            Data Final
+          </label>
+          <p-datepicker
+            inputId="endDate"
+            [(ngModel)]="endDate"
+            dateFormat="dd/mm/yy"
+            [showIcon]="true"
+            placeholder="Selecione a data final"
+            [minDate]="startDate"
+            [maxDate]="maxDate"
+            [style]="{width: '100%'}"
+          />
+        </div>
 
-  <section style="margin-bottom: 1rem;">
-    <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
-      <p-card class="shadow-2" [style]="{ padding: '1rem' }">
-        <div style="display: flex; align-items: center; gap: .75rem;">
-          <span class="metric-icon" style="background: linear-gradient(135deg, #3b82f6, #6366f1);">
-            <i class="pi pi-shopping-cart"></i>
+        <!-- Tipo de Filtro -->
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <label for="filterType" style="
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+          ">
+            Filtrar por
+          </label>
+          <p-select
+            inputId="filterType"
+            [(ngModel)]="selectedFilter"
+            [options]="filterOptions"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Selecione o tipo de filtro"
+            [style]="{width: '100%'}"
+          />
+        </div>
+
+        <!-- Botão Buscar -->
+        <div style="
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+        ">
+          <button
+            pButton
+            type="button"
+            label="Buscar"
+            icon="pi pi-search"
+            (click)="loadSalesData()"
+            [loading]="loading"
+            [style]="{
+              width: '100%',
+              background: 'var(--color-green)',
+              border: 'none',
+              color: 'white',
+              padding: '0.75rem 1.25rem',
+              borderRadius: '6px',
+              fontWeight: '600',
+              cursor: 'pointer'
+            }"
+          ></button>
+        </div>
+      </div>
+
+      <!-- Filtros Rápidos -->
+      <div style="
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--input-border);
+      ">
+        <span style="
+          font-size: 0.875rem;
+          font-weight: 600;
+          color: var(--color-text-secondary);
+        ">
+          Períodos rápidos:
+        </span>
+        <button
+          pButton
+          type="button"
+          label="Último mês"
+          (click)="setLastMonth()"
+          [outlined]="true"
+          size="small"
+          [style]="{
+            borderColor: 'var(--input-border)',
+            color: 'var(--color-text-primary)',
+            background: 'transparent'
+          }"
+        ></button>
+        <button
+          pButton
+          type="button"
+          label="Últimos 3 meses"
+          (click)="setLast3Months()"
+          [outlined]="true"
+          size="small"
+          [style]="{
+            borderColor: 'var(--input-border)',
+            color: 'var(--color-text-primary)',
+            background: 'transparent'
+          }"
+        ></button>
+        <button
+          pButton
+          type="button"
+          label="Últimos 6 meses"
+          (click)="setLast6Months()"
+          [outlined]="true"
+          size="small"
+          [style]="{
+            borderColor: 'var(--input-border)',
+            color: 'var(--color-text-primary)',
+            background: 'transparent'
+          }"
+        ></button>
+        <button
+          pButton
+          type="button"
+          label="Último ano"
+          (click)="setLastYear()"
+          [outlined]="true"
+          size="small"
+          [style]="{
+            borderColor: 'var(--input-border)',
+            color: 'var(--color-text-primary)',
+            background: 'transparent'
+          }"
+        ></button>
+      </div>
+    </section>
+
+    <!-- Gráfico -->
+    <section style="
+      background: var(--color-background);
+      border: 1px solid var(--input-border);
+      border-radius: 12px;
+      padding: 2rem;
+    ">
+      <div style="margin-bottom: 2rem;">
+        <h3 style="
+          font-size: 1.25rem;
+          font-weight: 600;
+          color: var(--color-text-primary);
+          margin: 0 0 0.5rem 0;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        ">
+          <i class="pi pi-chart-line" style="color: var(--color-green);"></i>
+          Volume de Vendas
+        </h3>
+        @if (hasData) {
+          <span style="
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+          ">
+            Período: {{ formatDate(startDate) }} até {{ formatDate(endDate) }}
           </span>
-          <div>
-            <div style="font-size: 12px; color: var(#6b7280);">Total de compras</div>
-            <div style="font-size: 1.25rem; font-weight: 700;">{{ overview.totalPurchases | number }}</div>
-          </div>
-        </div>
-      </p-card>
-
-      <p-card class="shadow-2" [style]="{ padding: '1rem' }">
-        <div style="display: flex; align-items: center; gap: .75rem;">
-          <span class="metric-icon" style="background: linear-gradient(135deg, #22c55e, #06b6d4);">
-            <i class="pi pi-wallet"></i>
-          </span>
-          <div>
-            <div style="font-size: 12px; color: var(#6b7280);">Ticket médio</div>
-            <div style="font-size: 1.25rem; font-weight: 700;">R$ {{ overview.avgTicket | number:'1.2-2' }}</div>
-          </div>
-        </div>
-      </p-card>
-
-      <p-card class="shadow-2" [style]="{ padding: '1rem' }">
-        <div style="display: flex; align-items: center; gap: .75rem;">
-          <span class="metric-icon" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">
-            <i class="pi pi-users"></i>
-          </span>
-          <div>
-            <div style="font-size: 12px; color: var(#6b7280);">Clientes ativos</div>
-            <div style="font-size: 1.25rem; font-weight: 700;">{{ overview.activeCustomers | number }}</div>
-          </div>
-        </div>
-      </p-card>
-
-      <p-card class="shadow-2" [style]="{ padding: '1rem' }">
-        <div style="display: flex; align-items: center; gap: .75rem;">
-          <span class="metric-icon" style="background: linear-gradient(135deg, #06b6d4, #3b82f6);">
-            <i class="pi pi-refresh"></i>
-          </span>
-          <div>
-            <div style="font-size: 12px; color: var(#6b7280);">Taxa de recompra</div>
-            <div style="font-size: 1.25rem; font-weight: 700;">{{ overview.repurchaseRate | number:'1.0-1' }}%</div>
-          </div>
-        </div>
-      </p-card>
-    </div>
-  </section>
-
-  <!-- Linha 1: Vendas / Categoria -->
-  <section class="admin-grid">
-    <p-card class="shadow-2 admin-card" [style]="{ padding: '1rem', minHeight: '360px' }">
-      <ng-template pTemplate="header">
-        <div style="display: flex; align-items: center; gap: .5rem;">
-          <i class="pi pi-chart-line"></i>
-          <strong>Vendas por Período</strong>
-        </div>
-      </ng-template>
-      <div style="height: 300px;">
-        <p-chart type="line" [data]="salesLineData" [options]="salesLineOptions"></p-chart>
+        }
       </div>
-    </p-card>
 
-    <p-card class="shadow-2 admin-card" [style]="{ padding: '1rem', minHeight: '360px' }">
-      <ng-template pTemplate="header">
-        <div style="display: flex; align-items: center; gap: .5rem;">
-          <i class="pi pi-chart-pie"></i>
-          <strong>Distribuição por Categoria</strong>
+      <!-- Gráfico -->
+      @if (!loading && hasData) {
+        <div style="
+          width: 100%;
+          height: 500px;
+          background: var(--color-surface-dark);
+          border-radius: 8px;
+          padding: 1rem;
+        ">
+          <p-chart
+            type="line"
+            [data]="salesChartData"
+            [options]="salesChartOptions"
+            [style]="{
+              width: '100%',
+              height: '100%'
+            }"
+          />
         </div>
-      </ng-template>
-      <div style="height: 300px;">
-        <p-chart type="doughnut" [data]="categoryDoughnutData" [options]="categoryDoughnutOptions"></p-chart>
-      </div>
-    </p-card>
-  </section>
+      }
 
-  <!-- Linha 2: Perfil / Tendências -->
-  <section class="admin-grid">
-    <p-card class="shadow-2 admin-card" [style]="{ padding: '1rem', minHeight: '360px' }">
-      <ng-template pTemplate="header">
-        <div style="display: flex; align-items: center; gap: .5rem;">
-          <i class="pi pi-sliders-h"></i>
-          <strong>Perfil de Clientes</strong>
+      <!-- Loading -->
+      @if (loading) {
+        <div style="
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 4rem 2rem;
+          gap: 1rem;
+          background: var(--color-surface-dark);
+          border-radius: 8px;
+        ">
+          <i class="pi pi-spin pi-spinner" style="
+            font-size: 3rem;
+            color: var(--color-green);
+          "></i>
+          <p style="
+            color: var(--color-text-secondary);
+            font-size: 1rem;
+            margin: 0;
+          ">
+            Carregando dados...
+          </p>
         </div>
-      </ng-template>
-      <div style="height: 300px;">
-        <p-chart type="bar" [data]="customerProfileBarData" [options]="customerProfileBarOptions"></p-chart>
-      </div>
-    </p-card>
+      }
 
-    <p-card class="shadow-2 admin-card" [style]="{ padding: '1rem', minHeight: '360px' }">
-      <ng-template pTemplate="header">
-        <div style="display: flex; align-items: center; gap: .5rem;">
-          <i class="pi pi-chart-area"></i>
-          <strong>Tendências de Produtos</strong>
+      <!-- Sem dados -->
+      @if (!loading && !hasData) {
+        <div style="
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 4rem 2rem;
+          gap: 1rem;
+          text-align: center;
+          background: var(--color-surface-dark);
+          border-radius: 8px;
+        ">
+          <i class="pi pi-chart-line" style="
+            font-size: 4rem;
+            color: var(--color-text-muted);
+          "></i>
+          <h4 style="
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin: 0;
+          ">
+            Nenhum dado encontrado
+          </h4>
+          <p style="
+            color: var(--color-text-secondary);
+            font-size: 0.95rem;
+            margin: 0;
+          ">
+            Não há vendas registradas no período selecionado.
+          </p>
+          <button
+            pButton
+            type="button"
+            label="Tentar outro período"
+            icon="pi pi-refresh"
+            (click)="setLast3Months()"
+            [outlined]="true"
+            [style]="{
+              marginTop: '1rem',
+              borderColor: 'var(--input-border)',
+              color: 'var(--color-text-primary)',
+              background: 'transparent'
+            }"
+          ></button>
         </div>
-      </ng-template>
-      <div style="height: 300px;">
-        <p-chart type="line" [data]="trendsStackedAreaData" [options]="trendsStackedAreaOptions"></p-chart>
-      </div>
-    </p-card>
-  </section>
-
-  <!-- Linha 3: Comportamento / Funil -->
-  <section class="admin-grid">
-    <p-card class="shadow-2 admin-card" [style]="{ padding: '1rem', minHeight: '360px' }">
-      <ng-template pTemplate="header">
-        <div style="display: flex; align-items: center; gap: .5rem;">
-          <i class="pi pi-compass"></i>
-          <strong>Análise de Comportamento</strong>
-        </div>
-      </ng-template>
-      <div style="height: 300px;">
-        <p-chart type="radar" [data]="behaviorRadarData" [options]="behaviorRadarOptions"></p-chart>
-      </div>
-    </p-card>
-
-    <p-card class="shadow-2 admin-card" [style]="{ padding: '1rem', minHeight: '360px' }">
-      <ng-template pTemplate="header">
-        <div style="display: flex; align-items: center; gap: .5rem;">
-          <i class="pi pi-filter"></i>
-          <strong>Taxa de Conversão</strong>
-        </div>
-      </ng-template>
-      <div style="height: 300px;">
-        <p-chart type="bar" [data]="funnelBarData" [options]="funnelBarOptions"></p-chart>
-      </div>
-    </p-card>
-  </section>
-
-  <!-- Insights (opcional) -->
-  <section style="margin-top: 1rem;">
-    <p-card class="shadow-2" [style]="{ padding: '1rem' }">
-      <ng-template pTemplate="header">
-        <div style="display: flex; align-items: center; gap: .5rem;">
-          <i class="pi pi-lightbulb"></i>
-          <strong>Insights automáticos</strong>
-        </div>
-      </ng-template>
-      <p style="margin: 0; color: var(#6b7280);">
-        {{ insightMessage }}
-      </p>
-    </p-card>
-  </section>
+      }
+    </section>
+  </div>
 </main>
-
-<style>
-  .admin-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
-  .admin-card {
-    border-radius: 12px;
-    transition: transform .2s ease, box-shadow .2s ease;
-  }
-  .admin-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 24px rgba(0,0,0,.08);
-  }
-  .metric-icon {
-    width: 40px; height: 40px;
-    display: inline-flex; align-items: center; justify-content: center;
-    border-radius: 10px; color: #fff;
-  }
-  @media (max-width: 640px) {
-    main { padding: 1rem; }
-  }
-</style>

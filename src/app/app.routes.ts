@@ -80,7 +80,7 @@ export const routes: Routes = [
     component: AdminProductManagement
   },
   {
-    path: 'admin/analises',
+    path: 'admin/analytics',
     component: AdminAnalytics
   },
   {
