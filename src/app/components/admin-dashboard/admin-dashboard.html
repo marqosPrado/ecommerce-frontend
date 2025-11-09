@@ -315,13 +315,13 @@
           font-size: 2rem;
           font-weight: 700;
           color: var(--color-text-primary);
-        ">1.248</span>
+        ">{{basicAnalyticsData.totalCustomer.totalCustomer}}</span>
         <span style="
           color: var(--color-green);
           font-size: 0.875rem;
           font-weight: 500;
         ">
-          <i class="pi pi-arrow-up" style="font-size: 0.75rem;"></i> 12% este mês
+          <i class="pi pi-arrow-up" style="font-size: 0.75rem;"></i> {{basicAnalyticsData.totalCustomer.growthTotalCustomer}}% este mês
         </span>
       </div>
 
@@ -350,7 +350,7 @@
           font-size: 2rem;
           font-weight: 700;
           color: var(--color-text-primary);
-        ">24</span>
+        ">{{basicAnalyticsData.pendingOrders}}</span>
         <span style="
           color: var(--color-text-secondary);
           font-size: 0.875rem;
@@ -385,7 +385,7 @@
           font-size: 2rem;
           font-weight: 700;
           color: var(--color-text-primary);
-        ">8</span>
+        ">{{basicAnalyticsData.openExchanges}}</span>
         <span style="
           color: #f59e0b;
           font-size: 0.875rem;
@@ -420,7 +420,7 @@
           font-size: 2rem;
           font-weight: 700;
           color: var(--color-text-primary);
-        ">15</span>
+        ">{{basicAnalyticsData.deliveryToday}}</span>
         <span style="
           color: var(--color-text-secondary);
           font-size: 0.875rem;

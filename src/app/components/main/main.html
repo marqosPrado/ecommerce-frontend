@@ -2,38 +2,524 @@
 <app-line-session></app-line-session>
 <app-banner></app-banner>
 
-<main style="width: 100%; display: flex; flex-direction: column; padding: 6rem; align-items: center; justify-content: center; gap: 6rem">
-  <div style="display: flex; flex-direction: column; width: 100%; gap: 4rem; justify-content: center; align-items: center; ">
-    <h2 style="font-size: 36px;">Relógios em Destaque</h2>
+<main style="
+  width: 100%;
+  min-height: 100vh;
+  background: var(--color-surface-darker);
+  box-sizing: border-box;
+">
+  <!-- Hero Section - Destaque Visual -->
+  <section style="
+    width: 100%;
+    padding: 4rem 2rem 6rem;
+    background: linear-gradient(180deg, rgba(37, 99, 235, 0.05) 0%, transparent 100%);
+    border-bottom: 1px solid var(--input-border);
+  ">
+    <div style="max-width: 1400px; margin: 0 auto; text-align: center;">
+      <div style="
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1.25rem;
+        background: rgba(37, 99, 235, 0.1);
+        border: 1px solid var(--color-blue);
+        border-radius: 50px;
+        margin-bottom: 1.5rem;
+      ">
+        <i class="pi pi-star-fill" style="color: var(--color-yellow); font-size: 0.875rem;"></i>
+        <span style="
+          color: var(--color-blue-light);
+          font-size: 0.875rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        ">
+          Coleção Premium
+        </span>
+      </div>
 
-    <section style="width: 100%; display: flex; justify-content: center; align-items: center">
-      <p-carousel [value]="watches" [numVisible]="4" [circular]="false" style="max-width: 100%;">
-        <ng-template pTemplate="item" let-watch>
-          <app-product-card
-            [id]="watch.id"
-            [title]="watch.title"
-            [price]="watch.price"
-            [url]="watch.url_image"
-          ></app-product-card>
-        </ng-template>
-      </p-carousel>
+      <h1 style="
+        font-size: 3rem;
+        font-weight: 800;
+        color: var(--color-text-primary);
+        margin: 0 0 1rem 0;
+        line-height: 1.2;
+      ">
+        Relógios de Luxo e Precisão
+      </h1>
+
+      <p style="
+        font-size: 1.125rem;
+        color: var(--color-text-secondary);
+        margin: 0 auto 2rem;
+        max-width: 600px;
+        line-height: 1.6;
+      ">
+        Descubra nossa coleção exclusiva das melhores marcas do mundo.
+        Qualidade, estilo e sofisticação em cada detalhe.
+      </p>
+
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <p-button
+          label="Ver Catálogo Completo"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          [style]="{
+            background: 'var(--color-blue)',
+            border: 'none',
+            padding: '0.875rem 2rem',
+            fontSize: '1rem',
+            fontWeight: '600',
+            borderRadius: '8px'
+          }"
+        ></p-button>
+
+        <p-button
+          label="Ofertas Especiais"
+          icon="pi pi-tag"
+          [style]="{
+            background: 'transparent',
+            border: '1px solid var(--input-border)',
+            color: 'var(--color-text-primary)',
+            padding: '0.875rem 2rem',
+            fontSize: '1rem',
+            fontWeight: '600',
+            borderRadius: '8px'
+          }"
+        ></p-button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Container Principal -->
+  <div style="max-width: 1400px; margin: 0 auto; padding: 0 2rem;">
+
+    <!-- Stats Section -->
+    <section style="
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin: -3rem 0 6rem;
+      position: relative;
+      z-index: 1;
+    ">
+      <div style="
+        background: var(--color-surface-dark);
+        border: 1px solid var(--input-border);
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+      "
+      >
+        <i class="pi pi-box" style="
+          font-size: 2rem;
+          color: var(--color-blue);
+          margin-bottom: 1rem;
+          display: block;
+        "></i>
+        <h3 style="
+          font-size: 2rem;
+          font-weight: 700;
+          color: var(--color-text-primary);
+          margin: 0 0 0.5rem 0;
+        ">
+          {{ watches.length }}+
+        </h3>
+        <p style="
+          color: var(--color-text-secondary);
+          font-size: 0.95rem;
+          margin: 0;
+        ">
+          Modelos Disponíveis
+        </p>
+      </div>
+
+      <div style="
+        background: var(--color-surface-dark);
+        border: 1px solid var(--input-border);
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+      "
+      >
+        <i class="pi pi-verified" style="
+          font-size: 2rem;
+          color: var(--color-green);
+          margin-bottom: 1rem;
+          display: block;
+        "></i>
+        <h3 style="
+          font-size: 2rem;
+          font-weight: 700;
+          color: var(--color-text-primary);
+          margin: 0 0 0.5rem 0;
+        ">
+          100%
+        </h3>
+        <p style="
+          color: var(--color-text-secondary);
+          font-size: 0.95rem;
+          margin: 0;
+        ">
+          Produtos Originais
+        </p>
+      </div>
+
+      <div style="
+        background: var(--color-surface-dark);
+        border: 1px solid var(--input-border);
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+      "
+      >
+        <i class="pi pi-truck" style="
+          font-size: 2rem;
+          color: var(--color-purple);
+          margin-bottom: 1rem;
+          display: block;
+        "></i>
+        <h3 style="
+          font-size: 2rem;
+          font-weight: 700;
+          color: var(--color-text-primary);
+          margin: 0 0 0.5rem 0;
+        ">
+          Grátis
+        </h3>
+        <p style="
+          color: var(--color-text-secondary);
+          font-size: 0.95rem;
+          margin: 0;
+        ">
+          Frete para Todo Brasil
+        </p>
+      </div>
+
+      <div style="
+        background: var(--color-surface-dark);
+        border: 1px solid var(--input-border);
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+      "
+      >
+        <i class="pi pi-shield" style="
+          font-size: 2rem;
+          color: var(--color-yellow);
+          margin-bottom: 1rem;
+          display: block;
+        "></i>
+        <h3 style="
+          font-size: 2rem;
+          font-weight: 700;
+          color: var(--color-text-primary);
+          margin: 0 0 0.5rem 0;
+        ">
+          2 Anos
+        </h3>
+        <p style="
+          color: var(--color-text-secondary);
+          font-size: 0.95rem;
+          margin: 0;
+        ">
+          Garantia Estendida
+        </p>
+      </div>
     </section>
-  </div>
 
-  <div style="display: flex; flex-direction: column; width: 100%; gap: 4rem; justify-content: center; align-items: center; ">
-    <h2 style="font-size: 36px">Relógios Casio</h2>
+    <!-- Seção: Relógios em Destaque -->
+    <section style="margin-bottom: 6rem;">
+      <div style="
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2.5rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+      ">
+        <div>
+          <h2 style="
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin: 0 0 0.5rem 0;
+          ">
+            Relógios em Destaque
+          </h2>
+          <p style="
+            font-size: 1rem;
+            color: var(--color-text-secondary);
+            margin: 0;
+          ">
+            Os modelos mais procurados da nossa coleção
+          </p>
+        </div>
 
-    <section style="width: 100%; display: flex; justify-content: center; align-items: center">
-      <p-carousel [value]="watches" [numVisible]="4" [circular]="false" style="max-width: 100%;">
-        <ng-template pTemplate="item" let-watch>
-          <app-product-card
-            [id]="watch.id"
-            [title]="watch.title"
-            [price]="watch.price"
-            [url]="watch.main_image"
-          ></app-product-card>
-        </ng-template>
-      </p-carousel>
+        <p-button
+          label="Ver Todos"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          [style]="{
+            background: 'transparent',
+            border: '1px solid var(--input-border)',
+            color: 'var(--color-text-primary)',
+            borderRadius: '8px',
+            padding: '0.625rem 1.25rem',
+            fontSize: '0.95rem',
+            fontWeight: '500'
+          }"
+        ></p-button>
+      </div>
+
+      @if (loadingFeatured) {
+        <div style="display: flex; justify-content: center; padding: 4rem;">
+          <i class="pi pi-spin pi-spinner" style="font-size: 2rem; color: var(--color-text-secondary);"></i>
+        </div>
+      } @else if (featuredWatches.length > 0) {
+        <p-carousel
+          [value]="featuredWatches"
+          [numVisible]="4"
+          [numScroll]="1"
+          [circular]="false"
+          [responsiveOptions]="responsiveOptions"
+          [showIndicators]="false"
+        >
+          <ng-template pTemplate="item" let-watch>
+            <div style="padding: 0 0.75rem;">
+              <app-product-card
+                [id]="watch.id"
+                [title]="watch.title"
+                [price]="watch.price"
+                [url]="watch.main_image"
+              ></app-product-card>
+            </div>
+          </ng-template>
+        </p-carousel>
+      } @else {
+        <div style="
+          text-align: center;
+          padding: 4rem 2rem;
+          background: var(--color-surface-dark);
+          border: 1px solid var(--input-border);
+          border-radius: 12px;
+        ">
+          <i class="pi pi-inbox" style="font-size: 3rem; color: var(--color-text-muted); margin-bottom: 1rem;"></i>
+          <p style="color: var(--color-text-secondary); margin: 0;">
+            Nenhum produto em destaque no momento
+          </p>
+        </div>
+      }
     </section>
+
+    <!-- Seção: Marcas Populares -->
+    <section style="margin-bottom: 6rem;">
+      <div style="text-align: center; margin-bottom: 3rem;">
+        <h2 style="
+          font-size: 2rem;
+          font-weight: 700;
+          color: var(--color-text-primary);
+          margin: 0 0 0.5rem 0;
+        ">
+          Explore por Marca
+        </h2>
+        <p style="
+          font-size: 1rem;
+          color: var(--color-text-secondary);
+          margin: 0;
+        ">
+          Encontre as melhores marcas de relógios do mundo
+        </p>
+      </div>
+
+      <div style="
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+      ">
+        @for (brand of brands; track brand.name) {
+          <div style="
+            background: var(--color-surface-dark);
+            border: 1px solid var(--input-border);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+          "
+               (click)="filterByBrand(brand.name)"
+          >
+            <div style="
+              width: 64px;
+              height: 64px;
+              margin: 0 auto 1rem;
+              border-radius: 12px;
+              background: var(--color-background);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 1.5rem;
+              font-weight: 700;
+              color: var(--color-text-primary);
+            ">
+              {{ brand.name.charAt(0) }}
+            </div>
+            <h3 style="
+              font-size: 1.125rem;
+              font-weight: 600;
+              color: var(--color-text-primary);
+              margin: 0 0 0.25rem 0;
+            ">
+              {{ brand.name }}
+            </h3>
+            <p style="
+              font-size: 0.875rem;
+              color: var(--color-text-secondary);
+              margin: 0;
+            ">
+              {{ brand.count }} modelos
+            </p>
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- Seção: Todos os Relógios -->
+    <section style="margin-bottom: 6rem;">
+      <div style="
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2.5rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+      ">
+        <div>
+          <h2 style="
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin: 0 0 0.5rem 0;
+          ">
+            Todos os Relógios
+          </h2>
+          <p style="
+            font-size: 1rem;
+            color: var(--color-text-secondary);
+            margin: 0;
+          ">
+            Explore nossa coleção completa de relógios premium
+          </p>
+        </div>
+
+        <!-- Filtros -->
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+          <p-select
+            [options]="sortOptions"
+            [(ngModel)]="selectedSort"
+            optionLabel="label"
+            placeholder="Ordenar por"
+            [style]="{
+              minWidth: '180px'
+            }"
+          ></p-select>
+        </div>
+      </div>
+
+      @if (loadingAll) {
+        <div style="display: flex; justify-content: center; padding: 4rem;">
+          <i class="pi pi-spin pi-spinner" style="font-size: 2rem; color: var(--color-text-secondary);"></i>
+        </div>
+      } @else if (watches.length > 0) {
+        <div style="
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+          gap: 2rem;
+          margin-bottom: 3rem;
+        ">
+          @for (watch of watches; track watch.id) {
+            <app-product-card
+              [id]="watch.id"
+              [title]="watch.title"
+              [price]="Number(watch.price)"
+              [url]="watch.main_image"
+            ></app-product-card>
+          }
+        </div>
+      } @else {
+        <div style="
+          text-align: center;
+          padding: 4rem 2rem;
+          background: var(--color-surface-dark);
+          border: 1px solid var(--input-border);
+          border-radius: 12px;
+        ">
+          <i class="pi pi-inbox" style="font-size: 3rem; color: var(--color-text-muted); margin-bottom: 1rem;"></i>
+          <p style="color: var(--color-text-secondary); margin: 0;">
+            Nenhum produto encontrado
+          </p>
+        </div>
+      }
+    </section>
+
+    <!-- CTA Section -->
+    <section style="
+      margin-bottom: 6rem;
+      padding: 4rem 3rem;
+      background: linear-gradient(135deg, var(--color-blue) 0%, var(--color-purple) 100%);
+      border-radius: 16px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    ">
+      <div style="position: relative; z-index: 1;">
+        <h2 style="
+          font-size: 2.5rem;
+          font-weight: 800;
+          color: white;
+          margin: 0 0 1rem 0;
+        ">
+          Não encontrou o que procura?
+        </h2>
+        <p style="
+          font-size: 1.125rem;
+          color: rgba(255, 255, 255, 0.9);
+          margin: 0 auto 2rem;
+          max-width: 600px;
+        ">
+          Nossa equipe está pronta para te ajudar a encontrar o relógio perfeito
+        </p>
+        <p-button
+          label="Falar com Especialista"
+          icon="pi pi-comments"
+          [style]="{
+            background: 'white',
+            color: 'var(--color-blue)',
+            border: 'none',
+            padding: '1rem 2.5rem',
+            fontSize: '1.05rem',
+            fontWeight: '700',
+            borderRadius: '8px'
+          }"
+        ></p-button>
+      </div>
+
+      <!-- Decoração de fundo -->
+      <div style="
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 400px;
+        height: 400px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        filter: blur(60px);
+      "></div>
+    </section>
+
   </div>
 </main>

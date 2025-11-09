@@ -8,7 +8,7 @@ import {CreditCard} from '../types/Payment/CreditCard';
   providedIn: 'root'
 })
 export class ClientService {
-  private apiUrl = 'http://localhost:8080/client'
+  private apiUrl = 'http://localhost:8080/api/auth'
 
   constructor(private http: HttpClient) {}
 

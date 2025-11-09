@@ -15,4 +15,6 @@ export class ProductCard {
   @Input() title!: string;
   @Input() price!: number;
   @Input() url!: string;
+
+  isHovered: boolean = false;
 }
