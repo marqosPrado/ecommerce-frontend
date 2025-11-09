@@ -1,0 +1,144 @@
+<app-header></app-header>
+<main style="width: 100%; min-height: 100vh; background: var(--color-surface-darker); padding: 3rem 1.5rem; box-sizing: border-box;">
+    <div style="width: 100%; display: flex; flex-direction: row; gap: 1rem;">
+        <p-button
+          icon="pi pi-arrow-left"
+          [style]="{
+            background: 'var(--color-surface-dark)',
+            border: '1px solid var(--input-border)',
+            color: 'var(--color-text-primary)',
+            borderRadius: '8px',
+            width: '44px',
+            height: '44px'
+          }"
+          (onClick)="goBack()"
+        ></p-button>
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <h1 style="
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin: 0;
+          ">
+            Meus Cupons de Troca
+          </h1>
+            <p style="
+            color: var(--color-text-secondary);
+            font-size: 0.95rem;
+            margin: 0.5rem 0 0 0;
+          ">
+            Gerencie todos seus cupons de troca.
+          </p>
+        </div>
+    </div>
+
+    @if (loading) {
+        <div style="
+            width: 100%; 
+            height: calc(100vh - 200px); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+        ">
+            <p-progress-spinner strokeWidth="8" fill="transparent" animationDuration=".5s" [style]="{ width: '50px', height: '50px' }" />
+        </div>
+    } @else {
+        @if (exchangeVouchersSummary.length === 0) {
+            <div style="
+                width: 100%;
+                max-width: 600px;
+                margin: 4rem auto;
+                text-align: center;
+                padding: 3rem 2rem;
+                background: var(--color-surface-dark);
+                border: 1px solid var(--input-border);
+                border-radius: 12px;
+            ">
+                <i class="pi pi-ticket" style="font-size: 4rem; color: var(--color-text-muted); margin-bottom: 1.5rem;"></i>
+                <h2 style="color: var(--color-text-primary); font-size: 1.5rem; margin-bottom: 0.5rem;">
+                    Nenhum cupom encontrado
+                </h2>
+                <p style="color: var(--color-text-secondary); font-size: 1rem;">
+                    Você ainda não possui cupons de troca disponíveis.
+                </p>
+            </div>
+        } @else {
+            <div style="
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+                gap: 1.5rem;
+                margin-top: 2rem;
+                width: 100%;
+            ">
+                @for (voucher of exchangeVouchersSummary; track voucher.id) {
+                    <div class="voucher-card" [class.negative]="!voucher.isActive">
+                        <div class="voucher-header">
+                            <div class="voucher-status">
+                                <span class="status-badge" [class.negative]="!voucher.isActive">
+                                    {{ voucher.isActive ? 'Disponível' : 'Utilizado' }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="voucher-code">
+                            <span class="code-label">Código do Cupom</span>
+                            <span class="code-value">{{ voucher.identifier }}</span>
+                        </div>
+
+                        <div class="voucher-amount">
+                            <span class="amount-label">Valor</span>
+                            <span class="amount-value" [class.negative]="!voucher.isActive">
+                                {{ formatCurrency(voucher.amount) }}
+                            </span>
+                        </div>
+
+                        <div class="voucher-footer">
+                            <button class="copy-button" (click)="copyCode(voucher.identifier)" [disabled]="!voucher.isActive">
+                                <i class="pi pi-copy"></i>
+                                Copiar Código
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @if (totalPages > 1) {
+                <div style="
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    gap: 1rem;
+                    margin-top: 3rem;
+                ">
+                    <p-button
+                        icon="pi pi-chevron-left"
+                        [disabled]="currentPage === 0"
+                        [style]="{
+                            background: 'var(--color-surface-dark)',
+                            border: '1px solid var(--input-border)',
+                            color: 'var(--color-text-primary)',
+                            borderRadius: '8px'
+                        }"
+                        (onClick)="previousPage()"
+                    ></p-button>
+                    
+                    <span style="color: var(--color-text-secondary); font-size: 0.95rem;">
+                        Página {{ currentPage + 1 }} de {{ totalPages }}
+                    </span>
+                    
+                    <p-button
+                        icon="pi pi-chevron-right"
+                        [disabled]="currentPage === totalPages - 1"
+                        [style]="{
+                            background: 'var(--color-surface-dark)',
+                            border: '1px solid var(--input-border)',
+                            color: 'var(--color-text-primary)',
+                            borderRadius: '8px'
+                        }"
+                        (onClick)="nextPage()"
+                    ></p-button>
+                </div>
+            }
+        }
+    }
+</main>

@@ -18,6 +18,7 @@ import {AdminDashboard} from './components/admin-dashboard/admin-dashboard';
 import {adminGuard} from './services/common/guards/admin/admin.guard';
 import {AdminOrdersManagement} from './components/admin-orders-management/admin-orders-management';
 import {AdminExchangesManagement} from './components/admin-exchange-management/admin-exchange-management';
+import { ClientExchangeVouchers } from './components/client-exchange-vouchers/client-exchange-vouchers';
 
 export const routes: Routes = [
   {
@@ -89,6 +90,10 @@ export const routes: Routes = [
   {
     path: 'carrinho',
     component: Cart
+  },
+  {
+    path: 'minha-conta/cupons-troca',
+    component: ClientExchangeVouchers
   }
   // {
   //   path: 'admistrador/produto/cadastro'
