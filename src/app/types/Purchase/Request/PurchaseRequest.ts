@@ -4,5 +4,6 @@ export type PurchaseRequest = {
   orderItem: OrderItemRequest[],
   addressId: number,
   creditCardId: number[],
+  exchangeVouchersId: number[],
   voucher?: string
 }

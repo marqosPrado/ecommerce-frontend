@@ -12,7 +12,7 @@ import { ApiResponse } from "../../types/Api/ApiResponse";
   })
 export class ExchangeVoucherService {
     private baseUrl = "http://localhost:8080/api/exchange-voucher";
-    
+
     constructor(private http: HttpClient) {}
 
     getExchangeVouchers(page: number = 0, size: number = 5): Observable<ApiResponse<ContentPageable<ExchangeVoucherSummary[]>>> {
@@ -21,5 +21,14 @@ export class ExchangeVoucherService {
             .set('size', size.toString());
 
         return this.http.get<ApiResponse<ContentPageable<ExchangeVoucherSummary[]>>>(this.baseUrl, { params });
+    }
+
+    getExchangeVoucherActive(page: number = 0, size: number = 5): Observable<ApiResponse<ContentPageable<ExchangeVoucherSummary[]>>> {
+      const params = new HttpParams()
+        .set('page', page.toString())
+        .set('size', size.toString())
+        .set('status', 'active');
+
+      return this.http.get<ApiResponse<ContentPageable<ExchangeVoucherSummary[]>>>(this.baseUrl, { params });
     }
 }

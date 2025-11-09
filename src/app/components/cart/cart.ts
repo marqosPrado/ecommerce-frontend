@@ -33,6 +33,9 @@ import {Authentication} from '../../services/authentication/authentication';
 import {Checkbox} from 'primeng/checkbox';
 import {ApiResponse} from '../../types/Api/ApiResponse';
 import {VoucherSummaryResponse} from '../../types/Voucher/Response/VoucherSummaryResponse';
+import {ExchangeVoucherService} from '../../services/exchange-voucher/exchange-voucher.service';
+import {ExchangeVoucherSummary} from '../../types/ExchangeVoucher/exchange-voucher-summary.type';
+import {ProgressSpinner} from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-cart',
@@ -61,6 +64,7 @@ import {VoucherSummaryResponse} from '../../types/Voucher/Response/VoucherSummar
     ButtonDirective,
     ButtonLabel,
     FormsModule,
+    ProgressSpinner,
   ],
   templateUrl: './cart.html',
   styleUrl: './cart.css'
@@ -70,6 +74,7 @@ export class Cart implements OnInit, OnDestroy {
   creditCards: CreditCard[] = [];
   cartItems: CartItem[] = [];
   addresses: Address[] = [];
+  exchangeVouchers: ExchangeVoucherSummary[] = [];
 
   totalPrice$: Observable<number>;
   activeStep: number = 1;
@@ -90,8 +95,10 @@ export class Cart implements OnInit, OnDestroy {
   showAddressForm: boolean = false;
   showCreditCardForm: boolean = false;
   loading: boolean = false;
+  loadingExchangeVouchers: boolean = false;
   showDialog: boolean = false;
   hasLogin: boolean = false;
+
   voucherState = {
     isApplied: false,
     isLoading: false,
@@ -113,9 +120,10 @@ export class Cart implements OnInit, OnDestroy {
     private addressService: AddressService,
     private creditCardService: CreditCardService,
     private purchaseOrderService: PurchaseOrderService,
+    private exchangeVoucherService: ExchangeVoucherService,
     private router: Router,
     private authenticationService: Authentication,
-    private injector: Injector // 👈 Necessário para afterNextRender
+    private injector: Injector
   ) {
     this.totalPrice$ = this.cartService.calculateTotalValue();
 
@@ -156,13 +164,13 @@ export class Cart implements OnInit, OnDestroy {
     });
 
     this.paymentForm = this.fb.group({
-      selectedCardIds: this.fb.array([], Validators.required),
+      selectedCardIds: this.fb.array([]),
+      selectedExchangeVouchers: this.fb.array([]),
       installments: new FormControl<{name: string, value: string} | null>(
         {name: '1x sem juros', value: '1'},
         Validators.required
       )
     });
-
 
     afterNextRender(() => {
       this.hasLogin = this.isAuthenticated();
@@ -172,6 +180,35 @@ export class Cart implements OnInit, OnDestroy {
 
   get selectedCardIdsArray(): FormArray {
     return this.paymentForm.get('selectedCardIds') as FormArray;
+  }
+
+  get selectedExchangeVouchersArray(): FormArray {
+    return this.paymentForm.get('selectedExchangeVouchers') as FormArray;
+  }
+
+  // Calcula o valor total dos cupons selecionados
+  get totalVouchersValue(): number {
+    return this.selectedExchangeVouchersArray.value.reduce((sum: number, voucherId: number) => {
+      const voucher = this.exchangeVouchers.find(v => v.id === voucherId);
+      return sum + (voucher ? parseFloat(voucher.amount) : 0);
+    }, 0);
+  }
+
+  // Calcula o valor restante após aplicar os cupons
+  get remainingValue(): Observable<number> {
+    return new Observable(observer => {
+      this.totalPrice$.subscribe(total => {
+        const remaining = total - this.totalVouchersValue;
+        observer.next(Math.max(0, remaining));
+      });
+    });
+  }
+
+  // Verifica se é necessário adicionar cartão de crédito
+  get requiresCreditCard(): boolean {
+    let totalPrice = 0;
+    this.totalPrice$.pipe(takeUntil(this.destroy$)).subscribe(price => totalPrice = price);
+    return this.totalVouchersValue < totalPrice;
   }
 
   onCardCheckboxChange(cardId: number | undefined, checked: boolean): void {
@@ -196,6 +233,30 @@ export class Cart implements OnInit, OnDestroy {
     return this.selectedCardIdsArray.value.includes(cardId);
   }
 
+  onVoucherCheckboxChange(voucherId: number | undefined, checked: boolean): void {
+    if (!voucherId) return;
+
+    const selectedVouchers = this.selectedExchangeVouchersArray;
+
+    if (checked) {
+      selectedVouchers.push(this.fb.control(voucherId));
+    } else {
+      const index = selectedVouchers.controls.findIndex(control => control.value === voucherId);
+      if (index !== -1) {
+        selectedVouchers.removeAt(index);
+      }
+    }
+
+    console.log('Cupons selecionados:', selectedVouchers.value);
+    console.log('Valor total dos cupons:', this.totalVouchersValue);
+    console.log('Requer cartão de crédito:', this.requiresCreditCard);
+  }
+
+  isVoucherSelected(voucherId: number | undefined): boolean {
+    if (!voucherId) return false;
+    return this.selectedExchangeVouchersArray.value.includes(voucherId);
+  }
+
   ngOnInit(): void {
     this.addressService.getAddresses()
       .pipe(takeUntil(this.destroy$))
@@ -216,14 +277,24 @@ export class Cart implements OnInit, OnDestroy {
         next: (cards) => {
           this.creditCards = cards;
           console.log('Cartões carregados:', this.creditCards);
-
-          const mainCard = this.creditCards.find(a => a.isMain) ?? this.creditCards[0];
-          if (mainCard) {
-            // ✅ Pré-seleciona o cartão principal
-            this.selectedCardIdsArray.push(this.fb.control(mainCard.id));
-          }
         },
         error: (err) => console.error('Erro ao carregar cartões:', err)
+      });
+
+    // Carrega cupons de troca ativos
+    this.loadingExchangeVouchers = true;
+    this.exchangeVoucherService.getExchangeVoucherActive(0, 100)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.exchangeVouchers = response.data.content;
+          console.log('Cupons de troca carregados:', this.exchangeVouchers);
+          this.loadingExchangeVouchers = false;
+        },
+        error: (err) => {
+          console.error('Erro ao carregar cupons de troca:', err);
+          this.loadingExchangeVouchers = false;
+        }
       });
 
     this.cartService.items$
@@ -386,30 +457,35 @@ export class Cart implements OnInit, OnDestroy {
   }
 
   finalizePurchase(): void {
-    if (this.paymentForm.invalid || this.addressFormGroup.invalid || !this.cartItems.length) {
-      this.paymentForm.markAllAsTouched();
+    if (this.addressFormGroup.invalid || !this.cartItems.length) {
       this.addressFormGroup.markAllAsTouched();
       this.showErrorDialog('Por favor, preencha todos os campos obrigatórios.');
       return;
     }
 
     const selectedAddressId = this.addressFormGroup.get('address')?.value;
-    const selectedCardIds = this.selectedCardIdsArray.value; // ✅ Pega o array de IDs
+    const selectedCardIds = this.selectedCardIdsArray.value;
+    const selectedVoucherIds = this.selectedExchangeVouchersArray.value;
 
-    if (!selectedAddressId || selectedCardIds.length === 0) {
-      this.showErrorDialog('Selecione um endereço e pelo menos um cartão de crédito.');
+    if (this.requiresCreditCard && selectedCardIds.length === 0) {
+      this.showErrorDialog('O valor dos cupons não cobre o total da compra. Adicione pelo menos um cartão de crédito.');
       return;
     }
 
-    // ✅ Já é um array
+    if (!selectedAddressId) {
+      this.showErrorDialog('Selecione um endereço de entrega.');
+      return;
+    }
+
     const purchase: PurchaseRequest = {
       orderItem: this.cartItems.map(item => ({
         productId: item.product.id,
         quantity: item.quantity
       })),
       addressId: selectedAddressId,
-      creditCardId: selectedCardIds, // ✅ Array de IDs
-      voucher: this.voucherState.isApplied ? this.voucherState.data.code : undefined
+      creditCardId: selectedCardIds,
+      exchangeVouchersId: selectedVoucherIds,
+      voucher: this.voucherState.isApplied ? this.voucherState.data.code : ''
     };
 
     console.log('📦 Purchase Order:', JSON.stringify(purchase, null, 2));
@@ -423,6 +499,9 @@ export class Cart implements OnInit, OnDestroy {
           console.log('✅ Pedido realizado com sucesso:', response);
           this.cartService.clearCart();
           this.removeVoucher();
+
+          // Limpa cupons selecionados
+          this.selectedExchangeVouchersArray.clear();
 
           const orderNumber = String(response.data?.order_number || response.data?.id || 'N/A');
           this.setupDialogSuccess(orderNumber);
@@ -510,7 +589,10 @@ export class Cart implements OnInit, OnDestroy {
     if (this.activeStep === 1) return !this.cartForm?.valid || this.cartItems.length === 0;
     if (this.activeStep === 2) return this.addressFormGroup.invalid;
     if (this.activeStep === 3) {
-      return this.selectedCardIdsArray.length === 0 || this.paymentForm.invalid;
+      if (!this.requiresCreditCard) {
+        return false;
+      }
+      return this.selectedCardIdsArray.length === 0;
     }
     return true;
   }

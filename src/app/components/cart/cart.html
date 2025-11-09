@@ -4,15 +4,11 @@
 <main style="width: 100%; height: 100%; padding: 4rem">
   <div style="width: 100%; display: flex; flex-direction: row; gap: 1rem">
     <div style="width: 75%; height: 50%">
-      <p-stepper [value]="activeStep" class="basis-[50rem]">
+      <p-stepper [value]="activeStep" class="basis-[50rem]" [linear]="true">
         <p-step-list>
           <p-step [value]="1">Carrinho</p-step>
-          @if (activeStep == 2) {
-            <p-step [value]="2">Endereços</p-step>
-          }
-          @if (activeStep >= 3) {
-            <p-step [value]="3">Pagamento</p-step>
-          }
+          <p-step [value]="2">Endereços</p-step>
+          <p-step [value]="3">Pagamento</p-step>
         </p-step-list>
 
         <p-step-panels>
@@ -448,33 +444,175 @@
           <p-step-panel [value]="3">
             <ng-template #content>
               <div class="flex flex-col h-48" style="display: flex; flex-direction: column; gap: 0.75rem">
-                <div
-                  style="background-color: var(--color-surface-dark); border: 1px solid var(--input-border); border-radius: 8px; padding: 1.5rem;">
+
+                <!-- ========== SEÇÃO DE CUPONS DE TROCA ========== -->
+                <div style="background-color: var(--color-surface-dark); border: 1px solid var(--input-border); border-radius: 8px; padding: 1.5rem;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <span style="color: var(--color-text-primary);"><strong>Cupons de Troca Disponíveis</strong></span>
+                    <span style="color: var(--color-text-secondary); font-size: 0.875rem;">
+            {{ selectedExchangeVouchersArray.length }} {{ selectedExchangeVouchersArray.length === 1 ? 'cupom selecionado' : 'cupons selecionados' }}
+          </span>
+                  </div>
+
+                  @if (loadingExchangeVouchers) {
+                    <div style="display: flex; justify-content: center; padding: 2rem;">
+                      <p-progress-spinner strokeWidth="6" fill="transparent" animationDuration=".5s" [style]="{ width: '40px', height: '40px' }" />
+                    </div>
+                  } @else if (exchangeVouchers.length === 0) {
+                    <div style="text-align: center; padding: 2rem; color: var(--color-text-secondary);">
+                      <i class="pi pi-ticket" style="font-size: 2.5rem; color: var(--color-text-muted); margin-bottom: 1rem; display: block;"></i>
+                      <p style="margin: 0;">Você não possui cupons de troca disponíveis no momento.</p>
+                    </div>
+                  } @else {
+                    <div style="width: 100%; display: flex; flex-direction: column; gap: 1rem">
+                      @for (voucher of exchangeVouchers; track voucher.id) {
+                        <div [style]="{
+                'display': 'flex',
+                'flex-direction': 'column',
+                'gap': '0.5rem',
+                'padding': '1rem',
+                'border': '2px solid',
+                'border-color': isVoucherSelected(voucher.id) ? 'var(--color-green)' : 'var(--input-border)',
+                'border-radius': '8px',
+                'background-color': isVoucherSelected(voucher.id) ? 'rgba(34, 197, 94, 0.05)' : 'transparent',
+                'transition': 'all 0.2s'
+              }">
+                          <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div style="display: flex; align-items: center; gap: 1rem; flex: 1;">
+                              <p-checkbox
+                                [value]="voucher.id"
+                                (onChange)="onVoucherCheckboxChange(voucher.id, $event.checked)"
+                                [binary]="true"
+                                [ngModel]="isVoucherSelected(voucher.id)"
+                                [ngModelOptions]="{standalone: true}">
+                              </p-checkbox>
+
+                              <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div style="
+                        background: linear-gradient(135deg, var(--color-green-dark), var(--color-green));
+                        width: 48px;
+                        height: 48px;
+                        border-radius: 8px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: white;
+                        font-size: 1.25rem;
+                      ">
+                                  <i class="pi pi-ticket"></i>
+                                </div>
+
+                                <div style="display: flex; flex-direction: column; gap: 0.25rem">
+                        <span style="font-weight: 600; color: var(--color-text-primary); font-family: 'Courier New', monospace; font-size: 1.1rem;">
+                          {{ voucher.identifier }}
+                        </span>
+                                  <span style="color: var(--color-green); font-size: 1.25rem; font-weight: 700;">
+                          {{ voucher.amount | currency:'BRL' }}
+                        </span>
+                                </div>
+                              </div>
+                            </div>
+
+                            @if (isVoucherSelected(voucher.id)) {
+                              <div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: rgba(34, 197, 94, 0.1); border-radius: 6px;">
+                                <i class="pi pi-check-circle" style="color: var(--color-green); font-size: 1rem;"></i>
+                                <span style="color: var(--color-green); font-weight: 600; font-size: 0.875rem;">Selecionado</span>
+                              </div>
+                            }
+                          </div>
+                        </div>
+                      }
+                    </div>
+
+                    <!-- Resumo dos cupons selecionados -->
+                    @if (selectedExchangeVouchersArray.length > 0) {
+                      <div style="margin-top: 1rem; padding: 1rem; background: rgba(34, 197, 94, 0.05); border: 1px solid var(--color-green); border-radius: 8px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                          <div>
+                  <span style="font-weight: 600; display: block; color: var(--color-text-primary);">
+                    Total em cupons de troca:
+                  </span>
+                            <span style="font-size: 0.875rem; color: var(--color-text-secondary);">
+                    {{ selectedExchangeVouchersArray.length }} {{ selectedExchangeVouchersArray.length === 1 ? 'cupom' : 'cupons' }} selecionado(s)
+                  </span>
+                          </div>
+                          <span style="font-size: 1.5rem; font-weight: 700; color: var(--color-green);">
+                  {{ totalVouchersValue | currency:'BRL' }}
+                </span>
+                        </div>
+                      </div>
+                    }
+                  }
+                </div>
+
+                <!-- ========== SEÇÃO DE CARTÕES DE CRÉDITO ========== -->
+                <div style="background-color: var(--color-surface-dark); border: 1px solid var(--input-border); border-radius: 8px; padding: 1.5rem;">
 
                   @if (!showCreditCardForm) {
                     <form style="display: flex; flex-direction: column; width: 100%;" [formGroup]="paymentForm">
-                      <div
-                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                        <span
-                          style="color: var(--color-text-primary);"><strong>Selecione os cartões de crédito:</strong></span>
+                      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <span style="color: var(--color-text-primary);">
+                <strong>Cartões de Crédito</strong>
+                @if (requiresCreditCard) {
+                  <span style="color: var(--color-red); font-size: 0.875rem; margin-left: 0.5rem;">*obrigatório</span>
+                }
+              </span>
                         <span style="color: var(--color-text-secondary); font-size: 0.875rem;">
-                          {{ selectedCardIdsArray.length }} {{ selectedCardIdsArray.length === 1 ? 'cartão selecionado' : 'cartões selecionados' }}
-                        </span>
+                {{ selectedCardIdsArray.length }} {{ selectedCardIdsArray.length === 1 ? 'cartão selecionado' : 'cartões selecionados' }}
+              </span>
                       </div>
+
+                      <!-- Alerta quando cupons não cobrem o total -->
+                      @if (requiresCreditCard && selectedCardIdsArray.length === 0) {
+                        <div style="
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.75rem;
+                margin-bottom: 1rem;
+                background-color: rgba(251, 146, 60, 0.1);
+                border: 1px solid var(--color-orange);
+                border-radius: 6px;
+              ">
+                          <i class="pi pi-exclamation-triangle" style="color: var(--color-orange); font-size: 14px;"></i>
+                          <span style="color: var(--color-orange); font-size: 0.875rem;">
+                  Os cupons selecionados não cobrem o valor total. Adicione pelo menos um cartão de crédito.
+                </span>
+                        </div>
+                      }
+
+                      <!-- Informação quando cupons cobrem o total -->
+                      @if (!requiresCreditCard) {
+                        <div style="
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.75rem;
+                margin-bottom: 1rem;
+                background-color: rgba(34, 197, 94, 0.1);
+                border: 1px solid var(--color-green);
+                border-radius: 6px;
+              ">
+                          <i class="pi pi-check-circle" style="color: var(--color-green); font-size: 14px;"></i>
+                          <span style="color: var(--color-green); font-size: 0.875rem;">
+                  Os cupons selecionados cobrem o valor total da compra! Cartão de crédito é opcional.
+                </span>
+                        </div>
+                      }
 
                       <div style="width: 100%; display: flex; flex-direction: column; gap: 1rem">
                         @for (creditCard of creditCards; track creditCard.id) {
                           <div [style]="{
-                                  'display': 'flex',
-                                  'flex-direction': 'column',
-                                  'gap': '0.5rem',
-                                  'padding': '1rem',
-                                  'border': '2px solid',
-                                  'border-color': isCardSelected(creditCard.id) ? 'var(--color-blue)' : 'var(--input-border)',
-                                  'border-radius': '8px',
-                                  'background-color': isCardSelected(creditCard.id) ? 'var(--color-background)' : 'transparent',
-                                  'transition': 'all 0.2s'
-                                }">
+                  'display': 'flex',
+                  'flex-direction': 'column',
+                  'gap': '0.5rem',
+                  'padding': '1rem',
+                  'border': '2px solid',
+                  'border-color': isCardSelected(creditCard.id) ? 'var(--color-blue)' : 'var(--input-border)',
+                  'border-radius': '8px',
+                  'background-color': isCardSelected(creditCard.id) ? 'var(--color-background)' : 'transparent',
+                  'transition': 'all 0.2s'
+                }">
                             <div style="display: flex; align-items: center; justify-content: space-between;">
                               <div style="display: flex; align-items: center; gap: 1rem; flex: 1;">
                                 <p-checkbox
@@ -494,38 +632,34 @@
                                 }
 
                                 <div style="display: flex; flex-direction: column; gap: 0.25rem">
-                                  <span
-                                    style="font-weight: 600; color: var(--color-text-primary);">{{ creditCard.printedName }}</span>
-                                  <span
-                                    style="color: var(--color-text-secondary); font-size: 0.875rem;">{{ creditCard.number }}</span>
+                                  <span style="font-weight: 600; color: var(--color-text-primary);">{{ creditCard.printedName }}</span>
+                                  <span style="color: var(--color-text-secondary); font-size: 0.875rem;">{{ creditCard.number }}</span>
                                   @if (creditCard.isMain) {
                                     <span style="color: var(--color-yellow); font-size: 0.75rem; font-weight: 600;">
-                                      <i class="pi pi-star-fill" style="font-size: 0.625rem;"></i> Cartão Principal
-                                    </span>
+                            <i class="pi pi-star-fill" style="font-size: 0.625rem;"></i> Cartão Principal
+                          </span>
                                   }
                                 </div>
                               </div>
                             </div>
 
                             @if (isCardSelected(creditCard.id)) {
-                              <div
-                                style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--input-border);">
+                              <div style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--input-border);">
                                 <div style="display: flex; gap: 1rem; align-items: center;">
                                   <div style="display: flex; flex-direction: column; gap: 0.25rem; width: 50%;">
-                                    <label for="installments-{{creditCard.id}}"
-                                           style="font-size: 0.875rem; font-weight: 500; color: var(--color-text-secondary);">
+                                    <label for="installments-{{creditCard.id}}" style="font-size: 0.875rem; font-weight: 500; color: var(--color-text-secondary);">
                                       Número de parcelas
                                     </label>
                                     <p-select
                                       id="installments-{{creditCard.id}}"
                                       [options]="[
-                                        {name: '1x sem juros', value: '1'},
-                                        {name: '2x sem juros', value: '2'},
-                                        {name: '3x sem juros', value: '3'},
-                                        {name: '4x sem juros', value: '4'},
-                                        {name: '5x sem juros', value: '5'},
-                                        {name: '6x sem juros', value: '6'}
-                                      ]"
+                              {name: '1x sem juros', value: '1'},
+                              {name: '2x sem juros', value: '2'},
+                              {name: '3x sem juros', value: '3'},
+                              {name: '4x sem juros', value: '4'},
+                              {name: '5x sem juros', value: '5'},
+                              {name: '6x sem juros', value: '6'}
+                            ]"
                                       optionLabel="name"
                                       formControlName="installments"
                                       appendTo="body"
@@ -533,18 +667,17 @@
                                     />
                                   </div>
 
-                                  @if (selectedCardIdsArray.length > 1) {
+                                  @if (selectedCardIdsArray.length > 1 && requiresCreditCard) {
                                     <div style="display: flex; flex-direction: column; gap: 0.25rem; width: 50%;">
-                                      <label
-                                        style="font-size: 0.875rem; font-weight: 500; color: var(--color-text-secondary);">
+                                      <label style="font-size: 0.875rem; font-weight: 500; color: var(--color-text-secondary);">
                                         Valor a ser cobrado
                                       </label>
                                       <span style="font-size: 1.125rem; font-weight: 600; color: var(--color-green);">
-                                        {{ (totalPrice$ | async)! / selectedCardIdsArray.length | currency:'BRL' }}
-                                      </span>
+                              {{ ((totalPrice$ | async)! - totalVouchersValue) / selectedCardIdsArray.length | currency:'BRL' }}
+                            </span>
                                       <span style="font-size: 0.75rem; color: var(--color-text-muted);">
-                                        (Dividido igualmente)
-                                      </span>
+                              (Dividido igualmente)
+                            </span>
                                     </div>
                                   }
                                 </div>
@@ -554,19 +687,18 @@
                         }
                       </div>
 
-                      @if (selectedCardIdsArray.length > 1) {
-                        <div
-                          style="margin-top: 1.5rem; padding: 1rem; background: var(--color-background); border: 1px solid var(--input-border); border-radius: 8px;">
+                      @if (selectedCardIdsArray.length > 1 && requiresCreditCard) {
+                        <div style="margin-top: 1.5rem; padding: 1rem; background: var(--color-background); border: 1px solid var(--input-border); border-radius: 8px;">
                           <div style="display: flex; justify-content: space-between; align-items: center;">
                             <div>
-                              <span style="font-weight: 600; display: block; color: var(--color-text-primary);">Total da compra:</span>
+                              <span style="font-weight: 600; display: block; color: var(--color-text-primary);">Valor após cupons:</span>
                               <span style="font-size: 0.875rem; color: var(--color-text-secondary);">
-                                Será dividido em {{ selectedCardIdsArray.length }} cartões
-                              </span>
+                      Será dividido em {{ selectedCardIdsArray.length }} cartões
+                    </span>
                             </div>
                             <span style="font-size: 1.5rem; font-weight: 700; color: var(--color-green);">
-                              {{ totalPrice$ | async | currency:'BRL' }}
-                            </span>
+                    {{ (totalPrice$ | async)! - totalVouchersValue | currency:'BRL' }}
+                  </span>
                           </div>
                         </div>
                       }
@@ -578,6 +710,7 @@
                   }
                 </div>
 
+                <!-- Botões de ação -->
                 @if (showCreditCardForm) {
                   <p-button variant="outlined" size="large" (click)="handleCreditCardForm()">
                     Cancelar
