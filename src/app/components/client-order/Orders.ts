@@ -50,7 +50,6 @@ export class Orders implements OnInit {
   loading: boolean = false;
   submittingExchange: boolean = false;
 
-  // Controles de troca/devolução
   selectedItems: number[] = [];
   exchangeType: 'EXCHANGE' | 'RETURN' = 'EXCHANGE';
 
@@ -133,7 +132,6 @@ export class Orders implements OnInit {
   }
 
   canRequestExchange(order: PurchaseOrderResponse): boolean {
-    // Só pode solicitar troca se o pedido foi entregue
     return order.order_status.code === 'DELIVERED';
   }
 
@@ -187,6 +185,16 @@ export class Orders implements OnInit {
     return this.selectedOrder.items
       .filter(item => this.selectedItems.includes(item.id))
       .reduce((sum, item) => sum + parseFloat(item.subtotal.toString()), 0);
+  }
+
+  getTotalExchangeVouchersValue(): number {
+    if (!this.selectedOrder || !this.selectedOrder.payment.exchange_vouchers) {
+      return 0;
+    }
+
+    return this.selectedOrder.payment.exchange_vouchers.reduce((sum, voucher) => {
+      return sum + parseFloat(voucher.amount);
+    }, 0);
   }
 
   getStatusSeverity(statusCode: string): 'success' | 'info' | 'warning' | 'danger' {
