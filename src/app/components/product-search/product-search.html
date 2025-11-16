@@ -97,7 +97,7 @@
 
         <div style="display: flex; width: 100%; flex-wrap: wrap; gap: 3rem; justify-content: start; align-items: center">
           @for (product of products; track product.id) {
-            <app-product-card [id]="product.id" [title]="product.title" [price]="product.price" />
+            <app-product-card [id]="product.id" [title]="product.title" [price]="product.price" [url]="product.images[0]" />
           }
         </div>
       </div>
