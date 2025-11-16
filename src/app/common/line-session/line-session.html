@@ -1,7 +1,41 @@
-<section style="background-color: var(--color-background-light-white-soft); width: 100%; display: flex; align-items: center; justify-content: center">
-  <div style="display: flex; gap: 3rem; width: 50%; justify-content: center">
-    <a style="color: var(--color-text-dark); font-weight: bold; text-decoration: none;" href="#">RELÓGIOS FEMININOS</a>
-    <a style="color: var(--color-text-dark); font-weight: bold; text-decoration: none;" href="#">RELÓGIOS MASCULINOS</a>
-    <a style="color: var(--color-text-dark); font-weight: bold; text-decoration: none;" href="#">MARCAS</a>
+<section class="line-session">
+  <div class="line-session__container">
+    <nav class="line-session__nav" role="navigation" aria-label="Navegação de categorias">
+      <a
+        class="line-session__link"
+        [class.active]="activeCategory === 'feminino'"
+        (click)="setActiveCategory('feminino')"
+        href="#"
+        aria-label="Ver relógios femininos"
+      >
+        <i class="pi pi-shopping-bag line-session__icon"></i>
+        <span class="line-session__text">Relógios Femininos</span>
+        <div class="line-session__indicator"></div>
+      </a>
+
+      <a
+        class="line-session__link"
+        [class.active]="activeCategory === 'masculino'"
+        (click)="setActiveCategory('masculino')"
+        href="#"
+        aria-label="Ver relógios masculinos"
+      >
+        <i class="pi pi-clock line-session__icon"></i>
+        <span class="line-session__text">Relógios Masculinos</span>
+        <div class="line-session__indicator"></div>
+      </a>
+
+      <a
+        class="line-session__link"
+        [class.active]="activeCategory === 'marcas'"
+        (click)="setActiveCategory('marcas')"
+        href="#"
+        aria-label="Ver todas as marcas"
+      >
+        <i class="pi pi-star-fill line-session__icon"></i>
+        <span class="line-session__text">Marcas Premium</span>
+        <div class="line-session__indicator"></div>
+      </a>
+    </nav>
   </div>
 </section>
