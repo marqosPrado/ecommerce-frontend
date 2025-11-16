@@ -31,4 +31,8 @@ export class ProductService {
   getById(id: number) {
     return this.http.get<ApiResponse<Product>>(`${this.baseUrl}api/products/${id}`, {})
   }
+
+  getIARecommendation(): Observable<ApiResponse<ProductSummaryResponse[]>> {
+    return this.http.get<ApiResponse<ProductSummaryResponse[]>>(`${this.baseUrl}api/product-recommendation/recommend`)
+  }
 }

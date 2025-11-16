@@ -58,27 +58,36 @@
       </div>
     </div>
 
-    <div style="display: flex; flex-direction: column; width: 100%; gap: 4rem;">
-      <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center">
-        <h3 style="font-size: 32px">Você vai se interessar</h3>
-        <span style="color: var(--color-text-muted); display: flex; justify-content:center; align-items: center; gap: 0.75rem;">
-        <svg width="16" height="21" viewBox="0 0 20 21" class="IconAI" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.5603 4.06382C7.68395 3.72417 8.17477 3.72417 8.29842 4.06382C8.82132 5.5004 9.82662 7.99869 10.8319 9.04599C11.8398 10.0961 14.1172 11.1461 15.4146 11.6897C15.7314 11.8224 15.7314 12.3176 15.4146 12.4503C14.117 12.9939 11.8398 14.044 10.8319 15.0939C9.82662 16.1412 8.82132 18.6396 8.29842 20.0761C8.17477 20.4157 7.68395 20.4157 7.5603 20.0761C7.0374 18.6396 6.0321 16.1412 5.02681 15.0939C4.02151 14.0465 1.62346 12.9993 0.244524 12.4546C-0.0815057 12.3258 -0.0815057 11.8144 0.24451 11.6856C1.62344 11.1407 4.02151 10.0933 5.02681 9.04599C6.0321 7.99869 7.0374 5.5004 7.5603 4.06382Z" fill="#0060B1"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M15.7008 0.594673C15.8486 0.242531 16.4043 0.242531 16.5521 0.594673C16.8589 1.32633 17.2944 2.22546 17.7296 2.65645C18.1676 3.09009 19.0398 3.52375 19.7408 3.82792C20.0863 3.97783 20.0863 4.50946 19.7408 4.65935C19.0398 4.9635 18.1676 5.39713 17.7296 5.83078C17.2944 6.26176 16.8589 7.16088 16.5521 7.89254C16.4043 8.24468 15.8486 8.24468 15.7008 7.89254C15.3939 7.16088 14.9585 6.26176 14.5232 5.83078C14.0878 5.39979 13.1796 4.96882 12.4405 4.66496C12.0849 4.51872 12.0849 3.96858 12.4405 3.82231C13.1796 3.51843 14.0878 3.08742 14.5232 2.65645C14.9585 2.22546 15.3939 1.32633 15.7008 0.594673Z" fill="#0060B1"></path></svg>
+    @if (loadingAiRecommendations) {
+      <div style="display: flex; justify-content: center; align-items: center; padding: 2rem;">
+        <p-progress-spinner strokeWidth="8" fill="transparent" animationDuration=".5s" [style]="{ width: '50px', height: '50px' }" />
+      </div>
+    } @else {
+      @if (productRecommendedByAi && errorAiRecommendations.length === 0) {
+        <div style="display: flex; flex-direction: column; width: 100%; gap: 4rem;">
+          <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center">
+            <h3 style="font-size: 32px">Você vai se interessar</h3>
+            <span style="color: var(--color-text-muted); display: flex; justify-content:center; align-items: center; gap: 0.75rem;">
+      <svg width="16" height="21" viewBox="0 0 20 21" class="IconAI" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.5603 4.06382C7.68395 3.72417 8.17477 3.72417 8.29842 4.06382C8.82132 5.5004 9.82662 7.99869 10.8319 9.04599C11.8398 10.0961 14.1172 11.1461 15.4146 11.6897C15.7314 11.8224 15.7314 12.3176 15.4146 12.4503C14.117 12.9939 11.8398 14.044 10.8319 15.0939C9.82662 16.1412 8.82132 18.6396 8.29842 20.0761C8.17477 20.4157 7.68395 20.4157 7.5603 20.0761C7.0374 18.6396 6.0321 16.1412 5.02681 15.0939C4.02151 14.0465 1.62346 12.9993 0.244524 12.4546C-0.0815057 12.3258 -0.0815057 11.8144 0.24451 11.6856C1.62344 11.1407 4.02151 10.0933 5.02681 9.04599C6.0321 7.99869 7.0374 5.5004 7.5603 4.06382Z" fill="#0060B1"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M15.7008 0.594673C15.8486 0.242531 16.4043 0.242531 16.5521 0.594673C16.8589 1.32633 17.2944 2.22546 17.7296 2.65645C18.1676 3.09009 19.0398 3.52375 19.7408 3.82792C20.0863 3.97783 20.0863 4.50946 19.7408 4.65935C19.0398 4.9635 18.1676 5.39713 17.7296 5.83078C17.2944 6.26176 16.8589 7.16088 16.5521 7.89254C16.4043 8.24468 15.8486 8.24468 15.7008 7.89254C15.3939 7.16088 14.9585 6.26176 14.5232 5.83078C14.0878 5.39979 13.1796 4.96882 12.4405 4.66496C12.0849 4.51872 12.0849 3.96858 12.4405 3.82231C13.1796 3.51843 14.0878 3.08742 14.5232 2.65645C14.9585 2.22546 15.3939 1.32633 15.7008 0.594673Z" fill="#0060B1"></path></svg>
         Recommended by AI
       </span>
-      </div>
+          </div>
 
-      <section style="width: 100%; display: flex; justify-content: center; align-items: center">
-        <p-carousel [value]="aiRecommendations" [numVisible]="4" [circular]="false" style="max-width: 100%;">
-          <ng-template pTemplate="item" let-product>
-            <app-product-card
-              [id]="product.id"
-              [title]="product.title"
-              [price]="product.price"
-            ></app-product-card>
-          </ng-template>
-        </p-carousel>
-      </section>
-    </div>
+          <section style="width: 100%; display: flex; justify-content: center; align-items: center">
+            <p-carousel [value]="productRecommendedByAi" [numVisible]="4" [circular]="false" style="max-width: 100%;">
+              <ng-template pTemplate="item" let-product>
+                <app-product-card
+                  [id]="product.id"
+                  [title]="product.title"
+                  [price]="product.price"
+                  [url]="product.main_image"
+                ></app-product-card>
+              </ng-template>
+            </p-carousel>
+          </section>
+        </div>
+      }
+    }
   </main>
 }
 

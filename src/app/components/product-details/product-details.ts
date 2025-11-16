@@ -11,6 +11,8 @@ import {PrimeTemplate} from 'primeng/api';
 import {ProductCard} from '../../common/product-card/product-card';
 import {CartService} from '../../services/cart/cart.service';
 import {ProductService} from '../../services/product/product.service';
+import {ProductSummaryResponse} from '../../types/Product/Response/ProductSummaryResponse';
+import {ProgressSpinner} from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-product-details',
@@ -24,17 +26,22 @@ import {ProductService} from '../../services/product/product.service';
     Carousel,
     PrimeTemplate,
     ProductCard,
-    RouterLink
+    RouterLink,
+    ProgressSpinner
   ],
   templateUrl: './product-details.html',
   styleUrl: './product-details.css'
 })
 export class ProductDetails implements OnInit {
   protected product?: Product;
-  protected loading = true;
+
+  protected productRecommendedByAi?: ProductSummaryResponse[] = [];
+  protected errorAiRecommendations: string[] = []
+
+  protected loading = false;
+  protected loadingAiRecommendations = false; // Novo estado para IA
   protected error = '';
 
-  protected aiRecommendations!: Product[];
   private cartService: CartService = inject(CartService);
 
   constructor(
@@ -49,7 +56,7 @@ export class ProductDetails implements OnInit {
         this.getProductById(id);
       }
     });
-    // this.aiRecommendations = this.getAiRecommendations();
+    this.getAiRecommendations();
   }
 
   addToCart(product: Product): void {
@@ -71,8 +78,19 @@ export class ProductDetails implements OnInit {
     });
   }
 
-  private getAiRecommendations(): Product[] {
-    return [];
-  }
+  private getAiRecommendations() {
+    this.loadingAiRecommendations = true;
+    this.productService.getIARecommendation().subscribe({
+      next: response => {
+        this.productRecommendedByAi = response.data;
+        this.loadingAiRecommendations = false;
+      },
 
+      error: error => {
+        console.error('Erro ao buscar recomendações da IA:', error);
+        this.errorAiRecommendations = error.message;
+        this.loadingAiRecommendations = false;
+      }
+    })
+  }
 }
