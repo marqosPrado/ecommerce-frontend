@@ -32,7 +32,6 @@ export class ChatSidebar implements OnInit, AfterViewChecked {
   constructor(private chatService: ChatService) {}
 
   ngOnInit(): void {
-    // Mensagem de boas-vindas
     this.messages = [
       {
         role: 'assistant',
@@ -56,7 +55,6 @@ export class ChatSidebar implements OnInit, AfterViewChecked {
     const message = this.userInput.trim();
     if (!message || this.isLoading) return;
 
-    // Adiciona mensagem do usuário
     this.messages.push({
       role: 'user',
       content: message
@@ -66,9 +64,8 @@ export class ChatSidebar implements OnInit, AfterViewChecked {
     this.isLoading = true;
     this.shouldScrollToBottom = true;
 
-    // Prepara histórico de conversação (sem incluir produtos nas mensagens anteriores)
     const conversationHistory: ConversationMessage[] = this.messages
-      .slice(0, -1) // Remove a última mensagem (a que acabamos de adicionar)
+      .slice(0, -1)
       .map(msg => ({
         role: msg.role,
         content: msg.content
