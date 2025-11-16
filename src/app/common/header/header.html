@@ -35,6 +35,15 @@
           <i class="pi pi-shopping-cart"></i>
         </a>
 
+        <button
+          (click)="toggleChatSidebar()"
+          aria-label="Chat"
+          class="header-icon chat-button"
+          title="Chat - Assistente Virtual"
+        >
+          <i class="pi pi-comment"></i>
+        </button>
+
         <div class="user-menu-container">
           <button
             class="user-avatar-button"
@@ -140,3 +149,8 @@
 @if (showUserMenu) {
   <div class="overlay" (click)="showUserMenu = false"></div>
 }
+
+<app-chat-sidebar
+  [isOpen]="showChatSidebar"
+  (close)="closeChatSidebar()"
+></app-chat-sidebar>

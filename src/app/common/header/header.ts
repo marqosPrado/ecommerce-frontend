@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { Authentication } from '../../services/authentication/authentication';
 import { UserInfoResponse, UserInfoService } from '../../services/user/user-info.service';
+import { ChatSidebar } from '../chat-sidebar/chat-sidebar';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, ChatSidebar],
   templateUrl: './header.html',
   styleUrls: ['./header.css']
 })
@@ -16,6 +17,7 @@ export class Header implements OnInit {
   isAuthenticated: boolean = false;
   isAdmin: boolean = false;
   showUserMenu: boolean = false;
+  showChatSidebar: boolean = false;
 
   constructor(
     private userInfoService: UserInfoService,
@@ -95,5 +97,13 @@ export class Header implements OnInit {
 
   get userEmail(): string {
     return this.currentUser?.email || '';
+  }
+
+  toggleChatSidebar(): void {
+    this.showChatSidebar = !this.showChatSidebar;
+  }
+
+  closeChatSidebar(): void {
+    this.showChatSidebar = false;
   }
 }
