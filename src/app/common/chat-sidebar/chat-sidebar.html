@@ -1,0 +1,93 @@
+<div class="chat-sidebar-overlay" [class.open]="isOpen" (click)="closeSidebar()"></div>
+
+<div class="chat-sidebar" [class.open]="isOpen">
+  <!-- Header -->
+  <div class="chat-header">
+    <div class="chat-header-content">
+      <div class="chat-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+      </div>
+      <div class="chat-title">
+        <h3>Assistente Virtual</h3>
+        <p>Estamos online</p>
+      </div>
+    </div>
+    <button class="close-button" (click)="closeSidebar()" aria-label="Fechar chat">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Messages -->
+  <div class="chat-messages" #messagesContainer>
+    <div *ngFor="let message of messages"
+         [class]="'message ' + (message.role === 'user' ? 'user-message' : 'assistant-message')">
+      <div class="message-content">
+        <div class="message-bubble">
+          {{ message.content }}
+        </div>
+
+        <!-- Produtos recomendados -->
+        <div *ngIf="message.products && message.products.length > 0" class="products-container">
+          <div class="products-title">Produtos recomendados:</div>
+          <div class="products-grid">
+            <a *ngFor="let product of message.products"
+               [routerLink]="['/product', product.id]"
+               class="product-card"
+               (click)="closeSidebar()">
+              <div class="product-image">
+                <img [src]="product.url_image" [alt]="product.name" />
+              </div>
+              <div class="product-info">
+                <h4 class="product-name">{{ product.name }}</h4>
+                <p class="product-brand">{{ product.brand }}</p>
+                <p class="product-price">{{ formatPrice(product.price) }}</p>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading indicator -->
+    <div *ngIf="isLoading" class="message assistant-message">
+      <div class="message-content">
+        <div class="message-bubble loading">
+          <div class="typing-indicator">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input -->
+  <div class="chat-input-container">
+    <div class="chat-input-wrapper">
+      <textarea
+        [(ngModel)]="userInput"
+        (keypress)="onKeyPress($event)"
+        placeholder="Digite sua mensagem..."
+        rows="1"
+        [disabled]="isLoading"
+        class="chat-input"
+      ></textarea>
+      <button
+        (click)="sendMessage()"
+        [disabled]="!userInput.trim() || isLoading"
+        class="send-button"
+        aria-label="Enviar mensagem">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
