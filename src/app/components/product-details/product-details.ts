@@ -13,6 +13,7 @@ import {CartService} from '../../services/cart/cart.service';
 import {ProductService} from '../../services/product/product.service';
 import {ProductSummaryResponse} from '../../types/Product/Response/ProductSummaryResponse';
 import {ProgressSpinner} from 'primeng/progressspinner';
+import {DecimalPipe} from '@angular/common';
 
 @Component({
   selector: 'app-product-details',
@@ -27,7 +28,8 @@ import {ProgressSpinner} from 'primeng/progressspinner';
     PrimeTemplate,
     ProductCard,
     RouterLink,
-    ProgressSpinner
+    ProgressSpinner,
+    DecimalPipe
   ],
   templateUrl: './product-details.html',
   styleUrl: './product-details.css'

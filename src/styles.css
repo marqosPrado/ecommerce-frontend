@@ -3,59 +3,156 @@
 @import "primeicons/primeicons.css";
 
 :root {
-  /* 🎨 Fundo */
-  --color-background: #18181b;
-  --color-surface-dark: #121212;
-  --color-surface-darker: #09090b;
+  /* 🎨 Backgrounds - Tema Escuro com Azul */
+  --color-background: #0a0e1a;
+  --color-background-elevated: #0f1420;
+  --color-surface: #151b2e;
+  --color-surface-dark: #0d111f;
+  --color-surface-darker: #070a13;
+  --color-surface-lighter: #1a2238;
 
-  --color-background-light: #ffffff;
-  --color-background-light-white-soft: #fdfdfd;
-  --color-background-light-white-warm: #fafafa;
-  --color-background-light-white-cool: #f5f5f5;
-
-  /* 📝 Texto */
-  --color-text-primary: #e0e0e0;
-  --color-text-secondary: #a0a0a0;
-  --color-text-muted: #8c8c8c;
-
+  /* 📝 Texto - Hierarquia Visual */
+  --color-text-primary: #e8edf5;
+  --color-text-secondary: #a0a9bd;
+  --color-text-muted: #6b7280;
   --color-text-dark: #000000;
+  --color-text-bright: #ffffff;
 
-  /* 🔵 Azul (principal/accent) */
-  --color-blue-light: #3b82f6;
-  --color-blue: #2563eb;
+  /* 🔵 Azul - Cores Primárias */
+  --color-blue-50: #eff6ff;
+  --color-blue-100: #dbeafe;
+  --color-blue-200: #bfdbfe;
+  --color-blue-300: #93c5fd;
+  --color-blue-400: #60a5fa;
+  --color-blue-500: #3b82f6;
+  --color-blue-600: #2563eb;
+  --color-blue-700: #1d4ed8;
+  --color-blue-800: #1e40af;
+  --color-blue-900: #1e3a8a;
 
-  /* 🟢 Verde (sucesso) */
-  --color-green-light: #4ade80;
-  --color-green: #22c55e;
-  --color-green-dark: #008531;
+  --color-blue-light: #60a5fa;
+  --color-blue: #3b82f6;
+  --color-blue-dark: #2563eb;
+  --color-blue-darker: #1d4ed8;
 
-  /* 🟣 Roxo (alternativo/acento) */
+  /* 🌊 Azul Accent - Variações para Hover/Active */
+  --color-blue-accent: #4f92ff;
+  --color-blue-hover: #5a9eff;
+  --color-blue-active: #2670ea;
+
+  /* 🟢 Verde - Sucesso */
+  --color-green-light: #6ee7b7;
+  --color-green: #10b981;
+  --color-green-dark: #059669;
+
+  /* 🟣 Roxo/Índigo - Acento Secundário */
   --color-purple-light: #a78bfa;
   --color-purple: #8b5cf6;
   --color-purple-dark: #7c3aed;
+  --color-indigo: #6366f1;
+  --color-indigo-dark: #4f46e5;
 
-  /* 🔴 Vermelho/Laranja (erros e alerts) */
-  --color-red-light: #f87171;
-  --color-red: #f43f5e;
-  --color-orange: #fb923c;
+  /* 🔴 Vermelho/Laranja - Erros e Alertas */
+  --color-red-light: #fca5a5;
+  --color-red: #ef4444;
+  --color-red-dark: #dc2626;
+  --color-orange: #f59e0b;
+  --color-orange-dark: #d97706;
 
-  /* 🟡 Amarelo (avisos, notificações) */
+  /* 🟡 Amarelo - Avisos */
+  --color-yellow-light: #fde047;
   --color-yellow: #facc15;
+  --color-yellow-dark: #eab308;
 
-  /* 🔹 Suaves e neutras (hover, bordas) */
+  /* 🔹 Neutras - Bordas, Divisores, Overlays */
+  --color-border: #1e293b;
+  --color-border-light: #334155;
+  --color-border-lighter: #475569;
+  --color-divider: #1e293b;
   --color-slate: #334155;
-  --color-gray-light: #c0c0c0;
+  --color-gray-light: #cbd5e1;
 
-  --input-border: #3f3f46;
+  /* 📦 Componentes Específicos */
+  --input-background: #0f1420;
+  --input-border: #1e293b;
+  --input-border-focus: #3b82f6;
+  --input-text: #e8edf5;
+  --input-placeholder: #64748b;
+
+  --card-background: #151b2e;
+  --card-border: #1e293b;
+  --card-shadow: rgba(0, 0, 0, 0.3);
+
+  --button-primary-bg: #3b82f6;
+  --button-primary-hover: #2563eb;
+  --button-primary-active: #1d4ed8;
+  --button-primary-text: #ffffff;
+
+  --button-secondary-bg: #1a2238;
+  --button-secondary-hover: #1e293b;
+  --button-secondary-border: #334155;
+
+  /* 🎭 Estados e Efeitos */
+  --hover-overlay: rgba(59, 130, 246, 0.08);
+  --active-overlay: rgba(59, 130, 246, 0.15);
+  --disabled-overlay: rgba(100, 116, 139, 0.3);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.6);
+
+  --shadow-blue: 0 4px 12px rgba(59, 130, 246, 0.2);
+  --shadow-blue-lg: 0 8px 24px rgba(59, 130, 246, 0.3);
+
+  /* 🌈 Gradientes */
+  --gradient-blue: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  --gradient-blue-purple: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  --gradient-dark: linear-gradient(180deg, #0f1420 0%, #0a0e1a 100%);
 }
 
 * {
   margin: 0;
   padding: 0;
   font-family: "Inter", sans-serif;
+  box-sizing: border-box;
 }
 
 body {
-  background-color: var(--color-surface-darker);
+  background-color: var(--color-background);
   color: var(--color-text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface-darker);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-slate);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-blue-dark);
+}
+
+/* Selection Styling */
+::selection {
+  background-color: rgba(59, 130, 246, 0.3);
+  color: var(--color-text-bright);
+}
+
+/* Focus Visible for Accessibility */
+*:focus-visible {
+  outline: 2px solid var(--color-blue);
+  outline-offset: 2px;
 }
