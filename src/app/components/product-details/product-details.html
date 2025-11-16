@@ -2,41 +2,46 @@
 <app-line-session></app-line-session>
 
 @if (product) {
-  <main style="width: 100%; display: flex; flex-direction: column; padding: 5rem 4rem 5rem 4rem">
-    <div style="width: 100%; display: flex">
+  <main style="width: 100%; display: flex; flex-direction: column; padding: 5rem 4rem 5rem 4rem; max-width: 1600px; margin: 0 auto;">
+    <div style="width: 100%; display: flex; gap: 3rem;">
       <div style="width: 60%">
-        <div>
+        <div style="background: var(--card-background); border: 1px solid var(--card-border); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-md);">
           <app-gallery [images]="product.images"/>
         </div>
-        <div style="padding: 3rem">
+        <div style="padding: 3rem; background: var(--card-background); border: 1px solid var(--card-border); border-radius: 16px; margin-top: 2rem; box-shadow: var(--shadow-md);">
           <app-product-table-details [product]="product" />
         </div>
       </div>
 
       <div style="width: 40%;">
-        <div style="width: 100%; display: flex; flex-direction: column; gap: 1.5rem; padding: 2rem">
+        <div style="width: 100%; display: flex; flex-direction: column; gap: 1.5rem; padding: 2.5rem; background: var(--card-background); border: 1px solid var(--card-border); border-radius: 16px; box-shadow: var(--shadow-md);">
           <div>
-            <h3 style="font-weight: 500; font-size: 2rem; color: var(--color-text-primary); letter-spacing: .0063rem; line-height: 1.625rem; margin-top: 0; margin-bottom: 1rem;">{{product.title}}</h3>
+            <h3 style="font-weight: 600; font-size: 2rem; color: var(--color-text-primary); letter-spacing: -0.5px; line-height: 1.3; margin-top: 0; margin-bottom: 1rem;">{{product.title}}</h3>
           </div>
 
-          <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem">
-            <span style="font-size: 18px; font-weight: 400">R$ {{product.price}}</span>
-            <span style="font-size: 22px; font-weight: 800; color: var(--color-blue-light)">10x de R$ {{product.price / 10}}</span>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; padding: 1.5rem; background: var(--color-surface); border-radius: 12px; border: 1px solid var(--color-border);">
+            <span style="font-size: 16px; font-weight: 500; color: var(--color-text-secondary);">Preço à vista</span>
+            <span style="font-size: 20px; font-weight: 500; color: var(--color-text-primary); text-decoration: line-through; opacity: 0.6;">R$ {{product.price}}</span>
+            <span style="font-size: 28px; font-weight: 700; background: linear-gradient(135deg, var(--color-blue) 0%, var(--color-blue-light) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">10x de R$ {{product.price / 10 | number:'1.2-2'}}</span>
           </div>
 
-          <div style="width: 100%; display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem">
-            <div style="display: flex; flex-direction: column; gap: 0.65rem">
-              <span style="font-weight: 700; color: var(--color-green-dark)">Em estoque</span>
+          <div style="width: 100%; display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+              <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; width: fit-content;">
+                <i class="pi pi-check-circle" style="color: var(--color-green); font-size: 1rem;"></i>
+                <span style="font-weight: 600; color: var(--color-green); font-size: 0.875rem;">Em estoque</span>
+              </div>
               <p-button
-                [style]="{width: '100%'}"
+                [style]="{width: '100%', background: 'var(--gradient-blue)', border: 'none', boxShadow: 'var(--shadow-blue)'}"
                 size="large"
-                label="Comprar"
+                label="Comprar agora"
+                icon="pi pi-bolt"
                 [routerLink]="['/carrinho']"
               />
             </div>
             <p-button
               icon="pi pi-cart-plus"
-              [style]="{width: '100%'}"
+              [style]="{width: '100%', background: 'var(--button-secondary-bg)', border: '1px solid var(--button-secondary-border)', color: 'var(--color-text-primary)'}"
               size="large"
               label="Adicionar ao carrinho"
               [routerLink]="['/carrinho']"
@@ -44,14 +49,20 @@
             />
           </div>
 
-          <div style="display: flex; flex-direction: column; gap: 1rem">
-            <div style="display: flex; gap: 0.5rem; align-items: center">
-              <i class="pi pi-truck"></i>
-              <span>Calcular frete</span>
+          <div style="display: flex; flex-direction: column; gap: 1rem; padding: 1.5rem; background: var(--color-surface); border-radius: 12px; border: 1px solid var(--color-border);">
+            <div style="display: flex; gap: 0.75rem; align-items: center;">
+              <i class="pi pi-truck" style="color: var(--color-blue); font-size: 1.25rem;"></i>
+              <span style="font-weight: 600; color: var(--color-text-primary);">Calcular frete</span>
             </div>
-            <div style="display: flex; flex-direction: row; gap: 1rem; align-items: center">
-              <input type="text" pSize="large" pInputText />
-              <a href="https://buscacepinter.correios.com.br/app/endereco/index.php?t" style="color: var(--color-text-primary)">Não sei <br>meu cep</a>
+            <div style="display: flex; flex-direction: row; gap: 1rem; align-items: center;">
+              <input
+                type="text"
+                pSize="large"
+                pInputText
+                placeholder="Digite seu CEP"
+                style="flex: 1; background: var(--input-background); border: 1px solid var(--input-border); color: var(--color-text-primary); border-radius: 8px;"
+              />
+              <a href="https://buscacepinter.correios.com.br/app/endereco/index.php?t" style="color: var(--color-blue); text-decoration: none; font-size: 0.875rem; font-weight: 500; white-space: nowrap;" target="_blank">Não sei <br>meu CEP</a>
             </div>
           </div>
         </div>
@@ -59,21 +70,24 @@
     </div>
 
     @if (loadingAiRecommendations) {
-      <div style="display: flex; justify-content: center; align-items: center; padding: 2rem;">
-        <p-progress-spinner strokeWidth="8" fill="transparent" animationDuration=".5s" [style]="{ width: '50px', height: '50px' }" />
+      <div style="display: flex; justify-content: center; align-items: center; padding: 4rem; background: var(--card-background); border: 1px solid var(--card-border); border-radius: 16px; margin-top: 3rem;">
+        <p-progress-spinner strokeWidth="6" fill="transparent" animationDuration=".5s" [style]="{ width: '60px', height: '60px' }" />
       </div>
     } @else {
       @if (productRecommendedByAi && errorAiRecommendations.length === 0) {
-        <div style="display: flex; flex-direction: column; width: 100%; gap: 4rem;">
-          <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center">
-            <h3 style="font-size: 32px">Você vai se interessar</h3>
-            <span style="color: var(--color-text-muted); display: flex; justify-content:center; align-items: center; gap: 0.75rem;">
-      <svg width="16" height="21" viewBox="0 0 20 21" class="IconAI" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.5603 4.06382C7.68395 3.72417 8.17477 3.72417 8.29842 4.06382C8.82132 5.5004 9.82662 7.99869 10.8319 9.04599C11.8398 10.0961 14.1172 11.1461 15.4146 11.6897C15.7314 11.8224 15.7314 12.3176 15.4146 12.4503C14.117 12.9939 11.8398 14.044 10.8319 15.0939C9.82662 16.1412 8.82132 18.6396 8.29842 20.0761C8.17477 20.4157 7.68395 20.4157 7.5603 20.0761C7.0374 18.6396 6.0321 16.1412 5.02681 15.0939C4.02151 14.0465 1.62346 12.9993 0.244524 12.4546C-0.0815057 12.3258 -0.0815057 11.8144 0.24451 11.6856C1.62344 11.1407 4.02151 10.0933 5.02681 9.04599C6.0321 7.99869 7.0374 5.5004 7.5603 4.06382Z" fill="#0060B1"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M15.7008 0.594673C15.8486 0.242531 16.4043 0.242531 16.5521 0.594673C16.8589 1.32633 17.2944 2.22546 17.7296 2.65645C18.1676 3.09009 19.0398 3.52375 19.7408 3.82792C20.0863 3.97783 20.0863 4.50946 19.7408 4.65935C19.0398 4.9635 18.1676 5.39713 17.7296 5.83078C17.2944 6.26176 16.8589 7.16088 16.5521 7.89254C16.4043 8.24468 15.8486 8.24468 15.7008 7.89254C15.3939 7.16088 14.9585 6.26176 14.5232 5.83078C14.0878 5.39979 13.1796 4.96882 12.4405 4.66496C12.0849 4.51872 12.0849 3.96858 12.4405 3.82231C13.1796 3.51843 14.0878 3.08742 14.5232 2.65645C14.9585 2.22546 15.3939 1.32633 15.7008 0.594673Z" fill="#0060B1"></path></svg>
-        Recommended by AI
-      </span>
+        <div style="display: flex; flex-direction: column; width: 100%; gap: 2.5rem; margin-top: 4rem; padding: 3rem; background: var(--card-background); border: 1px solid var(--card-border); border-radius: 16px; box-shadow: var(--shadow-md);">
+          <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+            <h3 style="font-size: 2rem; font-weight: 700; color: var(--color-text-primary); margin: 0; letter-spacing: -0.5px;">Você vai se interessar</h3>
+            <span style="color: var(--color-text-secondary); display: flex; justify-content: center; align-items: center; gap: 0.75rem; padding: 0.75rem 1.25rem; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 10px;">
+              <svg width="16" height="21" viewBox="0 0 20 21" class="IconAI" aria-hidden="true">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M7.5603 4.06382C7.68395 3.72417 8.17477 3.72417 8.29842 4.06382C8.82132 5.5004 9.82662 7.99869 10.8319 9.04599C11.8398 10.0961 14.1172 11.1461 15.4146 11.6897C15.7314 11.8224 15.7314 12.3176 15.4146 12.4503C14.117 12.9939 11.8398 14.044 10.8319 15.0939C9.82662 16.1412 8.82132 18.6396 8.29842 20.0761C8.17477 20.4157 7.68395 20.4157 7.5603 20.0761C7.0374 18.6396 6.0321 16.1412 5.02681 15.0939C4.02151 14.0465 1.62346 12.9993 0.244524 12.4546C-0.0815057 12.3258 -0.0815057 11.8144 0.24451 11.6856C1.62344 11.1407 4.02151 10.0933 5.02681 9.04599C6.0321 7.99869 7.0374 5.5004 7.5603 4.06382Z" fill="currentColor"></path>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M15.7008 0.594673C15.8486 0.242531 16.4043 0.242531 16.5521 0.594673C16.8589 1.32633 17.2944 2.22546 17.7296 2.65645C18.1676 3.09009 19.0398 3.52375 19.7408 3.82792C20.0863 3.97783 20.0863 4.50946 19.7408 4.65935C19.0398 4.9635 18.1676 5.39713 17.7296 5.83078C17.2944 6.26176 16.8589 7.16088 16.5521 7.89254C16.4043 8.24468 15.8486 8.24468 15.7008 7.89254C15.3939 7.16088 14.9585 6.26176 14.5232 5.83078C14.0878 5.39979 13.1796 4.96882 12.4405 4.66496C12.0849 4.51872 12.0849 3.96858 12.4405 3.82231C13.1796 3.51843 14.0878 3.08742 14.5232 2.65645C14.9585 2.22546 15.3939 1.32633 15.7008 0.594673Z" fill="currentColor"></path>
+              </svg>
+              <span style="font-weight: 600; color: var(--color-blue); font-size: 0.875rem;">Recomendado por IA</span>
+            </span>
           </div>
 
-          <section style="width: 100%; display: flex; justify-content: center; align-items: center">
+          <section style="width: 100%; display: flex; justify-content: center; align-items: center;">
             <p-carousel [value]="productRecommendedByAi" [numVisible]="4" [circular]="false" style="max-width: 100%;">
               <ng-template pTemplate="item" let-product>
                 <app-product-card
