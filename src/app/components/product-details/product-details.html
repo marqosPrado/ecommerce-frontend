@@ -37,14 +37,19 @@
                 label="Comprar agora"
                 icon="pi pi-bolt"
                 [routerLink]="['/carrinho']"
+                (onClick)="addToCart(product)"
               />
             </div>
             <p-button
-              icon="pi pi-cart-plus"
-              [style]="{width: '100%', background: 'var(--button-secondary-bg)', border: '1px solid var(--button-secondary-border)', color: 'var(--color-text-primary)'}"
+              [icon]="addedToCart ? 'pi pi-check' : 'pi pi-cart-plus'"
+              [style]="{
+                width: '100%',
+                background: addedToCart ? 'var(--green-500)' : 'var(--button-secondary-bg)',
+                border: '1px solid var(--button-secondary-border)',
+                color: 'var(--color-text-primary)'
+              }"
               size="large"
-              label="Adicionar ao carrinho"
-              [routerLink]="['/carrinho']"
+              [label]="addedToCart ? 'Adicionado ao carrinho' : 'Adicionar ao carrinho'"
               (onClick)="addToCart(product)"
             />
           </div>

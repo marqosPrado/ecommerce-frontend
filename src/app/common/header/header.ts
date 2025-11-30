@@ -4,11 +4,15 @@ import { RouterLink, Router } from '@angular/router';
 import { Authentication } from '../../services/authentication/authentication';
 import { UserInfoResponse, UserInfoService } from '../../services/user/user-info.service';
 import { ChatSidebar } from '../chat-sidebar/chat-sidebar';
+import { BadgeModule } from 'primeng/badge';
+import { OverlayBadgeModule } from 'primeng/overlaybadge';
+import { CartService } from '../../services/cart/cart.service';
+import { Observable, map } from 'rxjs';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterLink, ChatSidebar],
+  imports: [CommonModule, RouterLink, ChatSidebar, BadgeModule, OverlayBadgeModule],
   templateUrl: './header.html',
   styleUrls: ['./header.css']
 })
@@ -19,11 +23,18 @@ export class Header implements OnInit {
   showUserMenu: boolean = false;
   showChatSidebar: boolean = false;
 
+  cartItemCount$: Observable<number>;
+
   constructor(
     private userInfoService: UserInfoService,
     private authService: Authentication,
-    private router: Router
-  ) {}
+    private router: Router,
+    private cartService: CartService
+  ) {
+    this.cartItemCount$ = this.cartService.items$.pipe(
+      map(items => items.reduce((total, item) => total + item.quantity, 0))
+    );
+  }
 
   ngOnInit(): void {
     this.checkAuthentication();
@@ -43,7 +54,6 @@ export class Header implements OnInit {
   private loadUserInfo(): void {
     if (!this.isAuthenticated) return;
 
-    // Escuta mudanças no usuário
     this.userInfoService.currentUser$.subscribe({
       next: (user) => {
         this.currentUser = user;
@@ -56,7 +66,6 @@ export class Header implements OnInit {
       }
     });
 
-    // Carrega informações se ainda não foram carregadas
     const currentUser = this.userInfoService.getCurrentUserValue();
     if (!currentUser && this.isAuthenticated) {
       this.userInfoService.getCurrentUser().subscribe({

@@ -44,6 +44,8 @@ export class ProductDetails implements OnInit {
   protected loadingAiRecommendations = false; // Novo estado para IA
   protected error = '';
 
+  protected addedToCart = false;
+
   private cartService: CartService = inject(CartService);
 
   constructor(
@@ -63,6 +65,8 @@ export class ProductDetails implements OnInit {
 
   addToCart(product: Product): void {
     this.cartService.addToCart(product);
+    this.addedToCart = true;
+    setTimeout(() => this.addedToCart = false, 2000);
   }
 
   private getProductById(id: number): void {
