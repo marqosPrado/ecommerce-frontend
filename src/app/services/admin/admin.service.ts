@@ -20,7 +20,7 @@ export type ClientFilter = {
 })
 export class AdminService {
 
-  private baseUrl: string = 'http://localhost:8080/admin/client';
+  private baseUrl: string = 'http://localhost:8080/api/admin/client';
 
   constructor(
     private http: HttpClient,
