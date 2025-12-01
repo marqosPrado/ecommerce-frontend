@@ -156,3 +156,339 @@ body {
   outline: 2px solid var(--color-blue);
   outline-offset: 2px;
 }
+
+/* ========================================
+   🎨 PRIMENG COMPONENT OVERRIDES - DARK THEME
+   ======================================== */
+
+/* 📝 Input Fields - Text, Number, etc */
+.p-inputtext,
+.p-component input,
+input.p-inputtext {
+  background-color: var(--input-background) !important;
+  color: var(--input-text) !important;
+  border: 1px solid var(--input-border) !important;
+}
+
+.p-inputtext:enabled:hover,
+.p-component input:enabled:hover {
+  border-color: var(--color-border-light) !important;
+}
+
+.p-inputtext:enabled:focus,
+.p-component input:enabled:focus {
+  border-color: var(--input-border-focus) !important;
+  box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25) !important;
+}
+
+.p-inputtext::placeholder,
+.p-component input::placeholder {
+  color: var(--input-placeholder) !important;
+}
+
+.p-inputtext:disabled,
+.p-component input:disabled {
+  background-color: var(--color-surface-darker) !important;
+  color: var(--color-text-muted) !important;
+  opacity: 0.6;
+}
+
+/* 🔽 Select/Dropdown */
+.p-select,
+.p-dropdown {
+  background-color: var(--input-background) !important;
+  border: 1px solid var(--input-border) !important;
+}
+
+.p-select:not(.p-disabled):hover,
+.p-dropdown:not(.p-disabled):hover {
+  border-color: var(--color-border-light) !important;
+}
+
+.p-select:not(.p-disabled).p-focus,
+.p-dropdown:not(.p-disabled).p-focus {
+  border-color: var(--input-border-focus) !important;
+  box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25) !important;
+}
+
+.p-select-label,
+.p-dropdown-label {
+  color: var(--input-text) !important;
+}
+
+.p-select-overlay,
+.p-dropdown-overlay,
+.p-select-panel,
+.p-dropdown-panel {
+  background-color: var(--color-surface) !important;
+  border: 1px solid var(--input-border) !important;
+}
+
+.p-select-option,
+.p-dropdown-item {
+  color: var(--color-text-primary) !important;
+}
+
+.p-select-option:not(.p-disabled):hover,
+.p-dropdown-item:not(.p-disabled):hover {
+  background-color: var(--hover-overlay) !important;
+}
+
+.p-select-option.p-focus,
+.p-dropdown-item.p-focus {
+  background-color: var(--hover-overlay) !important;
+}
+
+.p-select-option.p-selected,
+.p-dropdown-item.p-selected {
+  background-color: var(--color-blue) !important;
+  color: var(--color-text-bright) !important;
+}
+
+/* 📝 Textarea */
+.p-textarea,
+textarea.p-inputtextarea {
+  background-color: var(--input-background) !important;
+  color: var(--input-text) !important;
+  border: 1px solid var(--input-border) !important;
+}
+
+.p-textarea:enabled:hover,
+textarea.p-inputtextarea:enabled:hover {
+  border-color: var(--color-border-light) !important;
+}
+
+.p-textarea:enabled:focus,
+textarea.p-inputtextarea:enabled:focus {
+  border-color: var(--input-border-focus) !important;
+  box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25) !important;
+}
+
+/* 🔢 InputMask */
+.p-inputmask,
+.p-inputmask input {
+  background-color: var(--input-background) !important;
+  color: var(--input-text) !important;
+  border: 1px solid var(--input-border) !important;
+}
+
+/* 📊 Tables */
+.p-datatable,
+.p-datatable-table {
+  background-color: var(--color-surface) !important;
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+  background-color: var(--color-surface-darker) !important;
+  color: var(--color-text-primary) !important;
+  border: 1px solid var(--input-border) !important;
+}
+
+.p-datatable .p-datatable-tbody > tr {
+  background-color: var(--color-surface) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+  border: 1px solid var(--input-border) !important;
+  color: var(--color-text-primary) !important;
+  background-color: var(--color-surface) !important;
+}
+
+.p-datatable .p-datatable-tbody > tr:hover {
+  background-color: var(--hover-overlay) !important;
+}
+
+.p-datatable .p-datatable-tbody > tr.p-selected {
+  background-color: var(--active-overlay) !important;
+}
+
+/* 📋 Float Label */
+.p-floatlabel label {
+  color: var(--input-placeholder) !important;
+}
+
+.p-floatlabel:has(input:focus) label,
+.p-floatlabel:has(input.p-filled) label,
+.p-floatlabel:has(textarea:focus) label,
+.p-floatlabel:has(textarea.p-filled) label,
+.p-floatlabel:has(.p-inputwrapper-focus) label,
+.p-floatlabel:has(.p-inputwrapper-filled) label {
+  color: var(--color-blue) !important;
+}
+
+/* ☑️ Checkbox */
+.p-checkbox .p-checkbox-box {
+  background-color: var(--input-background) !important;
+  border: 1px solid var(--input-border) !important;
+}
+
+.p-checkbox:not(.p-disabled):has(.p-checkbox-box:hover) .p-checkbox-box {
+  border-color: var(--color-border-light) !important;
+}
+
+.p-checkbox:not(.p-disabled):has(.p-checkbox-box.p-focus) .p-checkbox-box {
+  border-color: var(--input-border-focus) !important;
+  box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25) !important;
+}
+
+.p-checkbox .p-checkbox-box.p-checked {
+  background-color: var(--color-blue) !important;
+  border-color: var(--color-blue) !important;
+}
+
+.p-checkbox .p-checkbox-icon {
+  color: var(--color-text-bright) !important;
+}
+
+/* 🔘 Radio Button */
+.p-radiobutton .p-radiobutton-box {
+  background-color: var(--input-background) !important;
+  border: 1px solid var(--input-border) !important;
+}
+
+.p-radiobutton:not(.p-disabled):has(.p-radiobutton-box:hover) .p-radiobutton-box {
+  border-color: var(--color-border-light) !important;
+}
+
+.p-radiobutton:not(.p-disabled):has(.p-radiobutton-box.p-focus) .p-radiobutton-box {
+  border-color: var(--input-border-focus) !important;
+  box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25) !important;
+}
+
+.p-radiobutton .p-radiobutton-box.p-checked {
+  background-color: var(--color-blue) !important;
+  border-color: var(--color-blue) !important;
+}
+
+.p-radiobutton .p-radiobutton-icon {
+  background-color: var(--color-text-bright) !important;
+}
+
+/* 🎯 Stepper */
+.p-stepper .p-stepper-panel {
+  background-color: transparent !important;
+}
+
+.p-stepper .p-stepper-header {
+  background-color: transparent !important;
+}
+
+.p-stepper-number {
+  background-color: var(--input-background) !important;
+  color: var(--color-text-primary) !important;
+  border: 1px solid var(--input-border) !important;
+}
+
+.p-stepper-header.p-highlight .p-stepper-number {
+  background-color: var(--color-blue) !important;
+  color: var(--color-text-bright) !important;
+  border-color: var(--color-blue) !important;
+}
+
+.p-stepper-title {
+  color: var(--color-text-primary) !important;
+}
+
+/* 🎛️ Dialog/Modal */
+.p-dialog,
+.p-dialog-content {
+  background-color: var(--color-surface) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.p-dialog .p-dialog-header {
+  background-color: var(--color-surface-darker) !important;
+  color: var(--color-text-primary) !important;
+  border-bottom: 1px solid var(--input-border) !important;
+}
+
+.p-dialog .p-dialog-footer {
+  background-color: var(--color-surface-darker) !important;
+  border-top: 1px solid var(--input-border) !important;
+}
+
+/* 🎨 Calendar/DatePicker */
+.p-datepicker,
+.p-calendar-panel {
+  background-color: var(--color-surface) !important;
+  border: 1px solid var(--input-border) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.p-datepicker .p-datepicker-header {
+  background-color: var(--color-surface-darker) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.p-datepicker table td {
+  color: var(--color-text-primary) !important;
+}
+
+.p-datepicker table td > span {
+  color: var(--color-text-primary) !important;
+}
+
+.p-datepicker table td > span:hover {
+  background-color: var(--hover-overlay) !important;
+}
+
+.p-datepicker table td.p-datepicker-today > span {
+  background-color: var(--color-blue-dark) !important;
+  color: var(--color-text-bright) !important;
+}
+
+.p-datepicker table td > span.p-selected {
+  background-color: var(--color-blue) !important;
+  color: var(--color-text-bright) !important;
+}
+
+/* 🔔 Toast/Messages */
+.p-toast .p-toast-message {
+  background-color: var(--color-surface) !important;
+  border: 1px solid var(--input-border) !important;
+}
+
+.p-toast .p-toast-message .p-toast-message-content {
+  color: var(--color-text-primary) !important;
+}
+
+/* 📑 Paginator */
+.p-paginator {
+  background-color: var(--color-surface-darker) !important;
+  color: var(--color-text-primary) !important;
+  border: 1px solid var(--input-border) !important;
+}
+
+.p-paginator .p-paginator-page,
+.p-paginator .p-paginator-next,
+.p-paginator .p-paginator-prev,
+.p-paginator .p-paginator-first,
+.p-paginator .p-paginator-last {
+  color: var(--color-text-primary) !important;
+  background-color: transparent !important;
+}
+
+.p-paginator .p-paginator-page:hover,
+.p-paginator .p-paginator-next:hover,
+.p-paginator .p-paginator-prev:hover {
+  background-color: var(--hover-overlay) !important;
+}
+
+.p-paginator .p-paginator-page.p-selected {
+  background-color: var(--color-blue) !important;
+  color: var(--color-text-bright) !important;
+}
+
+/* 🎚️ Progress Spinner */
+.p-progress-spinner-circle {
+  stroke: var(--color-blue) !important;
+}
+
+/* 🎪 Overlay Panel */
+.p-overlaypanel,
+.p-overlay-panel {
+  background-color: var(--color-surface) !important;
+  border: 1px solid var(--input-border) !important;
+  color: var(--color-text-primary) !important;
+}

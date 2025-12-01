@@ -145,10 +145,10 @@ export class Cart implements OnInit, OnDestroy {
     });
 
     this.newCreditCardForm = this.fb.group({
-      number: ['', [Validators.required, Validators.pattern(/^\d{16}$/)]],
+      number: ['', [Validators.required, Validators.pattern(/^\d{4}\s\d{4}\s\d{4}\s\d{4}$/)]],
       printedName: ['', [Validators.required, Validators.minLength(3)]],
-      cpf: ['', [Validators.required, Validators.pattern(/^\d{11}$/)]],
-      birthDate: [null, Validators.required],
+      cpf: ['', [Validators.required, Validators.pattern(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)]],
+      birthDate: ['', [Validators.required, Validators.pattern(/^\d{2}\/\d{2}\/\d{4}$/)]],
       surname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20)]],
       cardFlag: new FormControl<CreditCardTypes | null>(null, Validators.required),
       securityCode: ['', [Validators.required, Validators.pattern(/^\d{3,4}$/)]],
@@ -348,8 +348,18 @@ export class Cart implements OnInit, OnDestroy {
       return;
     }
 
+    const formValue = this.newCreditCardForm.value;
+
+    // Remove máscaras dos campos
     const newCreditCard: CreditCard = {
-      ...(this.newCreditCardForm.value as CreditCard),
+      number: formValue.number?.replace(/\s/g, '') || '', // Remove espaços
+      printedName: formValue.printedName,
+      cpf: formValue.cpf?.replace(/[.\-]/g, '') || '', // Remove pontos e traços
+      birthDate: formValue.birthDate,
+      surname: formValue.surname,
+      cardFlag: formValue.cardFlag,
+      securityCode: formValue.securityCode,
+      isMain: formValue.isMain
     };
 
     this.loading = true;

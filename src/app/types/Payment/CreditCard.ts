@@ -8,6 +8,9 @@ export type CreditCard = {
   id?: number,
   number: string;
   printedName: string;
+  cpf?: string;
+  birthDate?: string;
+  surname?: string;
   cardFlag: CreditCardTypes;
   securityCode: string;
   isMain?: boolean;
