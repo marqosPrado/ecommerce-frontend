@@ -413,6 +413,7 @@
                           label="Cadastrar endereço"
                           [loading]="loading"
                           (click)="onSubmitNewAddress()"
+                          data-cy="cadastrar-novo-endereco-cart"
                         />
                       </div>
                     </form>
@@ -432,6 +433,7 @@
                     variant="outlined"
                     size="large"
                     (click)="handleAddressForm()"
+                    data-cy="novo-endereco-button"
                   >
                     <i class="pi pi-plus"></i>
                     Cadastrar novo endereço
@@ -1093,6 +1095,7 @@
             [style]="{width: '100%'}"
             (onClick)="activeStep === 3 ? finalizePurchase() : nextStep()"
             [disabled]="primaryDisabled"
+            data-cy="checkout-button"
           />
         }
 
