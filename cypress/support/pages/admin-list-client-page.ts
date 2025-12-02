@@ -73,11 +73,13 @@ export class AdminListClientPage {
   }
 
   confirmDialogAction(): void {
-    cy.get('.p-dialog-footer > .p-ripple').click()
+    // Aguarda o diálogo aparecer e clica no botão Confirmar
+    cy.contains('button', 'Confirmar').should('be.visible').click()
   }
 
   cancelDialogAction(): void {
-    cy.get('[pc105=""] > .p-ripple').click()
+    // Aguarda o diálogo aparecer e clica no botão Cancelar
+    cy.contains('button', 'Cancelar').should('be.visible').click()
   }
 
   getToast(): Chainable {
