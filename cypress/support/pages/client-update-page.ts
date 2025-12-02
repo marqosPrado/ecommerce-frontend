@@ -49,8 +49,8 @@ export class ClientUpdatePage {
   }
 
   confirmChange(): void {
-    cy.get('[pc79=""] > .p-ripple')
-      .click({ force: true })
+    // Aguarda o diálogo aparecer e clica no botão Confirmar
+    cy.contains('button', 'Confirmar').click()
       .then(() => {
         cy.get(selector.toast)
           .should('be.visible')

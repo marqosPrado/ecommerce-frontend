@@ -38,6 +38,10 @@ export const routes: Routes = [
     component: EditClient
   },
   {
+    path: 'client/edit',
+    component: EditClient
+  },
+  {
     path: 'minha-conta',
     component: ClientDashboard
   },

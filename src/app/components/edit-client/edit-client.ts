@@ -16,6 +16,7 @@ import {Textarea} from 'primeng/textarea';
 import {ClientService} from '../../services/client.service';
 import {Client} from '../../types/Client';
 import {Address} from '../../types/Address';
+import {UserInfoService} from '../../services/user/user-info.service';
 
 @Component({
   selector: 'app-edit-client',
@@ -42,7 +43,7 @@ import {Address} from '../../types/Address';
   templateUrl: './edit-client.html',
   styleUrl: './edit-client.css'
 })
-export class EditClient implements OnInit{
+export class EditClient implements OnInit {
   editClientForm!: FormGroup;
   newClientAddressForm!: FormGroup;
   clientId!: string;
@@ -58,17 +59,21 @@ export class EditClient implements OnInit{
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
     private router: Router,
+    private userInfoService: UserInfoService,
   ) {}
 
   ngOnInit() {
-    this.clientId = this.route.snapshot.paramMap.get('id')!;
+    this.initializeForms();
+    this.loadClientData();
+  }
 
+  private initializeForms() {
     this.editClientForm = this.fb.group({
-      fullName: ['', Validators.required],
+      fullName: ['', [Validators.required, Validators.minLength(2)]],
       cpf: [{ value: '', disabled: true }, [Validators.required]],
-      gender: ['', Validators.required],
-      birthDate: [{ value: '', disabled: true }, Validators.required],
-      phoneNumber: ['', Validators.required],
+      gender: ['', [Validators.required]],
+      birthDate: [{ value: '', disabled: true }, [Validators.required]],
+      phoneNumber: ['', [Validators.required]],
       email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
     });
 
@@ -83,29 +88,81 @@ export class EditClient implements OnInit{
       stateId: new FormControl<number | null>(null, [Validators.required]),
       country: new FormControl('', [Validators.required]),
       observations: new FormControl('', [])
-    })
-
-    this.loadClient();
+    });
   }
 
-  loadClient() {
-    this.clientService.getClientById(Number(this.clientId)).subscribe({
-      next: (client: Client) => {
-        this.editClientForm.patchValue({
-          fullName: client.fullName,
-          cpf: client.cpf,
-          gender: client.gender,
-          birthDate: new Date(client.birthDate),
-          phoneNumber: client.phoneNumber,
-          email: client.email,
-        });
+  private loadClientData() {
+    // Verifica se tem ID na rota (modo admin)
+    const routeId = this.route.snapshot.paramMap.get('id');
 
-        this.clientAddresses.set(client.addresses);
+    if (routeId) {
+      // Admin editando cliente específico
+      this.clientId = routeId;
+      this.loadClientById(Number(routeId));
+    } else {
+      // Cliente editando seus próprios dados
+      this.loadCurrentClient();
+    }
+  }
+
+  private loadCurrentClient() {
+    this.clientService.getCurrentClient().subscribe({
+      next: (client: Client) => {
+        this.clientId = client.id!.toString();
+        this.populateForm(client);
+      },
+      error: (err) => {
+        console.error('Erro ao buscar cliente atual:', err);
+        this.messageService.add({
+          severity: 'error',
+          life: 4000,
+          summary: 'Erro!',
+          detail: 'Não foi possível carregar seus dados.'
+        });
+      }
+    });
+  }
+
+  private loadClientById(clientId: number) {
+    this.clientService.getClientById(clientId).subscribe({
+      next: (client: Client) => {
+        this.clientId = client.id!.toString();
+        this.populateForm(client);
       },
       error: (err) => {
         console.error('Erro ao buscar cliente:', err);
+        this.messageService.add({
+          severity: 'error',
+          life: 4000,
+          summary: 'Erro!',
+          detail: 'Não foi possível carregar os dados do cliente.'
+        });
       }
     });
+  }
+
+  private populateForm(client: Client) {
+    this.editClientForm.patchValue({
+      fullName: client.fullName,
+      cpf: client.cpf,
+      gender: client.gender,
+      birthDate: new Date(client.birthDate),
+      phoneNumber: client.phoneNumber,
+      email: client.email,
+    });
+
+    this.clientAddresses.set(client.addresses || []);
+  }
+
+  private reloadClientData() {
+    const clientIdNum = Number(this.clientId);
+    const routeId = this.route.snapshot.paramMap.get('id');
+
+    if (routeId) {
+      this.loadClientById(clientIdNum);
+    } else {
+      this.loadCurrentClient();
+    }
   }
 
   editClient() {
@@ -141,7 +198,7 @@ export class EditClient implements OnInit{
               detail: 'Alterações salvas com sucesso!'
             });
 
-            this.loadClient();
+            this.reloadClientData();
           },
           error: (err) => {
             this.loading = false;
@@ -159,8 +216,9 @@ export class EditClient implements OnInit{
   }
 
   editAddress(address: Address) {
-    this.showAddressForm.set(true);
     this.editingAddressId.set(address.id!);
+    this.showAddressForm.set(true);
+
     this.newClientAddressForm.patchValue({
       typeResidence: address.typeResidence,
       typePlace: address.typePlace,
@@ -195,7 +253,9 @@ export class EditClient implements OnInit{
     };
 
     this.confirmationService.confirm({
-      message: this.editingAddressId() ? 'Deseja salvar as alterações deste endereço?' : 'Deseja cadastrar este novo endereço?',
+      message: this.editingAddressId()
+        ? 'Deseja salvar as alterações deste endereço?'
+        : 'Deseja cadastrar este novo endereço?',
       header: 'Confirmação',
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Sim',
@@ -204,6 +264,7 @@ export class EditClient implements OnInit{
       rejectButtonStyleClass: 'p-button-secondary',
       accept: () => {
         this.loading = true;
+
         const request$ = this.editingAddressId()
           ? this.clientService.updateAddress(Number(this.clientId), this.editingAddressId()!, payload)
           : this.clientService.registerNewAddress(Number(this.clientId), payload);
@@ -215,13 +276,16 @@ export class EditClient implements OnInit{
               severity: 'success',
               life: 2000,
               summary: 'Sucesso!',
-              detail: this.editingAddressId() ? 'Endereço atualizado com sucesso!' : 'Endereço cadastrado com sucesso!'
+              detail: this.editingAddressId()
+                ? 'Endereço atualizado com sucesso!'
+                : 'Endereço cadastrado com sucesso!'
             });
 
             this.newClientAddressForm.reset();
             this.showAddressForm.set(false);
             this.editingAddressId.set(null);
-            this.loadClient();
+
+            this.reloadClientData();
           },
           error: (err) => {
             this.loading = false;
@@ -239,12 +303,14 @@ export class EditClient implements OnInit{
   }
 
   addNewAddress() {
+    this.editingAddressId.set(null);
     this.newClientAddressForm.reset();
-    this.showAddressForm.set(true)
+    this.showAddressForm.set(true);
   }
 
   cancelNewAddress() {
+    this.editingAddressId.set(null);
     this.newClientAddressForm.reset();
-    this.showAddressForm.set(false)
+    this.showAddressForm.set(false);
   }
 }
