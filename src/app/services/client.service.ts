@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { Client } from '../types/Client';
 import { Address } from '../types/Address';
 import { CreditCard } from '../types/Payment/CreditCard';
@@ -11,53 +11,61 @@ import { ApiResponse } from '../types/Api/ApiResponse';
   providedIn: 'root'
 })
 export class ClientService {
-  private apiUrl = 'http://localhost:8080/api';
+  private baseUrl = 'http://localhost:8080';
 
   constructor(private http: HttpClient) {}
 
   registerClient(clientData: Client) {
-    return this.http.post<Client>(`${this.apiUrl}/auth/register`, clientData);
+    return this.http.post<Client>(`${this.baseUrl}/client/register`, clientData);
   }
 
   getCurrentClient(): Observable<Client> {
-    return this.http.get<ApiResponse<Client>>(`${this.apiUrl}/client/me`).pipe(
-      map(response => {
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/api/client/me`).pipe(
+      switchMap(response => {
         if (!response.success || !response.data) {
           throw new Error(response.message || 'Erro ao buscar cliente');
         }
-        return response.data;
+        return this.getClientById(response.data.id);
       })
     );
   }
 
   getClientById(clientId: number): Observable<Client> {
-    return this.http.get<ApiResponse<Client>>(`${this.apiUrl}/client/${clientId}`).pipe(
+    return this.http.get<any>(`${this.baseUrl}/client/${clientId}/all`).pipe(
       map(response => {
-        if (!response.success || !response.data) {
-          throw new Error(response.message || 'Erro ao buscar cliente');
-        }
-        return response.data;
+        // ClientResponseCompleteDto vem diretamente, sem wrapper
+        return {
+          id: clientId,
+          fullName: response.fullName,
+          phoneNumber: response.phoneNumber,
+          gender: response.gender,
+          email: response.email,
+          cpf: response.cpf,
+          birthDate: response.birthDate,
+          addresses: response.addresses || [],
+          creditCards: response.creditCards || []
+        } as Client;
       })
     );
   }
 
   updateClientBasicData(clientId: number, clientData: Partial<Client>) {
-    return this.http.put<Client>(`http://localhost:8080/client/${clientId}/basic-update`, clientData);
+    return this.http.put<any>(`${this.baseUrl}/client/${clientId}/basic-update`, clientData);
   }
 
   registerNewAddress(clientId: number, address: Address) {
-    return this.http.post(`http://localhost:8080/client/${clientId}/address/new`, address);
-  }
-
-  registerNewCreditCard(clientId: number, card: CreditCard) {
-    return this.http.post(`http://localhost:8080/client/${clientId}/credit-card/new`, card);
-  }
-
-  removeCreditCard(clientId: number, card: CreditCard) {
-    return this.http.delete<void>(`${this.apiUrl}/client/${clientId}/credit-card/${card.id}/remove`);
+    return this.http.post(`${this.baseUrl}/client/${clientId}/address/new`, address);
   }
 
   updateAddress(clientId: number, addressId: number, address: Address) {
-    return this.http.put(`${this.apiUrl}/client/${clientId}/address/${addressId}/update`, address);
+    return this.http.put(`${this.baseUrl}/client/${clientId}/address/${addressId}/update`, address);
+  }
+
+  registerNewCreditCard(clientId: number, card: CreditCard) {
+    return this.http.post(`${this.baseUrl}/client/${clientId}/credit-card/new`, card);
+  }
+
+  removeCreditCard(clientId: number, card: CreditCard) {
+    return this.http.delete<void>(`${this.baseUrl}/client/${clientId}/credit-card/${card.id}/remove`);
   }
 }

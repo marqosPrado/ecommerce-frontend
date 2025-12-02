@@ -17,6 +17,7 @@ import {Client} from '../../types/Client';
 import {MaskCard} from '../../utils/mask-card';
 import {CommonModule} from '@angular/common';
 import {ConfirmDialog} from 'primeng/confirmdialog';
+import {UserInfoService} from '../../services/user/user-info.service';
 
 @Component({
   selector: 'app-client-wallet',
@@ -41,14 +42,17 @@ import {ConfirmDialog} from 'primeng/confirmdialog';
   styleUrl: './client-wallet.css'
 })
 export class ClientWallet implements OnInit {
-  creditCards: CreditCard[] = [];
-  showCreditCardForm = signal(false)
+  creditCards = signal<CreditCard[]>([]);
+  showCreditCardForm = signal(false);
+  loading = signal(false);
+  clientId: number | null = null;
   creditCardForm: FormGroup;
 
   constructor(
     private clientService: ClientService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
+    private userInfoService: UserInfoService,
   ) {
     this.creditCardForm = new FormGroup({
       number: new FormControl('', [Validators.required, Validators.minLength(16), Validators.maxLength(16)]),
@@ -63,7 +67,54 @@ export class ClientWallet implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadClient()
+    this.loadCurrentUserAndCards();
+  }
+
+  private loadCurrentUserAndCards() {
+    this.loading.set(true);
+
+    this.userInfoService.getCurrentUser().subscribe({
+      next: (user) => {
+        this.clientId = user.id;
+        this.loadClientCards();
+      },
+      error: (err) => {
+        this.loading.set(false);
+        console.error('Erro ao buscar usuário:', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Não foi possível carregar seus dados.'
+        });
+      }
+    });
+  }
+
+  private loadClientCards() {
+    if (!this.clientId) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Erro',
+        detail: 'ID do cliente não encontrado.'
+      });
+      return;
+    }
+
+    this.clientService.getClientById(this.clientId).subscribe({
+      next: (client: Client) => {
+        this.creditCards.set(client.creditCards || []);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        this.loading.set(false);
+        console.error('Erro ao buscar cartões:', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Não foi possível carregar seus cartões.'
+        });
+      }
+    });
   }
 
   removeCreditCard(card: CreditCard) {
@@ -73,64 +124,95 @@ export class ClientWallet implements OnInit {
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Sim',
       rejectLabel: 'Não',
+      acceptButtonStyleClass: 'p-button-primary',
+      rejectButtonStyleClass: 'p-button-secondary',
       accept: () => {
-        const clientId = 1;
-        this.clientService.removeCreditCard(clientId, card).subscribe({
+        if (!this.clientId) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'ID do cliente não encontrado.'
+          });
+          return;
+        }
+
+        this.loading.set(true);
+
+        this.clientService.removeCreditCard(this.clientId, card).subscribe({
           next: () => {
-            this.loadClient();
+            this.loading.set(false);
             this.messageService.add({
               severity: 'success',
               summary: 'Sucesso',
-              detail: 'Cartão removido com sucesso!'
+              detail: 'Cartão removido com sucesso!',
+              life: 2000
             });
+            this.loadClientCards();
           },
           error: (err) => {
+            this.loading.set(false);
             console.error('Erro ao remover cartão', err);
             this.messageService.add({
               severity: 'error',
               summary: 'Erro',
-              detail: 'Não foi possível remover o cartão.'
+              detail: 'Não foi possível remover o cartão.',
+              life: 4000
             });
           }
         });
-      },
-      reject: () => {}
+      }
     });
   }
 
   submitCreditCard() {
-    if (this.creditCardForm.invalid) return;
+    if (this.creditCardForm.invalid) {
+      this.creditCardForm.markAllAsTouched();
+      return;
+    }
 
-    const clientId = 1;
+    if (!this.clientId) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Erro',
+        detail: 'ID do cliente não encontrado.'
+      });
+      return;
+    }
+
+    this.loading.set(true);
     const cardData = this.creditCardForm.value;
 
-    this.clientService.registerNewCreditCard(clientId, cardData).subscribe({
-      next: (res) => {
+    this.clientService.registerNewCreditCard(this.clientId, cardData).subscribe({
+      next: () => {
+        this.loading.set(false);
         this.showCreditCardForm.set(false);
-        this.loadClient()
         this.creditCardForm.reset({ isMain: false });
-        this.messageService.add({severity:'success', summary:'Sucesso', detail:'Cartão cadastrado com sucesso!'});
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Sucesso',
+          detail: 'Cartão cadastrado com sucesso!',
+          life: 2000
+        });
+        this.loadClientCards();
       },
       error: (err) => {
+        this.loading.set(false);
         console.error('Erro ao cadastrar cartão', err);
-        this.messageService.add({severity:'error', summary:'Erro', detail:'Não foi possível cadastrar o cartão.'});
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Não foi possível cadastrar o cartão.',
+          life: 4000
+        });
       }
     });
   }
 
-  loadClient() {
-    this.clientService.getClientById(1).subscribe({
-      next: (res: Client) => {
-        this.creditCards = res.creditCards;
-      },
-
-      error: (err) => {
-        console.error('Erro ao buscar cliente:', err);
-      }
-    })
-  }
-
   handleCreditCardForm() {
     this.showCreditCardForm.set(!this.showCreditCardForm());
+
+    if (!this.showCreditCardForm()) {
+      this.creditCardForm.reset({ isMain: false });
+    }
   }
 }
