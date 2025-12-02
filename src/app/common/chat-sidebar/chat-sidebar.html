@@ -40,12 +40,12 @@
                class="product-card"
                (click)="closeSidebar()">
               <div class="product-image">
-                <img [src]="product.url_image" [alt]="product.name" />
+                <img [src]="product.url_image" [alt]="product.title" />
               </div>
               <div class="product-info">
-                <h4 class="product-name">{{ product.name }}</h4>
+                <h4 class="product-name">{{ product.title }}</h4>
                 <p class="product-brand">{{ product.brand }}</p>
-                <p class="product-price">{{ formatPrice(product.price) }}</p>
+                <p class="product-price">{{ formatPrice(+product.price) }}</p>
               </div>
             </a>
           </div>

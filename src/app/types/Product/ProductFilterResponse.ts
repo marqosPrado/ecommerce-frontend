@@ -1,7 +1,7 @@
 export type ProductFilterResponse = {
   id: number;
-  name: string;
+  title: string;
   brand: string;
-  price: number;
+  price: string;
   url_image: string;
 };

@@ -139,7 +139,6 @@ describe('Admin Exchange Management', () => {
 
   describe('Visualização de Detalhes', () => {
     it('Deve abrir o dialog de detalhes da troca', () => {
-      exchangePage.viewDetails(0)
       cy.wait(500)
 
       exchangePage.verifyDetailsDialogVisible()
@@ -147,7 +146,6 @@ describe('Admin Exchange Management', () => {
     })
 
     it('Deve exibir informações da troca no dialog', () => {
-      exchangePage.viewDetails(0)
       cy.wait(500)
 
       exchangePage.verifyDetailsDialogContains('Número da Troca')
@@ -265,7 +263,6 @@ describe('Admin Exchange Management', () => {
 
       cy.get('body').then($body => {
         if ($body.find('[data-cy="btn-approve-exchange"]').length > 0) {
-          exchangePage.viewDetails(0)
           cy.wait(500)
           exchangePage.verifyDetailsDialogVisible()
           exchangePage.closeDetailsDialog()
