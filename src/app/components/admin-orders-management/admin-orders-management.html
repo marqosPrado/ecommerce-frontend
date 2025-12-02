@@ -64,6 +64,7 @@
       flex-wrap: wrap;
     ">
       <p-button
+        data-cy="filter-all-orders"
         [label]="'Todos (' + totalRecords + ')'"
         [outlined]="selectedStatus !== null"
         (click)="filterByStatus(null)"
@@ -71,6 +72,7 @@
       ></p-button>
 
       <p-button
+        data-cy="filter-processing"
         label="Processando"
         [outlined]="selectedStatus !== 'PROCESSING'"
         (click)="filterByStatus('PROCESSING')"
@@ -79,6 +81,7 @@
       ></p-button>
 
       <p-button
+        data-cy="filter-approved"
         label="Aprovados"
         [outlined]="selectedStatus !== 'APPROVED'"
         (click)="filterByStatus('APPROVED')"
@@ -87,6 +90,7 @@
       ></p-button>
 
       <p-button
+        data-cy="filter-in-transit"
         label="Em Trânsito"
         [outlined]="selectedStatus !== 'IN_TRANSIT'"
         (click)="filterByStatus('IN_TRANSIT')"
@@ -95,6 +99,7 @@
       ></p-button>
 
       <p-button
+        data-cy="filter-delivered"
         label="Entregues"
         [outlined]="selectedStatus !== 'DELIVERED'"
         (click)="filterByStatus('DELIVERED')"
@@ -112,6 +117,7 @@
       <!-- Tabela -->
       <p-table
         #dt
+        data-cy="orders-table"
         [value]="orders"
         dataKey="id"
         [paginator]="true"
@@ -183,6 +189,7 @@
               <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
                 <!-- Aprovar Pagamento -->
                 <p-button
+                  data-cy="btn-approve-order"
                   *ngIf="order.order_status.code === 'PROCESSING'"
                   icon="pi pi-check"
                   severity="success"
@@ -195,6 +202,7 @@
 
                 <!-- Marcar Em Trânsito -->
                 <p-button
+                  data-cy="btn-in-transit"
                   *ngIf="order.order_status.code === 'APPROVED'"
                   icon="pi pi-truck"
                   severity="info"
@@ -207,6 +215,7 @@
 
                 <!-- Confirmar Entrega -->
                 <p-button
+                  data-cy="btn-delivered"
                   *ngIf="order.order_status.code === 'IN_TRANSIT'"
                   icon="pi pi-check-circle"
                   severity="success"
@@ -219,6 +228,7 @@
 
                 <!-- Ver Detalhes -->
                 <p-button
+                  data-cy="btn-view-details"
                   icon="pi pi-eye"
                   severity="secondary"
                   size="small"
@@ -260,6 +270,7 @@
 
 <!-- Dialog de Detalhes do Pedido -->
 <p-dialog
+  data-cy="order-details-dialog"
   [(visible)]="displayOrderDetails"
   [modal]="true"
   [style]="{ width: '50vw', maxWidth: '800px' }"
