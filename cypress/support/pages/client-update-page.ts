@@ -49,8 +49,7 @@ export class ClientUpdatePage {
   }
 
   confirmChange(): void {
-    // Aguarda o diálogo aparecer e clica no botão Confirmar
-    cy.contains('button', 'Confirmar').click()
+    cy.contains('button', 'Sim').click()
       .then(() => {
         cy.get(selector.toast)
           .should('be.visible')

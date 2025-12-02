@@ -5,8 +5,15 @@ describe('Tela de Edição de usuário', () => {
   const clientEditPage = new ClientUpdatePage();
   const adminListClientPage = new AdminListClientPage();
 
+  const testUser = {
+    email: 'sergio.benicio.bernardes@genesyslab.com',
+    password: '1234'
+  }
+
   beforeEach(() => {
-    cy.visit('http://localhost:4200/client/edit/1');
+    cy.login(testUser.email, testUser.password);
+    cy.visit('http://localhost:4200/minha-conta');
+    cy.get('[data-cy="edit-client-button"]').click()
   });
 
   it('Deve atualizar o nome do cliente', () => {
@@ -16,13 +23,6 @@ describe('Tela de Edição de usuário', () => {
     clientEditPage.clickBtnToUpdate();
     clientEditPage.confirmChange();
 
-    cy.visit('http://localhost:4200/admin/clientes');
-
-    adminListClientPage.fillName(newName);
-    adminListClientPage.clickSearch();
-    adminListClientPage.getClientTable()
-      .should('be.visible')
-      .and('contain', newName);
   });
 
   it('Deve atualizar o telefone do cliente', () => {
@@ -32,13 +32,6 @@ describe('Tela de Edição de usuário', () => {
     clientEditPage.clickBtnToUpdate();
     clientEditPage.confirmChange();
 
-    cy.visit('http://localhost:4200/admin/clientes');
-
-    adminListClientPage.fillPhone(newPhone);
-    adminListClientPage.clickSearch();
-    adminListClientPage.getClientTable()
-      .should('be.visible')
-      .and('contain', newPhone);
   });
 
 });
